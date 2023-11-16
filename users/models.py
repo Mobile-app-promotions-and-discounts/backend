@@ -4,8 +4,8 @@ from django.db import models
 
 class User(AbstractUser):
     ROLE = [
-        ('m', 'marketer'),
-        ('s', 'shopper'),
+        ("m", "marketer"),
+        ("s", "shopper"),
     ]
     phone = models.CharField(max_length=12, verbose_name="Телефон")
     role = models.CharField(
