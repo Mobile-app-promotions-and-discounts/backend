@@ -1,0 +1,580 @@
+openapi: 3.0.2
+info:
+  title: 'Cherry'
+  version: ''
+paths:
+  /api/users/:
+    get:
+      operationId: Список пользователей
+      description: ''
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: Номер страницы.
+          schema:
+            type: integer
+        - name: limit
+          required: false
+          in: query
+          description: Количество объектов на странице.
+          schema:
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                    description: 'Общее количество объектов в базе'
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://foodgram.example.org/api/users/?page=4
+                    description: 'Ссылка на следующую страницу'
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://foodgram.example.org/api/users/?page=2
+                    description: 'Ссылка на предыдущую страницу'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                    description: 'Список объектов текущей страницы'
+          description: ''
+      tags:
+        - Пользователи
+    post:
+      operationId: Регистрация пользователя
+      description: ''
+      parameters: []
+      responses:
+        '201':
+          description: 'Пользователь успешно создан'
+        '400':
+          description:
+      tags:
+        - Пользователи
+  /api/products/:
+    get:
+      operationId: Cписок товаров
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+        - Товары
+  /api/product/{id}/:
+    get:
+      operationId: Получение продукта
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этого Товара."
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Товары
+        
+    post:
+      security:
+        - Token: []
+      operationId: Создание товара
+      description: 'Доступно только авторизованному пользователю'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: 'Товар успешно создан'
+        '400':
+          description: 'Ошибки валидации в стандартном формате DRF'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Товары
+  
+  
+  
+  /api/category/:
+    get:
+      operationId: Список категорий товаров
+      parameters:
+        - name: name
+          in: path
+          description: Название категорий товаров.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+    
+          
+          
+
+      tags:
+        - Категории товаров
+    post:
+      security:
+        - Token: []
+      operationId: Создание рецепта
+      description: 'Доступно только авторизованному пользователю'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeCreateUpdate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeList'
+          description: 'Рецепт успешно создан'
+        '400':
+          description: 'Ошибки валидации в стандартном формате DRF'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          $ref: '#/components/schemas/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Категории товаров
+  /api/store/:
+    get:
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Store'
+          description: ''
+      tags:
+        - Магазины
+        
+        
+    post:
+      security:
+        - Token: []
+      operationId: Создание магазина
+      description: 'Доступно только авторизованному пользователю'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Store'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Store'
+          description: 'Товар успешно создан'
+        '400':
+          description: 'Ошибки валидации в стандартном формате DRF'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Магазины
+  /api/store/{id}/:
+    get:
+      operationId: Получение информации о магазине
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этого магазина"
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Store'
+          description: ''
+      tags:
+        - Магазины
+        
+    
+        
+        
+        
+        
+        
+    patch:
+      operationId: Обновление магазина
+      security:
+        - Token: [ ]
+      description: 'Доступно только автору данного рецепта'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этого рецепта."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeCreateUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeList'
+          description: 'Магазин успешно обновлен'
+        '400':
+          $ref: '#/components/responses/NestedValidationError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Магазины
+    delete:
+      operationId: Удаление магазина
+
+      description: 'Доступно только автору данного рецепта'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный идентификатор этого рецепта"
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'Рецепт успешно удален'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          $ref: '#/components/responses/PermissionDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+        - Магазины
+ 
+  /api/users/{id}/:
+    get:
+      operationId: Профиль пользователя
+      description: 'Доступно всем пользователям.'
+      security:
+        - Token: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Уникальный id этого пользователя"
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+        - Пользователи
+  /api/users/me/:
+    get:
+      operationId: Текущий пользователь
+      description: ''
+      parameters: []
+      security:
+        - Token: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+        - Пользователи
+  
+  /api/users/set_password/:
+    post:
+      operationId: Изменение пароля
+      description: 'Изменение пароля текущего пользователя'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPassword'
+      responses:
+        '204':
+          description: 'Пароль успешно изменен'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+      tags:
+        - Пользователи
+  
+components:
+  schemas:
+    User:
+      description:  'Пользователь (В рецепте - автор рецепта)'
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+          description: "Адрес электронной почты"
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: "Уникальный юзернейм"
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+          description: "Имя"
+          example: "Вася"
+        last_name:
+          type: string
+          maxLength: 150
+          description: "Фамилия"
+          example: "Пупкин"
+      required:
+        - username
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+          description: 'Название'
+          example: 'Картофель'
+        description:
+          type: string
+          example: 'Описание продукта'
+        category:
+          type: string
+          description: 'Категория продукта'
+          example: 'овощи'
+        price:
+          type: number
+          description: 'цена'
+          example: '150'
+        image:
+          description: 'Ссылка на картинку на сайте'
+          example: 'http://cherry.example.org/media/recipes/images/image.jpeg'
+          type: string
+          format: url
+        store:
+          type: integer
+          description: 'id магазина'
+          example: '11'
+          
+          
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: 'Уникальный id'
+        name:
+          description: 'Название категории продукта'
+          type: string
+          example: 'овощи'
+
+    ProductImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: 'Уникальный id'
+        main_image:
+          description: 'Основная картинка'
+          example: 'http://cherry.example.org/media/recipes/images/image.jpeg'
+          type: string
+          format: url
+        additional_photo:
+          description: 'Дополнительная картинка'
+          example: 'http://cherry.example.org/media/recipes/images/image.jpeg'
+          type: string
+          format: url
+          
+    Store:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          description: 'Уникальный id'
+        name:
+          type: string
+          maxLength: 200
+          description: 'Название'
+        location:
+          description: 'Адрес магазина'
+          type: string
+          example: 'Ул. Новый Арбат д.1'
+        chain_store:
+          type: integer
+          
+          
+    ProductsInStore:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+          example: '12'
+          description: 'id продукта'
+        store:
+          type: integer
+          example: '12'
+          description: 'id магазина'
+        discount:
+          type: integer
+          example: '20%'
+          description: 'размер скидки'
+      required:
+        - product
+        - shop
+        - discount
+        
+    StoreLocation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        region:
+          type: string
+          maxLength: 200
+          description: 'Регион'
+          example: 'Московская область'
+        city:
+          type: string
+          maxLength: 200
+          description: 'Город'
+          example: 'Москва'
+        street:
+          type: string
+          maxLength: 200
+          description: 'Улица'
+          example: 'Арбат'
+        building:
+          type: integer
+          description: 'Номер дома'
+          example: '12'
+        postal_index:
+          type: integer
+          description: 'Почтовый индекс'
+          example: '127123'
+
+    ChainStore:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 200
+          description: 'Название'
+          
+    Discount:
+      type: object
+      properties:
+        discount_rate:
+          type: integer
+          maxLength: 200
+          description: 'размер скидки'
+        discount_unit:
+          type: string
+          maxLength: 200
+          description: 'единица измерения скидки'
+        discount_rating:
+          type: integer
+          maxLength: 200
+          description: 'рейтинг'
+        discount_start:
+          type: date
+          maxLength: 200
+          description: 'дата начала действия скидки'
+        discount_end:
+          type: date
+          maxLength: 200
+          description: 'дата окончания действия скидки'
+        discount_card:
+          type: boolean
+          maxLength: 200
+          description: 'скидка по карте'
+        
