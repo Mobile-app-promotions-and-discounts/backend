@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Category
 
 
-from .models import Category, ChainStore, Discount, Product, ProductImage, Store, StoreLocation
+from .models import (Category, ChainStore, Discount, Product, ProductImage,
+                     Store, StoreLocation)
 
 
 class StoreInline(admin.TabularInline):
@@ -40,7 +40,8 @@ class StoreAdmin(admin.ModelAdmin):
 
 @admin.register(Discount)
 class DiscountAdmin(admin.ModelAdmin):
-    list_display = ('discount_rate', 'discount_unit', 'discount_start', 'discount_end', 'discount_card')
+    list_display = ('discount_rate', 'discount_unit', 'discount_start',
+                    'discount_end', 'discount_card')
     list_filter = ('discount_rate',)
 
 

@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
 from products.models import Category
-from serializers import CategorySerializer
+from api.serializers import CategorySerializer
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
