@@ -17,12 +17,12 @@ class UserAdmin(admin.ModelAdmin):
         "role",
     )
     list_filter = ("username", "email", "phone")
-    list_editable = (
-        "username",
-        "password",
-        "phone",
-        "email",
-        "first_name",
-        "last_name",
-        "role",
-    )
+    # list_editable = (
+    #     "username",
+    #     "password",
+    #     "phone",
+    #     "email",
+    #     "first_name",
+    #     "last_name",
+    #     "role",
+    # )
