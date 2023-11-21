@@ -7,6 +7,10 @@ class User(AbstractUser):
         ("m", "marketer"),
         ("s", "shopper"),
     ]
+    username = models.EmailField(
+        unique=True,
+        verbose_name="email",
+    )
     phone = models.CharField(max_length=12, verbose_name="Телефон")
     role = models.CharField(
         max_length=1,
