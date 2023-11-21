@@ -48,7 +48,7 @@ class Store(models.Model):
     """Модель единичного магазина (физический объект на карте)."""
     name = models.CharField(max_length=255)
     location = models.ForeignKey(
-        'ShopLocation',
+        'StoreLocation',
         related_name='location',
         on_delete=models.CASCADE
     )
@@ -56,7 +56,8 @@ class Store(models.Model):
     chain_store = models.ForeignKey(
         'ChainStore',
         related_name='chain_store',
-        on_delete=models.SET_NULL
+        on_delete=models.SET_NULL,
+        null=True
     )
 
 
@@ -64,15 +65,17 @@ class ProductsInStore(models.Model):
     """Модель для связи таблиц Product и Store."""
     product = models.ForeignKey(
         Product,
-        related_name='product'
+        on_delete=models.CASCADE
     )
     store = models.ForeignKey(
         Store,
-        related_name='store'
+        on_delete=models.CASCADE
     )
     discount = models.ForeignKey(
         'Discount',
-        related_name='discount'
+        related_name='discount',
+        on_delete=models.SET_NULL,
+        null=True
     )
     # url = models.URLField()
 
