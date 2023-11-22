@@ -166,7 +166,7 @@ class StoreLocation(models.Model):
     region = models.CharField('Регион', max_length=100)
     city = models.CharField('Город', max_length=100)
     street = models.CharField('Улица', max_length=255)
-    building = models.PositiveSmallIntegerField('Номер дома')
+    building = models.CharField('Номер дома', max_length=10)
 
     class Meta:
         verbose_name = 'Локация'
