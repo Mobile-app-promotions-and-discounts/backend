@@ -3,8 +3,8 @@ from django.db import models
 
 class Product(models.Model):
     """Модель продукта/товара."""
-    name = models.CharField(max_length=255)
-    description = models.TextField()
+    name = models.CharField('Название', max_length=255)
+    description = models.TextField('Описание')
     category = models.ForeignKey(
         'Category',
         related_name='category',
@@ -37,7 +37,15 @@ class Product(models.Model):
 
 class Category(models.Model):
     """Модель категории, к которой относится товар."""
-    name = models.CharField(max_length=255)
+    name = models.CharField('Название', max_length=255)
+
+    class Meta:
+        ordering = ("name",)
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ('name',)
@@ -51,9 +59,11 @@ class Category(models.Model):
 class ProductImage(models.Model):
     """Модель фотографий товара."""
     main_image = models.ImageField(
+        'Главное изображение',
         upload_to='product_images',
     )
     additional_photo = models.ImageField(
+        'Дополнительное изображение',
         upload_to='product_images',
     )
 
@@ -64,7 +74,7 @@ class ProductImage(models.Model):
 
 class Store(models.Model):
     """Модель единичного магазина (физический объект на карте)."""
-    name = models.CharField(max_length=255)
+    name = models.CharField('Название', max_length=255)
     location = models.ForeignKey(
         'StoreLocation',
         related_name='location',
@@ -136,6 +146,14 @@ class Discount(models.Model):
     discount_card = models.BooleanField(default=False)
 
     class Meta:
+        ordering = ("discount_rate",)
+        verbose_name = 'Скидка'
+        verbose_name_plural = 'Скидки'
+
+    def __str__(self):
+        return f'Скидка в размере {self.discount_rate} {self.discount_unit}'
+
+    class Meta:
         ordering = ('discount_rate',)
         verbose_name = 'Скидка'
         verbose_name_plural = 'Скидки'
@@ -158,6 +176,10 @@ class StoreLocation(models.Model):
     def __str__(self):
         return f'{self.city}, {self.street}, {self.building}'
 
+    class Meta:
+        verbose_name = 'Локация'
+        verbose_name_plural = 'Локации'
+
 
 class ChainStore(models.Model):
     """Модель для сети магазинов."""
@@ -165,6 +187,9 @@ class ChainStore(models.Model):
 
     class Meta:
         ordering = ('name',)
+
+    class Meta:
+        ordering = ("name",)
         verbose_name = 'Сеть магазинов'
         verbose_name_plural = 'Сети магазинов'
 
