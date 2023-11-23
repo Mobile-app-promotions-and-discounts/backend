@@ -17,7 +17,7 @@ class Product(models.Model):
         'ProductImage',
         related_name='image',
         on_delete=models.CASCADE,
-        blank = True, null = True
+        blank=True, null=True,
         verbose_name='Изображение товара'
     )
     store = models.ManyToManyField(
@@ -48,9 +48,6 @@ class Category(models.Model):
         ordering = ("name",)
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-
-    def __str__(self):
-        return self.name
 
     def __str__(self):
         return self.name
@@ -88,8 +85,7 @@ class Store(models.Model):
     chain_store = models.ForeignKey(
         'ChainStore',
         related_name='chain_store',
-        on_delete=models.CASCADE
-   #   on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
         verbose_name='Сеть магазинов'
     )
@@ -98,7 +94,7 @@ class Store(models.Model):
         ordering = ("name",)
         verbose_name = 'Магазин'
         verbose_name_plural = 'Магазины'
-        
+
     def __str__(self):
         return f'{self.name} по адресу {self.location}'
 

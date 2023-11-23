@@ -17,7 +17,7 @@ class ProductAdmin(admin.ModelAdmin):
         StoreInline,
     ]
     exclude = ['store']
-    list_display = ('name', 'category', 'price',)
+ #   list_display = ('name', 'category', 'price',)
     list_filter = ('category', )
     search_fields = ('name', 'id')
 
