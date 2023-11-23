@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import (Product, Category, Store, ProductsInStore, Discount, 
-                    StoreLocation, ChainStore)
+from .models import (Category, ChainStore, Discount, Product, ProductsInStore,
+                     Store, StoreLocation)
 
 admin.site.register(Product)
 admin.site.register(Category)
