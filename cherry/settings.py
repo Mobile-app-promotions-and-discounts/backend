@@ -1,16 +1,18 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-SECRET_KEY = 'django-insecure-ybb0h---jpk(on38yb3!lj01kl(-=tmuw%q*1kty#z(=sa@rrh'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST')]
 
 AUTH_USER_MODEL = 'users.User'
 
