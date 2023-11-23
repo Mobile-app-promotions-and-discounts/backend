@@ -1,4 +1,6 @@
 from django.contrib import admin
+from .models import Category
+
 
 from .models import Category, ChainStore, Discount, Product, ProductImage, Store, StoreLocation
 
