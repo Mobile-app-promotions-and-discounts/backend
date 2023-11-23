@@ -1,7 +1,13 @@
 name: tests
 
 on:
-  push
+  push:
+    branches: 
+      - 'develop'
+      - 'main'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   tests:
