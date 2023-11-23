@@ -40,14 +40,6 @@ class Category(models.Model):
     name = models.CharField('Название', max_length=255)
 
     class Meta:
-        ordering = ("name",)
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
         ordering = ('name',)
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
@@ -123,6 +115,9 @@ class ProductsInStore(models.Model):
         verbose_name = 'Скидка на товар в магазине'
         verbose_name_plural = 'Скидки на товар в магазине'
 
+    def __str__(self):
+        return f'{self.product.name} в {self.stores}'
+
 
 class Discount(models.Model):
     """Модель акции/скидки."""
@@ -134,24 +129,16 @@ class Discount(models.Model):
         (PERCENTAGE, 'Скидка в процентах'),
     ]
 
-    discount_rate = models.IntegerField()
+    discount_rate = models.IntegerField('Размер скидки')
     discount_unit = models.CharField(
         'Единица измерения',
         max_length=11,
         choices=UNIT_CHOICES,
         default=PERCENTAGE,
     )
-    discount_start = models.DateTimeField(auto_now=True)
-    discount_end = models.DateTimeField(auto_now=True)
-    discount_card = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ("discount_rate",)
-        verbose_name = 'Скидка'
-        verbose_name_plural = 'Скидки'
-
-    def __str__(self):
-        return f'Скидка в размере {self.discount_rate} {self.discount_unit}'
+    discount_start = models.CharField('Начало акции', max_length=50)
+    discount_end = models.CharField('Окончание акции', max_length=50)
+    discount_card = models.BooleanField('Скидка по карте', default=False)
 
     class Meta:
         ordering = ('discount_rate',)
@@ -164,10 +151,10 @@ class Discount(models.Model):
 
 class StoreLocation(models.Model):
     """Модель для адреса конкретного магазина."""
-    region = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    street = models.CharField(max_length=255)
-    building = models.CharField(max_length=20)
+    region = models.CharField('Регион', max_length=100)
+    city = models.CharField('Город', max_length=100)
+    street = models.CharField('Улица', max_length=255)
+    building = models.CharField('Номер здания', max_length=20)
 
     class Meta:
         verbose_name = 'Адрес магазина'
@@ -176,20 +163,13 @@ class StoreLocation(models.Model):
     def __str__(self):
         return f'{self.city}, {self.street}, {self.building}'
 
-    class Meta:
-        verbose_name = 'Локация'
-        verbose_name_plural = 'Локации'
-
 
 class ChainStore(models.Model):
     """Модель для сети магазинов."""
-    name = models.CharField(max_length=100)
+    name = models.CharField('Название сети магазинов', max_length=100)
 
     class Meta:
         ordering = ('name',)
-
-    class Meta:
-        ordering = ("name",)
         verbose_name = 'Сеть магазинов'
         verbose_name_plural = 'Сети магазинов'
 
