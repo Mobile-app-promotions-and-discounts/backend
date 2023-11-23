@@ -12,6 +12,6 @@ router.register('stores', views.StoreViewSet)
 router.register('chains', views.ChainStoreViewSet)
 
 urlpatterns = [
-    path('',include(router.urls)),
+    path('', include(router.urls)),
 
 ]

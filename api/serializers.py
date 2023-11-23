@@ -10,20 +10,24 @@ class DiscountSerializer(serializers.ModelSerializer):
         model = Discount
         fields = '__all__'
 
+
 class StoreLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = StoreLocation
-        fields = '__all__'
+        fields = ('id', 'region', 'city', 'street', 'building', 'postal_index')
+
 
 class ChainStoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChainStore
-        fields = '__all__'
+        fields = ('id', 'name')
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
+
 
 class StoreSerializer(serializers.ModelSerializer):
     location = StoreLocationSerializer()
@@ -32,22 +36,28 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = ('id', 'location', 'chain_store', 'name')
 
+
 class ProductsInStoreSerializer(serializers.ModelSerializer):
     """Сериализатор для получения всех магазинов для конкретного товара."""
     id = serializers.ReadOnlyField()
-    discount = DiscountSerializer(read_only=True)
-    stores = StoreSerializer(read_only=True)
+    discount = DiscountSerializer()
+    stores = StoreSerializer()
+    price = serializers.ReadOnlyField()
 
     class Meta:
         model = ProductsInStore
         fields = ('id', 'price', 'discount', 'stores')
 
+
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для получения товара."""
     category = CategorySerializer()
-    store = ProductsInStoreSerializer(many=True, source='product')
+    store = ProductsInStoreSerializer(source='product')
 
     class Meta:
         model = Product
         fields = ('id', 'name', 'category', 'description', 'image', 'rating', 'store')
 
+    def get_store(self, obj):
+        store = ProductsInStore.objects.filter(store=obj)
+        return ProductsInStoreSerializer(store, many=True).data
