@@ -1,10 +1,11 @@
 from django.contrib import admin
 
-from .models import Category, ChainStore, Discount, Product, ProductImage, Store, StoreLocation
+from .models import (Category, ChainStore, Discount, 
+                     Product, ProductImage, Store, StoreLocation)
 
 
 class StoreInline(admin.TabularInline):
-    model = Product.store.through
+    model = Product.stores.through
 
 
 class ImageInline(admin.TabularInline):
@@ -16,7 +17,7 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [
         StoreInline,
     ]
-    exclude = ['store']
+    exclude = ['stores']
     list_display = ('name', 'category',)
     list_filter = ('category', )
     search_fields = ('name', 'id')
