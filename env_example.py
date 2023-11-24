@@ -1,2 +1,0 @@
-SECRET_KEY = str
-ALLOWED_HOST = str
