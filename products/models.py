@@ -19,10 +19,10 @@ class Product(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Изображение товара'
     )
-    store = models.ManyToManyField(
+    stores = models.ManyToManyField(
         'Store',
         through='ProductsInStore',
-        related_name='store',
+        related_name='stores',
         verbose_name='Магазин'
     )
 
@@ -97,9 +97,9 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Товар'
     )
-    stores = models.ForeignKey(
+    store = models.ForeignKey(
         Store,
-        related_name='stores',
+        related_name='store',
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
@@ -116,7 +116,7 @@ class ProductsInStore(models.Model):
         verbose_name_plural = 'Скидки на товар в магазине'
 
     def __str__(self):
-        return f'{self.product.name} в {self.stores}'
+        return f'{self.product.name} в {self.store}'
 
 
 class Discount(models.Model):

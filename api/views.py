@@ -1,10 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 
-from api.serializers import (
-    CategorySerializer, ChainStoreSerializer,
-    ProductSerializer, StoreSerializer
-)
+from api.serializers import (CategorySerializer, ChainStoreSerializer,
+                             ProductSerializer, StoreSerializer)
 from products.models import Category, ChainStore, Product, Store
 
 
