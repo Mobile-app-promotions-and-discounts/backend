@@ -1,9 +1,7 @@
 from rest_framework import serializers
 
-from products.models import (
-    Category, ChainStore, Discount, Product,
-    ProductsInStore, Store, StoreLocation
-)
+from products.models import (Category, ChainStore, Discount, Product,
+                             ProductsInStore, Store, StoreLocation)
 
 
 class DiscountSerializer(serializers.ModelSerializer):
@@ -45,24 +43,19 @@ class StoreSerializer(serializers.ModelSerializer):
 
 class ProductsInStoreSerializer(serializers.ModelSerializer):
     """Сериализатор для получения всех магазинов для конкретного товара."""
-    discount = DiscountSerializer()
-    stores = StoreSerializer()
-    price = serializers.ReadOnlyField()
+    discount = DiscountSerializer(read_only=True)
+    store = StoreSerializer(read_only=True)
 
     class Meta:
         model = ProductsInStore
-        fields = ('id', 'discount', 'stores', 'price')
+        fields = ('id', 'discount', 'store', 'price')
 
 
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для получения товара."""
     category = CategorySerializer()
-    store = ProductsInStoreSerializer(source='product')
+    stores = ProductsInStoreSerializer(source='product', many=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'category', 'description', 'image', 'store')
-
-    def get_store(self, obj):
-        store = ProductsInStore.objects.filter(store=obj)
-        return ProductsInStoreSerializer(store, many=True).data
+        fields = ('id', 'name', 'category', 'description', 'image', 'stores')
