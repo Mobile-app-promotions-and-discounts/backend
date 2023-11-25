@@ -79,6 +79,10 @@ class Store(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Сеть магазинов'
     )
+    image = models.ImageField(
+        'Изображение магазина',
+        upload_to='store_images',
+    )
 
     class Meta:
         ordering = ('name',)
