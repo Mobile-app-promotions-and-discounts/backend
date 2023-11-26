@@ -8,7 +8,7 @@ class User(AbstractUser):
         ('s', 'shopper'),
     ]
     
-    email = models.EmailField(
+    username = models.EmailField(
         unique=True,
         verbose_name='email',
     )
