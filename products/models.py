@@ -57,6 +57,7 @@ class ProductImage(models.Model):
     additional_photo = models.ImageField(
         'Дополнительное изображение',
         upload_to='product_images',
+        blank=True, null=True
     )
 
     class Meta:
