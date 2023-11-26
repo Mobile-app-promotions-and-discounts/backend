@@ -1,14 +1,25 @@
-# backend
-backend для мобильного приложения управления скидками "Черри"
+# Описание проекта
+API для мобильного приложения управления скидками "Черри".
 
+### Технологии, которые использовались при разработке проекта
+- [Django REST Framework](https://www.django-rest-framework.org/)
+- [Python](https://www.python.org/)
+- [Django Framework](https://www.djangoproject.com/)
 
-Зависимости:
+### Как запустить приложение локально:
+- Переименуйте файл .`env.example`(backend/cherry) в `.env`
+- Добавьте свои данные для переменных в secrets:
+```
+SECRET_KEY
+```
+- Примените зависимости командой `pip install -r requirements.txt`
+- Создайте миграции `python manage.py makemigrations`
+- Примените миграции `python manage.py migrate`
+- Запустите сервер разработки `python manage.py runserver`
 
-asgiref==3.7.2
-Django==4.2.7
-django-filter==23.3
-djangorestframework==3.14.0
-pytz==2023.3.post1
-sqlparse==0.4.4
-typing_extensions==4.8.0
-
+### Над проектом работали:
+* Роман Буцких https://github.com/BnamoRS
+* Валерия Малышева https://github.com/valerycode
+* Савелий Худяк https://github.com/rakikz
+* Арина Сухова https://github.com/sukhovarina
+* Наталья Арлазарова https://github.com/sic15
