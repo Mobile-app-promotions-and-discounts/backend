@@ -7,10 +7,10 @@ services:
     volumes:
       - var/lib/postgres/data
     env_file:
-      - ./.env
+      - ../.env
 
   web:
-    build: .
+    build: ..
     restart: always
     volumes:
       - static_value:/cherry_app/static/
@@ -18,7 +18,7 @@ services:
     depends_on:
       - db
     env_file:
-      - ./.env
+      - ../.env
 
   nginx:
     image: nginx:1.25.3-alpine
