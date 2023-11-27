@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 
 class Product(models.Model):
@@ -175,3 +176,17 @@ class ChainStore(models.Model):
 
     def __str__(self):
         return f'Сеть {self.name}'
+
+
+class Favorites(models.Model):
+    "Модель для избранных товаров"
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('product',)
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+
+    def __str__(self):
+        return f'{self.user.username}`s favorite product {self.product.name}'
