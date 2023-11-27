@@ -106,7 +106,7 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
-    price = models.FloatField()
+    price = models.FloatField('Цена')
     discount = models.ForeignKey(
         'Discount',
         related_name='discount',
@@ -139,8 +139,8 @@ class Discount(models.Model):
         choices=UNIT_CHOICES,
         default=PERCENTAGE,
     )
-    discount_start = models.CharField('Начало акции', max_length=50)
-    discount_end = models.CharField('Окончание акции', max_length=50)
+    discount_start = models.DateField('Начало акции')
+    discount_end = models.DateField('Окончание акции')
     discount_card = models.BooleanField('Скидка по карте', default=False)
 
     class Meta:
