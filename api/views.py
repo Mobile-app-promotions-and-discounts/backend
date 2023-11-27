@@ -24,7 +24,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 class StoreShortViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
-    serializer_class = StoreShortSerializer
+    serializer_class = StoreSerializer
     pagination_class = PageNumberPagination
 
 

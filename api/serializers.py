@@ -5,7 +5,7 @@ from products.models import (Category, ChainStore, Discount, Product,
 
 
 class DiscountSerializer(serializers.ModelSerializer):
-    """Вспомогательный сериализатор для получения информации о скидке."""
+    """Cериализатор для получения информации о скидке."""
 
     class Meta:
         model = Discount
@@ -13,7 +13,7 @@ class DiscountSerializer(serializers.ModelSerializer):
 
 
 class StoreLocationSerializer(serializers.ModelSerializer):
-    """Вспомогательный сериализатор для получения адреса магазина."""
+    """Cериализатор для получения адреса магазина."""
 
     class Meta:
         model = StoreLocation
@@ -28,15 +28,15 @@ class ChainStoreSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class CategoryShortSerializer(serializers.ModelSerializer):
-    """Вспомогательный сериализатор для получения краткой информации о категории."""
+class CategorySerializer(serializers.ModelSerializer):
+    """Cериализатор для получения краткой информации о категории."""
 
     class Meta:
         model = Category
         fields = ('id', 'name')
 
 
-class StoreShortSerializer(serializers.ModelSerializer):
+class StoreSerializer(serializers.ModelSerializer):
     """Cериализатор для получения краткой информации о магазине."""
     location = StoreLocationSerializer()
     chain_store = ChainStoreSerializer()
@@ -47,9 +47,9 @@ class StoreShortSerializer(serializers.ModelSerializer):
 
 
 class ProductsInStoreSerializer(serializers.ModelSerializer):
-    """Вспомогательный сериализатор для получения цены и скидки на конкретный товар."""
+    """Cериализатор для получения цены и скидки на конкретный товар."""
     discount = DiscountSerializer(read_only=True)
-    store = StoreShortSerializer(read_only=True)
+    store = StoreSerializer(read_only=True)
 
     class Meta:
         model = ProductsInStore
@@ -58,7 +58,7 @@ class ProductsInStoreSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для получения товара."""
-    category = CategoryShortSerializer()
+    category = CategorySerializer()
     stores = ProductsInStoreSerializer(source='product', many=True)
 
     class Meta:
@@ -67,7 +67,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductCurrentStoreSerializer(serializers.ModelSerializer):
-    """Вспомогательный сериализатор для получения цены и скидки на конкретный товар."""
+    """Cериализатор для получения цены и скидки на конкретный товар."""
     discount = DiscountSerializer()
     product = serializers.StringRelatedField()
 
@@ -86,7 +86,7 @@ class StoreLongSerializer(serializers.ModelSerializer):
 
 
 class ProductInCategorySerializer(serializers.ModelSerializer):
-    """Вспомогательный сериализатор для получения товаров по категориям."""
+    """Cериализатор для получения товаров по категориям."""
     class Meta:
         model = Product
         fields = ("id", "name", "description", "image")
