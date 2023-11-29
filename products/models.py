@@ -6,7 +6,7 @@ class Product(models.Model):
     """Модель продукта/товара."""
     name = models.CharField('Название', max_length=255)
     description = models.TextField('Описание')
-    barcode = models.CharField('Штрихкод', max_length=13)
+    # barcode = models.CharField('Штрихкод', max_length=13)
     category = models.ForeignKey(
         'Category',
         related_name='category',
@@ -184,7 +184,7 @@ class ChainStore(models.Model):
 class Favorites(models.Model):
     "Модель для избранных товаров"
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
 
     class Meta:
         ordering = ('product',)
