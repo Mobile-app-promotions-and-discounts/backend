@@ -1,7 +1,12 @@
+from django.contrib.auth import get_user_model
+
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
 from products.models import (Category, ChainStore, Discount, Product,
                              ProductsInStore, Store, StoreLocation)
+
+User = get_user_model()
 
 
 class DiscountSerializer(serializers.ModelSerializer):
@@ -59,3 +64,11 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'name', 'category', 'description', 'image', 'stores')
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+    """Сериализатор для регистрации пользователя."""
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password')
