@@ -10,6 +10,7 @@ class User(AbstractUser):
         ('s', 'shopper'),
     ]
     username = models.EmailField(
+        unique=True,
         verbose_name='email',
     )
     phone = models.CharField(
@@ -26,6 +27,8 @@ class User(AbstractUser):
     )
     foto = models.ImageField(
         upload_to='users/',
+        blank=True,
+        null=True,
         verbose_name='Фото пользователя',
     )
 

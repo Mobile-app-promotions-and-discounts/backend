@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST')]
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(', ')
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -110,7 +110,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR.joinpath('static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR.joinpath('media')
