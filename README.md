@@ -11,9 +11,10 @@ API для мобильного приложения управления ски
 - Добавьте свои данные для переменных в secrets:
 ```
 SECRET_KEY='string'
+DEBUG=False
 ALLOWED_HOSTS=127.0.0.1, 0.0.0.0, web, localhost
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME=db_name
+POSTGRES_DB=db_name
 POSTGRES_USER=db_user
 POSTGRES_PASSWORD=db_password
 DB_HOST=db_host
