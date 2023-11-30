@@ -1,15 +1,18 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from users.models import User
 
 
 class Product(models.Model):
     """Модель продукта/товара."""
     name = models.CharField('Название', max_length=255)
     description = models.TextField('Описание')
+    barcode = models.CharField('Штрихкод', max_length=13)
     category = models.ForeignKey(
         'Category',
+        on_delete=models.CASCADE,
         related_name='category',
-        on_delete=models.SET_DEFAULT,
-        default='Без категории',
         verbose_name='Категория',
         help_text='Выберите категорию товара'
     )
@@ -53,10 +56,14 @@ class ProductImage(models.Model):
     main_image = models.ImageField(
         'Главное изображение',
         upload_to='product_images',
+        blank=True,
+        null=True
     )
     additional_photo = models.ImageField(
         'Дополнительное изображение',
         upload_to='product_images',
+        blank=True,
+        null=True
     )
 
     class Meta:
@@ -103,7 +110,7 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
-    price = models.FloatField()
+    price = models.FloatField('Цена')
     discount = models.ForeignKey(
         'Discount',
         related_name='discount',
@@ -136,8 +143,8 @@ class Discount(models.Model):
         choices=UNIT_CHOICES,
         default=PERCENTAGE,
     )
-    discount_start = models.CharField('Начало акции', max_length=50)
-    discount_end = models.CharField('Окончание акции', max_length=50)
+    discount_start = models.DateField('Начало акции')
+    discount_end = models.DateField('Окончание акции')
     discount_card = models.BooleanField('Скидка по карте', default=False)
 
     class Meta:
@@ -175,3 +182,37 @@ class ChainStore(models.Model):
 
     def __str__(self):
         return f'Сеть {self.name}'
+
+
+class Review(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Ссылка на товар'
+    )
+    customer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Покупатель'
+    )
+    text = models.TextField(
+        help_text='Поделитесь своим мнением о товаре',
+        verbose_name='Текст отзыва'
+    )
+    review = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name='Оценка товара'
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата добавления отзыва'
+    )
+
+    class Meta:
+        verbose_name = 'Отзыв на товар'
+        verbose_name_plural = 'Отзывы на товары'
+
+    def __str__(self):
+        return self.text[:30]

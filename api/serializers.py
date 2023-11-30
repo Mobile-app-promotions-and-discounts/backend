@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from products.models import (Category, ChainStore, Discount, Product,
-                             ProductsInStore, Store, StoreLocation)
+                             ProductsInStore, Review, Store, StoreLocation)
 
 
 class DiscountSerializer(serializers.ModelSerializer):
@@ -55,7 +55,26 @@ class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для получения товара."""
     category = CategorySerializer()
     stores = ProductsInStoreSerializer(source='product', many=True)
+    rating = serializers.FloatField()
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'category', 'description', 'image', 'stores')
+        fields = ('id', 'name', 'rating', 'category', 'description', 'image', 'stores')
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    customer = serializers.SlugRelatedField(
+        read_only=True, slug_field='username'
+    )
+
+    class Meta:
+        model = Review
+        fields = ('customer', 'text', 'review', 'pub_date')
+
+    def validate_review(self, value):
+        """Валидация для оценки рейтинга."""
+        if not (0 < value <= 5):
+            raise serializers.ValidationError(
+                'Рейтинг должен быть целым числом от 0 до 5.'
+            )
+        return value
