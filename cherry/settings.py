@@ -12,7 +12,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = os.environ.get('DEBUG', False) == 'True'
 
-
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(', ')
 
 AUTH_USER_MODEL = 'users.User'
@@ -93,6 +92,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'SERIALIZERS': {
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
+    },
 }
 
 DJOSER = {
