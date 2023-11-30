@@ -43,11 +43,6 @@ class DiscountAdmin(admin.ModelAdmin):
     list_filter = ('discount_rate',)
 
 
-@admin.register(ProductImage)
-class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ('image', )
-
-
 @admin.register(StoreLocation)
 class StoreLocationAdmin(admin.ModelAdmin):
     list_display = ('region', 'city', 'street', 'building',)
@@ -63,6 +58,6 @@ class ChainStoreAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'product', 'text', 'review', 'pub_date')
+    list_display = ('customer', 'product', 'text', 'score', 'pub_date')
     list_filter = ('product',)
     search_fields = ('product', 'pub_date')

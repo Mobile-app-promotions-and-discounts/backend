@@ -11,7 +11,7 @@ from products.models import Category, ChainStore, Product, Review, Store
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.annotate(rating=Avg('reviews__review'))
+    queryset = Product.objects.annotate(rating=Avg('reviews__score'))
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
 

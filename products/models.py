@@ -83,7 +83,8 @@ class Store(models.Model):
     chain_store = models.ForeignKey(
         'ChainStore',
         related_name='chain_store',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_DEFAULT,
+        default=1,
         verbose_name='Сеть магазинов'
     )
 
@@ -201,7 +202,7 @@ class Review(models.Model):
         help_text='Поделитесь своим мнением о товаре',
         verbose_name='Текст отзыва'
     )
-    review = models.IntegerField(
+    score = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
         verbose_name='Оценка товара'
     )
