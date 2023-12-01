@@ -66,7 +66,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'category', 'description', 'image', 'stores')
 
 
-class ProductCurrentStoreSerializer(serializers.ModelSerializer):
+class ProductStoreSerializer(serializers.ModelSerializer):
     """Cериализатор для получения цены и скидки на конкретный товар."""
     discount = DiscountSerializer()
     product = serializers.StringRelatedField()
@@ -76,9 +76,9 @@ class ProductCurrentStoreSerializer(serializers.ModelSerializer):
         fields = ("id", "price", "product", "discount")
 
 
-class StoreLongSerializer(serializers.ModelSerializer):
+class StoreSerializer(serializers.ModelSerializer):
     """Сериализатор для получения магазинов и товаров в них."""
-    products = ProductCurrentStoreSerializer(source='store', many=True)
+    products = ProductStoreSerializer(source='store', many=True)
 
     class Meta:
         model = Store
@@ -91,12 +91,3 @@ class ProductInCategorySerializer(serializers.ModelSerializer):
         model = Product
         fields = ("id", "name", "description", "image")
 
-
-class CategorySerializer(serializers.ModelSerializer):
-    """Сериализатор для получения товаров по категориям."""
-
-    products = ProductInCategorySerializer(source='category', many=True)
-
-    class Meta:
-        model = Category
-        fields = ('id', 'name', 'products')

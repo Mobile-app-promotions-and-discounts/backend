@@ -4,8 +4,7 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
-                             ProductSerializer, StoreLongSerializer,
-                             StoreShortSerializer)
+                             ProductSerializer, StoreSerializer)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -22,15 +21,15 @@ class CategoryViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
 
-class StoreShortViewSet(viewsets.ModelViewSet):
+class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     pagination_class = PageNumberPagination
 
 
-class StoreLongViewSet(viewsets.ModelViewSet):
+class StoreProductsViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
-    serializer_class = StoreLongSerializer
+    serializer_class = StoreSerializer
     pagination_class = PageNumberPagination
 
 
