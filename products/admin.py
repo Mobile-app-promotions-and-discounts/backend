@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import (Category, ChainStore, Discount, Product, ProductImage,
+from .models import (Category, ChainStore, Discount, Product, ProductImage, Review,
                      Store, StoreLocation)
 
 
@@ -8,8 +8,8 @@ class StoreInline(admin.TabularInline):
     model = Product.stores.through
 
 
-class ImageInline(admin.TabularInline):
-    model = Product
+# class ImageInline(admin.TabularInline):
+#     model = Product
 
 
 @admin.register(Product)
@@ -43,11 +43,6 @@ class DiscountAdmin(admin.ModelAdmin):
     list_filter = ('discount_rate',)
 
 
-@admin.register(ProductImage)
-class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ('main_image', 'additional_photo',)
-
-
 @admin.register(StoreLocation)
 class StoreLocationAdmin(admin.ModelAdmin):
     list_display = ('region', 'city', 'street', 'building',)
@@ -59,3 +54,10 @@ class ChainStoreAdmin(admin.ModelAdmin):
     list_display = ('name',)
     list_filter = ('name',)
     search_fields = ('name',)
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('customer', 'product', 'text', 'score', 'pub_date')
+    list_filter = ('product',)
+    search_fields = ('product', 'pub_date')
