@@ -11,7 +11,8 @@ class Product(models.Model):
     barcode = models.CharField('Штрихкод', max_length=13)
     category = models.ForeignKey(
         'Category',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_DEFAULT,
+        default=1,
         related_name='category',
         verbose_name='Категория',
         help_text='Выберите категорию товара'
