@@ -1,7 +1,11 @@
+from django.contrib.auth import get_user_model
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
 from products.models import (Category, ChainStore, Discount, Product,
                              ProductsInStore, Review, Store, StoreLocation)
+
+User = get_user_model()
 
 
 class DiscountSerializer(serializers.ModelSerializer):
@@ -78,3 +82,11 @@ class ReviewSerializer(serializers.ModelSerializer):
                 'Рейтинг должен быть целым числом от 0 до 5.'
             )
         return value
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+    """Сериализатор для регистрации пользователя."""
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password')

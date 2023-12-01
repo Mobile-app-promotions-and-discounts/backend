@@ -10,8 +10,19 @@ API для мобильного приложения управления ски
 - Переименуйте файл .`env.example`(backend/cherry) в `.env`
 - Добавьте свои данные для переменных в secrets:
 ```
-SECRET_KEY
+SECRET_KEY='string'
+DEBUG=False
+ALLOWED_HOSTS=127.0.0.1, 0.0.0.0, web, localhost
+DB_ENGINE=django.db.backends.postgresql
+POSTGRES_DB=db_name
+POSTGRES_USER=db_user
+POSTGRES_PASSWORD=db_password
+DB_HOST=db_host
+DB_PORT=5432
+HOST=IP_host
 ```
+
+
 - Примените зависимости командой `pip install -r requirements.txt`
 - Создайте миграции `python manage.py makemigrations`
 - Примените миграции `python manage.py migrate`
