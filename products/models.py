@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from users.models import User
 
 from users.models import User
 
@@ -184,6 +185,22 @@ class ChainStore(models.Model):
 
     def __str__(self):
         return f'Сеть {self.name}'
+
+
+class Favorites(models.Model):
+    "Модель для избранных товаров"
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Избранный товар')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites',
+                             verbose_name='Пользователь')
+
+    class Meta:
+        ordering = ('product',)
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+        constraints = [models.UniqueConstraint(fields=['product', 'user'], name='unique favorite product')]
+
+    def __str__(self):
+        return f'{self.user.username}`s favorite product {self.product.name}'
 
 
 class Review(models.Model):

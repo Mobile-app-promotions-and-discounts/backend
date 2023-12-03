@@ -1,7 +1,8 @@
 from django.contrib import admin
 
+from .models import (Category, ChainStore, Discount, Favorites, Product, ProductImage,
 from .models import (Category, ChainStore, Discount, Product, ProductImage, Review,
-                     Store, StoreLocation)
+                     Favorites, Store, StoreLocation)
 
 
 class StoreInline(admin.TabularInline):
@@ -55,6 +56,9 @@ class ChainStoreAdmin(admin.ModelAdmin):
     list_filter = ('name',)
     search_fields = ('name',)
 
+@admin.register(Favorites)
+class FavoritesAdmin(admin.ModelAdmin):
+    list_display = ('product', 'user')
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
