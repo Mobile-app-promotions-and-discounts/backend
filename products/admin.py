@@ -1,20 +1,28 @@
 from django.contrib import admin
 
-from .models import (Category, ChainStore, Discount, Product, ProductImage, Review,
-                     Store, StoreLocation)
+from .models import (Category, ChainStore, Discount, Product, ProductImage,
+                     Review, Store, StoreLocation)
 
 
 class StoreInline(admin.TabularInline):
     model = Product.stores.through
 
 
-# class ImageInline(admin.TabularInline):
-#     model = Product
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    list_display = ('image',)
+
+
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'image')
+    list_filter = ('product',)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [
+        ProductImageInline,
         StoreInline,
     ]
     exclude = ['stores']

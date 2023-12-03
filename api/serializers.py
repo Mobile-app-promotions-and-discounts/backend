@@ -3,7 +3,8 @@ from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
 from products.models import (Category, ChainStore, Discount, Product,
-                             ProductsInStore, Review, Store, StoreLocation, ProductImage)
+                             ProductImage, ProductsInStore, Review, Store,
+                             StoreLocation)
 
 User = get_user_model()
 

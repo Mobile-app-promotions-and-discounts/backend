@@ -2,7 +2,6 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              ProductSerializer, ReviewSerializer,
@@ -41,8 +40,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
 
     def get_product(self):
-        product = get_object_or_404(Product, id=self.kwargs.get('product_id'))
-        return product
+        return get_object_or_404(Product, id=self.kwargs.get('product_id'))
 
     def get_queryset(self):
         return self.get_product().reviews.all()
