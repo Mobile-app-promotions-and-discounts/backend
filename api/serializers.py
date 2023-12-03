@@ -3,7 +3,7 @@ from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
 from products.models import (Category, ChainStore, Discount, Product,
-                             ProductsInStore, Review, Store, StoreLocation)
+                             ProductsInStore, Review, Store, StoreLocation, ProductImage)
 
 User = get_user_model()
 
@@ -11,6 +11,7 @@ User = get_user_model()
 class ImageProductsSerialiser(serializers.ModelSerializer):
 
     class Meta:
+        model = ProductImage
         fields = ('id', 'product', 'image')
 
 
@@ -66,11 +67,14 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     stores = ProductsInStoreSerializer(source='product', many=True)
     rating = serializers.FloatField()
-    
+    images = ImageProductsSerialiser(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'rating', 'category', 'description', 'image', 'stores')
+        fields = ('id', 'name', 'rating', 'category', 'description', 'main_image', 'stores', 'images')
 
 
 class ReviewSerializer(serializers.ModelSerializer):

@@ -68,7 +68,6 @@ class ProductImage(models.Model):
         verbose_name='Фото товара',
     )
     image = models.ImageField(
-        'Дополнительное изображение',
         upload_to='product_images/',
         verbose_name='Дополнительное изображение товара',
     )
