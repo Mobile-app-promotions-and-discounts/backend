@@ -1,4 +1,7 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from users.models import User
+
 from users.models import User
 
 
@@ -9,9 +12,9 @@ class Product(models.Model):
     barcode = models.CharField('Штрихкод', max_length=13)
     category = models.ForeignKey(
         'Category',
-        related_name='category',
         on_delete=models.SET_DEFAULT,
-        default='Без категории',
+        default=1,
+        related_name='category',
         verbose_name='Категория',
         help_text='Выберите категорию товара'
     )
@@ -55,6 +58,8 @@ class ProductImage(models.Model):
     main_image = models.ImageField(
         'Главное изображение',
         upload_to='product_images',
+        blank=True,
+        null=True
     )
     additional_photo = models.ImageField(
         'Дополнительное изображение',
@@ -80,7 +85,8 @@ class Store(models.Model):
     chain_store = models.ForeignKey(
         'ChainStore',
         related_name='chain_store',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_DEFAULT,
+        default=1,
         verbose_name='Сеть магазинов'
     )
 
@@ -195,3 +201,37 @@ class Favorites(models.Model):
 
     def __str__(self):
         return f'{self.user.username}`s favorite product {self.product.name}'
+
+
+class Review(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Ссылка на товар'
+    )
+    customer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Покупатель'
+    )
+    text = models.TextField(
+        help_text='Поделитесь своим мнением о товаре',
+        verbose_name='Текст отзыва'
+    )
+    score = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name='Оценка товара'
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата добавления отзыва'
+    )
+
+    class Meta:
+        verbose_name = 'Отзыв на товар'
+        verbose_name_plural = 'Отзывы на товары'
+
+    def __str__(self):
+        return self.text[:30]
