@@ -8,6 +8,12 @@ from products.models import (Category, ChainStore, Discount, Product,
 User = get_user_model()
 
 
+class ImageProductsSerialiser(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('id', 'product', 'image')
+
+
 class DiscountSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -60,6 +66,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     stores = ProductsInStoreSerializer(source='product', many=True)
     rating = serializers.FloatField()
+    
 
     class Meta:
         model = Product
