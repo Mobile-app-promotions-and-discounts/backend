@@ -1,13 +1,15 @@
 from django.contrib import admin
-from django.urls import include, path
-from django.urls import re_path as url
+from django.urls import include, path, re_path as url
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('api.urls')),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
 ]
 
 schema_view = get_schema_view(
