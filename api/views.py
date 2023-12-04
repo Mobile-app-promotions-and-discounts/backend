@@ -13,14 +13,13 @@ from products.models import Category, ChainStore, Product, Review, Store, Favori
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.annotate(rating=Avg('reviews__score'))
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
         if self.action == "favorites":
             return Product.objects.filter(id__in=Favorites.objects.filter(user=self.request.user).values('product_id'))
-        return Product.objects.all()
+        return Product.objects.annotate(rating=Avg('reviews__score'))
 
     @action(detail=True, methods=['post', 'delete'])
     def favorite(self, request, pk=None):
