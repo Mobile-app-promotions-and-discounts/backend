@@ -8,8 +8,13 @@ class StoreInline(admin.TabularInline):
     model = Product.stores.through
 
 
-# class ImageInline(admin.TabularInline):
-#     model = Product
+class ImageInline(admin.TabularInline):
+    model = Product
+
+
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ('main_image', 'additional_photo',)
 
 
 @admin.register(Product)
