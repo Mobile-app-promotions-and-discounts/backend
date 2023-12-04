@@ -78,6 +78,20 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'rating', 'category', 'description', 'main_image', 'stores', 'images')
 
 
+class CreateProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ('name', 'description', 'barcode', 'category', 'main_image', 'store', 'images')
+
+    def create(self, validated_data):
+        category = validated_data.pop('category')
+        store = validated_data.pop('store')
+        images = validated_data.pop('images')
+
+        return super().create(validated_data)
+
+
 class ReviewSerializer(serializers.ModelSerializer):
     customer = serializers.SlugRelatedField(
         read_only=True, slug_field='username'
