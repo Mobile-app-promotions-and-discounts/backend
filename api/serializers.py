@@ -60,21 +60,20 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     stores = ProductsInStoreSerializer(source='product', many=True)
     is_favorited = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'category', 'description', 'image', 'stores', 'is_favorited')
+        fields = ('id', 'name', 'rating', 'category', 'description', 'image', 'stores', 'is_favorited')
 
     def get_is_favorited(self, obj):
         user_requsting = self.context['request'].user
         if not user_requsting.is_authenticated:
             return False
         return user_requsting.favorites.filter(product=obj).exists()
-    rating = serializers.FloatField()
 
-    class Meta:
-        model = Product
-        fields = ('id', 'name', 'rating', 'category', 'description', 'image', 'stores')
+    def get_rating(self, obj):
+        return 0
 
 
 class ReviewSerializer(serializers.ModelSerializer):
