@@ -9,6 +9,7 @@ User = get_user_model()
 
 
 class DiscountSerializer(serializers.ModelSerializer):
+    """Cериализатор для получения информации о скидке."""
 
     class Meta:
         model = Discount
@@ -16,6 +17,7 @@ class DiscountSerializer(serializers.ModelSerializer):
 
 
 class StoreLocationSerializer(serializers.ModelSerializer):
+    """Cериализатор для получения адреса магазина."""
 
     class Meta:
         model = StoreLocation
@@ -23,6 +25,7 @@ class StoreLocationSerializer(serializers.ModelSerializer):
 
 
 class ChainStoreSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения информации о сети магазинов."""
 
     class Meta:
         model = ChainStore
@@ -30,6 +33,7 @@ class ChainStoreSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Cериализатор для получения краткой информации о категории."""
 
     class Meta:
         model = Category
@@ -37,6 +41,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class StoreSerializer(serializers.ModelSerializer):
+    """Cериализатор для получения краткой информации о магазине."""
     location = StoreLocationSerializer()
     chain_store = ChainStoreSerializer()
 
@@ -46,7 +51,7 @@ class StoreSerializer(serializers.ModelSerializer):
 
 
 class ProductsInStoreSerializer(serializers.ModelSerializer):
-    """Сериализатор для получения всех магазинов для конкретного товара."""
+    """Cериализатор для получения цены и скидки на конкретный товар."""
     discount = DiscountSerializer(read_only=True)
     store = StoreSerializer(read_only=True)
 
@@ -97,3 +102,22 @@ class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password')
+
+
+class ProductStoreSerializer(serializers.ModelSerializer):
+    """Cериализатор для получения цены и скидки на конкретный товар."""
+    discount = DiscountSerializer()
+    product = serializers.StringRelatedField()
+
+    class Meta:
+        model = ProductsInStore
+        fields = ("id", "price", "product", "discount")
+
+
+class StoreSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения магазинов и товаров в них."""
+    products = ProductStoreSerializer(source='store', many=True)
+
+    class Meta:
+        model = Store
+        fields = ('id', 'location', 'chain_store', 'name', 'products')
