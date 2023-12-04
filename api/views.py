@@ -12,7 +12,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category',)
+    filterset_fields = ('category_id',)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):

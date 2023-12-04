@@ -84,10 +84,3 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = ('id', 'location', 'chain_store', 'name', 'products')
 
-
-class ProductInCategorySerializer(serializers.ModelSerializer):
-    """Cериализатор для получения товаров по категориям."""
-    class Meta:
-        model = Product
-        fields = ("id", "name", "description", "image")
-
