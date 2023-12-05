@@ -5,10 +5,11 @@ from django.db import models
 class User(AbstractUser):
     REQUIRED_FIELDS = ('phone', 'role', 'foto', 'first_name', 'last_name')
     EMAIL_FIELD = 'username'
-    ROLE = [
-        ('m', 'marketer'),
-        ('s', 'shopper'),
-    ]
+
+    class RoleType(models.TextChoices):
+        CUSTOMER = 'CUSTOMER', 'Покупатель'
+        SELLER = 'SELLER', 'Продавец'
+
     username = models.EmailField(
         unique=True,
         verbose_name='email',
@@ -20,9 +21,9 @@ class User(AbstractUser):
         verbose_name='Телефон'
     )
     role = models.CharField(
-        max_length=1,
-        choices=ROLE,
-        default='s',
+        max_length=8,
+        choices=RoleType.choices,
+        default=RoleType.CUSTOMER,
         verbose_name='Роль пользователя приложения',
     )
     foto = models.ImageField(

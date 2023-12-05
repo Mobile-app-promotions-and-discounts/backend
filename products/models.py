@@ -9,7 +9,7 @@ class Product(models.Model):
     """Модель продукта/товара."""
     name = models.CharField('Название', max_length=255)
     description = models.TextField('Описание')
-    barcode = models.CharField('Штрихкод', max_length=13)
+    barcode = models.CharField('Штрихкод', max_length=13, blank=True, null=True)
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
@@ -42,7 +42,17 @@ class Product(models.Model):
 
 class Category(models.Model):
     """Модель категории, к которой относится товар."""
-    name = models.CharField('Название', max_length=255)
+    class CategoryType(models.TextChoices):
+        PRODUCTS = 'PRODUCTS', 'Продукты'
+        CLOTHES = 'CLOTHES', 'Одежда и обувь'
+        HOME = 'HOME', 'Для дома и сада'
+        COSMETICS = 'COSMETICS', 'Косметика и гигиена'
+        KIDS = 'KIDS', 'Для детей'
+        ZOO = 'ZOO', 'Зоотовары'
+        AUTO = 'AUTO', 'Авто'
+        HOLIDAYS = 'HOLIDAYS', 'К празднику'
+
+    name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
 
     class Meta:
         ordering = ('name',)
@@ -113,7 +123,7 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
-    price = models.FloatField('Цена')
+    price = models.DecimalField('Цена', decimal_places=2, max_digits=10)
     discount = models.ForeignKey(
         'Discount',
         related_name='discount',
@@ -131,20 +141,16 @@ class ProductsInStore(models.Model):
 
 class Discount(models.Model):
     """Модель акции/скидки."""
-    RUBLES = 'RUB'
-    PERCENTAGE = '%'
-
-    UNIT_CHOICES = [
-        (RUBLES, 'Скидка в рублях'),
-        (PERCENTAGE, 'Скидка в процентах'),
-    ]
+    class UnitType(models.TextChoices):
+        RUBLES = 'RUB', 'Скидка в рублях'
+        PERCENTAGE = '%', 'Скидка в процентах'
 
     discount_rate = models.IntegerField('Размер скидки')
     discount_unit = models.CharField(
         'Единица измерения',
-        max_length=11,
-        choices=UNIT_CHOICES,
-        default=PERCENTAGE,
+        max_length=3,
+        choices=UnitType.choices,
+        default=UnitType.PERCENTAGE,
     )
     discount_start = models.DateField('Начало акции')
     discount_end = models.DateField('Окончание акции')
