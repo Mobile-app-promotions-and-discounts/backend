@@ -63,7 +63,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cherry.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE'),
