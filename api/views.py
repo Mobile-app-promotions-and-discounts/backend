@@ -39,19 +39,19 @@ class ProductViewSet(viewsets.ModelViewSet):
         return super().list(request)
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = None
 
 
-class StoreViewSet(viewsets.ModelViewSet):
+class StoreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     pagination_class = PageNumberPagination
 
 
-class StoreProductsViewSet(viewsets.ModelViewSet):
+class StoreProductsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = StoreProductsSerializer
     pagination_class = PageNumberPagination
 
@@ -62,7 +62,7 @@ class StoreProductsViewSet(viewsets.ModelViewSet):
         return None
 
 
-class ChainStoreViewSet(viewsets.ModelViewSet):
+class ChainStoreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = ChainStore.objects.all()
     serializer_class = ChainStoreSerializer
     pagination_class = None
