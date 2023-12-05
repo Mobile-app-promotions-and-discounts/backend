@@ -4,20 +4,20 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              ProductSerializer, ReviewSerializer,
-                             StoreSerializer)
-from products.models import Category, ChainStore, Product, Review, Store, Favorites
+                             StoreProductsSerializer, StoreSerializer)
+from products.models import (Category, ChainStore, Favorites, Product, Review,
+                             Store)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category__id',)
+    filterset_fields = ('category',)
 
     def get_queryset(self):
         if self.action == "favorites":
@@ -52,11 +52,14 @@ class StoreViewSet(viewsets.ModelViewSet):
 
 
 class StoreProductsViewSet(viewsets.ModelViewSet):
-    queryset = Store.objects.all()
-    serializer_class = StoreSerializer
+    serializer_class = StoreProductsSerializer
     pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('id',)
+
+    def get_queryset(self):
+        store_id = self.kwargs.get("store_id")
+        if store_id is not None:
+            return Store.objects.filter(store=store_id)
+        return None
 
 
 class ChainStoreViewSet(viewsets.ModelViewSet):
@@ -67,13 +70,11 @@ class ChainStoreViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
     queryset = Review.objects.all()
 
     def get_product(self):
-        product = get_object_or_404(Product, id=self.kwargs.get('product_id'))
-        return product
+        return get_object_or_404(Product, id=self.kwargs.get('product_id'))
 
     def get_queryset(self):
         return self.get_product().reviews.all()
