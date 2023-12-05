@@ -1,6 +1,10 @@
+import base64
+
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from products.models import (Category, ChainStore, Discount, Product,
                              ProductImage, ProductsInStore, Review, Store,
@@ -9,11 +13,21 @@ from products.models import (Category, ChainStore, Discount, Product,
 User = get_user_model()
 
 
+class Base64ImageField(serializers.ImageField):
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+        return super().to_internal_value(data)
+
+
 class ImageProductsSerialiser(serializers.ModelSerializer):
+    image = Base64ImageField()
 
     class Meta:
         model = ProductImage
-        fields = ('id', 'product', 'image')
+        fields = ('image',) #'id', 'product', 
 
 
 class DiscountSerializer(serializers.ModelSerializer):
@@ -79,17 +93,32 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CreateProductSerializer(serializers.ModelSerializer):
+    main_image = Base64ImageField()
+    images = ImageProductsSerialiser(many=True)
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'barcode', 'category', 'main_image', 'store', 'images')
+        fields = ('name', 'description', 'barcode', 'category', 'main_image', 'images')
 
     def create(self, validated_data):
         category = validated_data.pop('category')
-        store = validated_data.pop('store')
         images = validated_data.pop('images')
-
-        return super().create(validated_data)
+        if not Category.objects.filter(name=category).exists():
+            raise ValidationError('Задана несуществующая категория')
+        product = Product.objects.create(
+            name=validated_data.get('name'),
+            description=validated_data.get('description'),
+            barcode=validated_data.get('barcode'),
+            category=Category.objects.get(name=category),
+            main_image=validated_data.get('main_image'),
+        )
+        for image in images:
+            # проверить наличие этой картинки для этого товара
+            ProductImage.objects.create(
+                product=product,
+                image=image.get('image'),
+            )
+        return product
 
 
 class ReviewSerializer(serializers.ModelSerializer):

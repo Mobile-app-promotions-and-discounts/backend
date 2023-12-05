@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 
-from api.serializers import (CategorySerializer, ChainStoreSerializer,
+from api.serializers import (CategorySerializer, ChainStoreSerializer, CreateProductSerializer,
                              ProductSerializer, ReviewSerializer,
                              StoreSerializer)
 from products.models import Category, ChainStore, Product, Review, Store
@@ -13,6 +13,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.annotate(rating=Avg('reviews__score'))
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateProductSerializer
+        return ProductSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
