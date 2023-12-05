@@ -28,6 +28,10 @@ HOST=IP_host
 - Примените миграции `python manage.py migrate`
 - Запустите сервер разработки `python manage.py runserver`
 
+### Заполнение БД тестовыми данными:
+
+- Выполните команду `python manage.py filldb`
+
 ### Над проектом работали:
 * Роман Буцких https://github.com/BnamoRS
 * Валерия Малышева https://github.com/valerycode
