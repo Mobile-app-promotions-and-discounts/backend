@@ -63,13 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cherry.wsgi.application'
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE'),
@@ -80,7 +74,7 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT'),
     }
 }
-"""
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
