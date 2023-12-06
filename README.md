@@ -24,6 +24,7 @@ HOST=IP_host
 
 
 - Примените зависимости командой `pip install -r requirements.txt`
+- Разверните docker контейнер с Postgres
 - Создайте миграции `python manage.py makemigrations`
 - Примените миграции `python manage.py migrate`
 - Запустите сервер разработки `python manage.py runserver`
