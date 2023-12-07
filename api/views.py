@@ -3,13 +3,13 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              ProductSerializer, ReviewSerializer,
                              StoreProductsSerializer, StoreSerializer)
-from rest_framework.filters import SearchFilter
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 
