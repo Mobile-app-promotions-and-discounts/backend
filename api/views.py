@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              ProductSerializer, ReviewSerializer,
                              StoreProductsSerializer, StoreSerializer)
+from rest_framework.filters import SearchFilter
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 
@@ -16,8 +17,9 @@ from products.models import (Category, ChainStore, Favorites, Product, Review,
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend, SearchFilter)
     filterset_fields = ('category',)
+    search_fields = ('barcode',)
 
     def get_queryset(self):
         if self.action == "favorites":
