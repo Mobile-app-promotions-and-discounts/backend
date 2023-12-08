@@ -36,7 +36,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         user.favorites.filter(product=product).delete()
         return Response('Товар успешно удален из избранного', status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=['get',])
+    @action(detail=False, methods=['get',], permission_classes=[IsAuthenticated,])
     def favorites(self, request):
         return super().list(request)
 

@@ -60,9 +60,11 @@ class ChainStoreAdmin(admin.ModelAdmin):
     list_filter = ('name',)
     search_fields = ('name',)
 
+
 @admin.register(Favorites)
 class FavoritesAdmin(admin.ModelAdmin):
     list_display = ('product', 'user')
+
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
