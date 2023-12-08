@@ -69,7 +69,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'rating', 'category', 'description', 'image', 'stores', 'is_favorited')
+        fields = ('id', 'name', 'rating', 'category', 'barcode', 'description', 'image', 'stores', 'is_favorited')
 
     def get_is_favorited(self, obj):
         user_requsting = self.context['request'].user

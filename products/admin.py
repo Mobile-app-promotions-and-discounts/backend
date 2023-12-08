@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import (Category, ChainStore, Discount, Product, ProductImage, Review,
-                     Favorites, Store, StoreLocation)
+from .models import (Category, ChainStore, Discount, Favorites, Product,
+                     ProductImage, Review, Store, StoreLocation)
 
 
 class StoreInline(admin.TabularInline):
