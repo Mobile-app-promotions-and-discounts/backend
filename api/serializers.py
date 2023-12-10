@@ -117,7 +117,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 class CustomUserSerializer(UserSerializer):
     """Сериализатор пользователя."""
-    foto = Base64ImageField()
+    foto = Base64ImageField(required=False, allow_null=True)
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
