@@ -10,6 +10,10 @@ class User(AbstractUser):
         CUSTOMER = 'CUSTOMER', 'Покупатель'
         SELLER = 'SELLER', 'Продавец'
 
+    class GenderType(models.TextChoices):
+        MAN = 'MAN', 'Мужчина'
+        WOMAN = 'WOMAN', 'Женщина'
+
     username = models.EmailField(
         unique=True,
         verbose_name='email',
@@ -31,6 +35,17 @@ class User(AbstractUser):
         blank=True,
         null=True,
         verbose_name='Фото пользователя',
+    )
+    gender = models.CharField(
+        max_length=5,
+        choices=GenderType.choices,
+        default=GenderType.WOMAN,
+        verbose_name='Пол',
+    )
+    birthday = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name='День рождения',
     )
 
     class Meta:
