@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+# контрольная строка
+
 
 class User(AbstractUser):
     REQUIRED_FIELDS = ('phone', 'role', 'foto', 'first_name', 'last_name')
