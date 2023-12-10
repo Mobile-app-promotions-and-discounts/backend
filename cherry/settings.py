@@ -95,6 +95,7 @@ REST_FRAMEWORK = {
     ),
     'SERIALIZERS': {
         'user_create': 'api.serializers.CustomUserCreateSerializer',
+        'user': 'api.serializers.CustomUserSerializer',
     },
 }
 

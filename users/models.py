@@ -3,7 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = ('phone', 'role', 'foto', 'first_name', 'last_name')
+    REQUIRED_FIELDS = ('phone', 'role', 'foto', 'first_name', 'last_name', 'gender', 'birthday')
     EMAIL_FIELD = 'username'
 
     class RoleType(models.TextChoices):
