@@ -18,6 +18,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets. PASSPHRASE }}
         script: |
+          cd ~/infra/
           sudo docker compose stop
           sudo docker container rm cherry_app
           cd ~/backend/
@@ -33,7 +34,7 @@ jobs:
           echo test=test >> .env
           sudo docker image rm cherry_app
           sudo docker build -t cherry_app .
-          cd ../
+          cd ~/infra/
           sudo docker compose up -d
           sudo docker exec -it cherry_app bash
           python manage.py makemigrations
