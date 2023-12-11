@@ -42,10 +42,10 @@ jobs:
           echo log=создал имидж >> ../backend/.env
           sudo docker compose up -d
           echo log=запустил контейнеры >> ../backend/.env
-          sudo docker exec -it cherry_app bash
-          python manage.py makemigrations
-          python manage.py migrate
-          python manage.py collectstatic --no-input
-          exit
-
+          sudo docker exec -it cherry_app python manage.py makemigrations
+          echo log=создал миграции >> ../backend/.env
+          sudo docker exec -it cherry_app python manage.py migrate
+          echo log=запустил миграции >> ../backend/.env
+          sudo docker exec -it cherry_app python manage.py collectstatic --no-input
+          echo log=конец скрипта >> ../backend/.env
 
