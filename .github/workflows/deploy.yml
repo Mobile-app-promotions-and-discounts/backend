@@ -30,6 +30,7 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          echo test=test >> .env
           sudo docker image rm cherry_app
           sudo docker build -t cherry_app .
           cd ../
