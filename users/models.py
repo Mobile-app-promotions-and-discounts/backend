@@ -39,7 +39,8 @@ class User(AbstractUser):
     gender = models.CharField(
         max_length=5,
         choices=GenderType.choices,
-        default=GenderType.WOMAN,
+        blank=True,
+        null=True,
         verbose_name='Пол',
     )
     date_of_birth = models.DateField(
