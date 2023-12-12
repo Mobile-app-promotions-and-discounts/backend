@@ -3,7 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = ('phone', 'role', 'foto', 'first_name', 'last_name', 'gender', 'birthday')
+    REQUIRED_FIELDS = ('phone', 'role', 'photo', 'first_name', 'last_name', 'gender', 'date_of_birth')
     EMAIL_FIELD = 'username'
 
     class RoleType(models.TextChoices):
@@ -30,7 +30,7 @@ class User(AbstractUser):
         default=RoleType.CUSTOMER,
         verbose_name='Роль пользователя приложения',
     )
-    foto = models.ImageField(
+    photo = models.ImageField(
         upload_to='users/',
         blank=True,
         null=True,
@@ -42,7 +42,7 @@ class User(AbstractUser):
         default=GenderType.WOMAN,
         verbose_name='Пол',
     )
-    birthday = models.DateField(
+    date_of_birth = models.DateField(
         blank=True,
         null=True,
         verbose_name='День рождения',
