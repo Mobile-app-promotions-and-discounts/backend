@@ -8,9 +8,10 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.serializers import (CategorySerializer, ChainStoreSerializer, CreateProductSerializer,
-                             ProductSerializer, ReviewSerializer,
-                             StoreProductsSerializer, StoreSerializer)
+from api.serializers import (CategorySerializer, ChainStoreSerializer,
+                             CreateProductSerializer, ProductSerializer,
+                             ReviewSerializer, StoreProductsSerializer,
+                             StoreSerializer)
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 
@@ -23,7 +24,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action == "favorites":
-            return Product.objects.filter(id__in=Favorites.objects.filter(user=self.request.user).values('product_id')).annotate(rating=Avg('reviews__score'))
+            return Product.objects.filter(id__in=Favorites.objects.filter(
+                user=self.request.user).values('product_id')).annotate(rating=Avg('reviews__score'))
         return Product.objects.annotate(rating=Avg('reviews__score'))
 
     def get_serializer_class(self):

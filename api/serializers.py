@@ -27,7 +27,7 @@ class ImageProductsSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields = ('image',) #'id', 'product', 
+        fields = ('image',)
 
 
 class DiscountSerializer(serializers.ModelSerializer):
@@ -95,7 +95,18 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'rating', 'category', 'barcode', 'description', 'main_image', 'stores', 'is_favorited', 'images')
+        fields = (
+            'id',
+            'name',
+            'rating',
+            'category',
+            'barcode',
+            'description',
+            'main_image',
+            'stores',
+            'is_favorited',
+            'images'
+        )
 
     def get_is_favorited(self, obj):
         user_requsting = self.context['request'].user
