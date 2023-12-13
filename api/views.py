@@ -23,7 +23,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action == "favorites":
-            return Product.objects.filter(id__in=Favorites.objects.filter(user=self.request.user).values('product_id'))
+            return Product.objects.filter(id__in=Favorites.objects.filter(user=self.request.user).values('product_id')).annotate(rating=Avg('reviews__score'))
         return Product.objects.annotate(rating=Avg('reviews__score'))
 
     def get_serializer_class(self):
@@ -38,7 +38,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             Favorites.objects.get_or_create(user=user, product=product)
             return Response('Товар успешно добавлен в избранное', status.HTTP_201_CREATED)
-        user.favorites.filter(product=product).delete()
+        user.favorites.get(product=product).delete()
         return Response('Товар успешно удален из избранного', status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get',], permission_classes=[IsAuthenticated,])
