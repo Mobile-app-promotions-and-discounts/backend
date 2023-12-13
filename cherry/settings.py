@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'api',
     'users',
     'products',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -92,13 +93,15 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'SERIALIZERS': {
-        'user_create': 'api.serializers.CustomUserCreateSerializer',
-    },
 }
 
 DJOSER = {
     'TOKEN_MODEL': None,
+    'SERIALIZERS': {
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
+        'user': 'api.serializers.CustomUserSerializer',
+        'current_user': 'api.serializers.CustomUserSerializer',
+    },
 }
 
 SIMPLE_JWT = {

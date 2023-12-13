@@ -3,12 +3,17 @@ from django.db import models
 
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = ('phone', 'role', 'foto', 'first_name', 'last_name')
+    REQUIRED_FIELDS = ('phone', 'role', 'photo', 'first_name', 'last_name', 'gender', 'date_of_birth')
     EMAIL_FIELD = 'username'
-    ROLE = [
-        ('m', 'marketer'),
-        ('s', 'shopper'),
-    ]
+
+    class RoleType(models.TextChoices):
+        CUSTOMER = 'CUSTOMER', 'Покупатель'
+        SELLER = 'SELLER', 'Продавец'
+
+    class GenderType(models.TextChoices):
+        MAN = 'MAN', 'Мужчина'
+        WOMAN = 'WOMAN', 'Женщина'
+
     username = models.EmailField(
         unique=True,
         verbose_name='email',
@@ -20,16 +25,28 @@ class User(AbstractUser):
         verbose_name='Телефон'
     )
     role = models.CharField(
-        max_length=1,
-        choices=ROLE,
-        default='s',
+        max_length=8,
+        choices=RoleType.choices,
+        default=RoleType.CUSTOMER,
         verbose_name='Роль пользователя приложения',
     )
-    foto = models.ImageField(
+    photo = models.ImageField(
         upload_to='users/',
         blank=True,
         null=True,
         verbose_name='Фото пользователя',
+    )
+    gender = models.CharField(
+        max_length=5,
+        choices=GenderType.choices,
+        blank=True,
+        null=True,
+        verbose_name='Пол',
+    )
+    date_of_birth = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name='День рождения',
     )
 
     class Meta:

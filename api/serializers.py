@@ -2,7 +2,7 @@ import base64
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
-from djoser.serializers import UserCreateSerializer
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -31,6 +31,7 @@ class ImageProductsSerialiser(serializers.ModelSerializer):
 
 
 class DiscountSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения информации о скидке."""
 
     class Meta:
         model = Discount
@@ -38,6 +39,7 @@ class DiscountSerializer(serializers.ModelSerializer):
 
 
 class StoreLocationSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения адреса магазина."""
 
     class Meta:
         model = StoreLocation
@@ -45,6 +47,7 @@ class StoreLocationSerializer(serializers.ModelSerializer):
 
 
 class ChainStoreSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения информации о сети магазинов."""
 
     class Meta:
         model = ChainStore
@@ -52,6 +55,7 @@ class ChainStoreSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Сериализатор для получения краткой информации о категории."""
 
     class Meta:
         model = Category
@@ -59,6 +63,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class StoreSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения краткой информации о магазине."""
     location = StoreLocationSerializer()
     chain_store = ChainStoreSerializer()
 
@@ -68,7 +73,7 @@ class StoreSerializer(serializers.ModelSerializer):
 
 
 class ProductsInStoreSerializer(serializers.ModelSerializer):
-    """Сериализатор для получения всех магазинов для конкретного товара."""
+    """Сериализатор для получения цены и скидки на конкретный товар."""
     discount = DiscountSerializer(read_only=True)
     store = StoreSerializer(read_only=True)
 
@@ -81,6 +86,7 @@ class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для получения товара."""
     category = CategorySerializer()
     stores = ProductsInStoreSerializer(source='product', many=True)
+    is_favorited = serializers.SerializerMethodField()
     rating = serializers.FloatField()
     images = ImageProductsSerialiser(
         many=True,
@@ -89,7 +95,13 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'rating', 'category', 'description', 'main_image', 'stores', 'images')
+        fields = ('id', 'name', 'rating', 'category', 'barcode', 'description', 'main_image', 'stores', 'is_favorited', 'images')
+
+    def get_is_favorited(self, obj):
+        user_requsting = self.context['request'].user
+        if not user_requsting.is_authenticated:
+            return False
+        return user_requsting.favorites.filter(product=obj).exists()
 
 
 class CreateProductSerializer(serializers.ModelSerializer):
@@ -114,6 +126,8 @@ class CreateProductSerializer(serializers.ModelSerializer):
         )
         for image in images:
             # проверить наличие этой картинки для этого товара
+            if Product.objects.filter(product, image=image.get('image')).exists():
+                continue
             ProductImage.objects.create(
                 product=product,
                 image=image.get('image'),
@@ -145,3 +159,27 @@ class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password')
+
+
+class CustomUserSerializer(UserSerializer):
+    """Сериализатор пользователя."""
+    photo = Base64ImageField(required=False, allow_null=True)
+
+
+class ProductDetailSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения цены и скидки на конкретный товар."""
+    discount = DiscountSerializer()
+    product = serializers.StringRelatedField()
+
+    class Meta:
+        model = ProductsInStore
+        fields = ("id", "price", "product", "discount")
+
+
+class StoreProductsSerializer(serializers.ModelSerializer):
+    """Сериализатор для получения магазинов и товаров в них."""
+    products = ProductDetailSerializer(source='store', many=True)
+
+    class Meta:
+        model = Store
+        fields = ('id', 'chain_store', 'name', 'location', 'products')
