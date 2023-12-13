@@ -29,6 +29,8 @@ class Product(models.Model):
     )
     main_image = models.ImageField(
         upload_to='product_images/',
+        blank=True,
+        null=True,
         verbose_name='Главное изображение продукта',
     )
     stores = models.ManyToManyField(
@@ -80,13 +82,13 @@ class ProductImage(models.Model):
     )
     image = models.ImageField(
         upload_to='product_images/',
+        unique=True,
         verbose_name='Дополнительное изображение товара',
     )
 
     class Meta:
         verbose_name = 'Изображение товар'
         verbose_name_plural = 'Изображения товара'
-        # Добавить уникальность сочетания продукта и фото
 
 
 class Store(models.Model):
