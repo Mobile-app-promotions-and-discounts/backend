@@ -8,18 +8,21 @@ class StoreInline(admin.TabularInline):
     model = Product.stores.through
 
 
-class ImageInline(admin.TabularInline):
-    model = Product
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    list_display = ('image',)
 
 
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ('main_image', 'additional_photo',)
+    list_display = ('id', 'product', 'image')
+    list_filter = ('product',)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [
+        ProductImageInline,
         StoreInline,
     ]
     exclude = ['stores']

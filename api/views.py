@@ -9,14 +9,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
-                             ProductSerializer, ReviewSerializer,
-                             StoreProductsSerializer, StoreSerializer)
+                             CreateProductSerializer, ProductSerializer,
+                             ReviewSerializer, StoreProductsSerializer,
+                             StoreSerializer)
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend, SearchFilter)
     filterset_fields = ('category',)
@@ -24,8 +24,14 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.action == "favorites":
-            return Product.objects.filter(id__in=Favorites.objects.filter(user=self.request.user).values('product_id'))
+            return Product.objects.filter(id__in=Favorites.objects.filter(
+                user=self.request.user).values('product_id')).annotate(rating=Avg('reviews__score'))
         return Product.objects.annotate(rating=Avg('reviews__score'))
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateProductSerializer
+        return ProductSerializer
 
     @action(detail=True, methods=['post', 'delete'])
     def favorite(self, request, pk=None):
@@ -34,7 +40,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             Favorites.objects.get_or_create(user=user, product=product)
             return Response('Товар успешно добавлен в избранное', status.HTTP_201_CREATED)
-        user.favorites.filter(product=product).delete()
+        user.favorites.get(product=product).delete()
         return Response('Товар успешно удален из избранного', status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get',], permission_classes=[IsAuthenticated,])

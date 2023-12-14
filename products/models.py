@@ -8,8 +8,17 @@ User = get_user_model()
 class Product(models.Model):
     """Модель продукта/товара."""
     name = models.CharField('Название', max_length=255)
-    description = models.TextField('Описание')
-    barcode = models.CharField('Штрихкод', max_length=13, blank=True, null=True)
+    description = models.TextField(
+        'Описание',
+        blank=True,
+        null=True,
+    )
+    barcode = models.CharField(
+        'Штрихкод',
+        max_length=13,
+        blank=True,
+        null=True,
+    )
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
@@ -18,11 +27,11 @@ class Product(models.Model):
         verbose_name='Категория',
         help_text='Выберите категорию товара'
     )
-    image = models.ForeignKey(
-        'ProductImage',
-        related_name='image',
-        on_delete=models.CASCADE,
-        verbose_name='Изображение товара'
+    main_image = models.ImageField(
+        upload_to='product_images/',
+        blank=True,
+        null=True,
+        verbose_name='Главное изображение продукта',
     )
     stores = models.ManyToManyField(
         'Store',
@@ -65,22 +74,21 @@ class Category(models.Model):
 
 class ProductImage(models.Model):
     """Модель фотографий товара."""
-    main_image = models.ImageField(
-        'Главное изображение',
-        upload_to='product_images',
-        blank=True,
-        null=True
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='images',
+        verbose_name='Фото товара',
     )
-    additional_photo = models.ImageField(
-        'Дополнительное изображение',
-        upload_to='product_images',
-        blank=True,
-        null=True
+    image = models.ImageField(
+        upload_to='product_images/',
+        unique=True,
+        verbose_name='Дополнительное изображение товара',
     )
 
     class Meta:
-        verbose_name = 'Изображение'
-        verbose_name_plural = 'Изображения'
+        verbose_name = 'Изображение товар'
+        verbose_name_plural = 'Изображения товара'
 
 
 class Store(models.Model):

@@ -4,9 +4,11 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from products.models import (Category, ChainStore, Discount, Product,
-                             ProductsInStore, Review, Store, StoreLocation)
+                             ProductImage, ProductsInStore, Review, Store,
+                             StoreLocation)
 
 User = get_user_model()
 
@@ -18,6 +20,14 @@ class Base64ImageField(serializers.ImageField):
             ext = format.split('/')[-1]
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
         return super().to_internal_value(data)
+
+
+class ImageProductsSerialiser(serializers.ModelSerializer):
+    image = Base64ImageField()
+
+    class Meta:
+        model = ProductImage
+        fields = ('image',)
 
 
 class DiscountSerializer(serializers.ModelSerializer):
@@ -78,16 +88,62 @@ class ProductSerializer(serializers.ModelSerializer):
     stores = ProductsInStoreSerializer(source='product', many=True)
     is_favorited = serializers.SerializerMethodField()
     rating = serializers.FloatField()
+    images = ImageProductsSerialiser(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'rating', 'category', 'barcode', 'description', 'image', 'stores', 'is_favorited')
+        fields = (
+            'id',
+            'name',
+            'rating',
+            'category',
+            'barcode',
+            'description',
+            'main_image',
+            'stores',
+            'is_favorited',
+            'images'
+        )
 
     def get_is_favorited(self, obj):
         user_requsting = self.context['request'].user
         if not user_requsting.is_authenticated:
             return False
         return user_requsting.favorites.filter(product=obj).exists()
+
+
+class CreateProductSerializer(serializers.ModelSerializer):
+    main_image = Base64ImageField()
+    images = ImageProductsSerialiser(many=True)
+
+    class Meta:
+        model = Product
+        fields = ('name', 'description', 'barcode', 'category', 'main_image', 'images')
+
+    def create(self, validated_data):
+        category = validated_data.pop('category')
+        images = validated_data.pop('images')
+        if not Category.objects.filter(name=category).exists():
+            raise ValidationError('Задана несуществующая категория')
+        product = Product.objects.create(
+            name=validated_data.get('name'),
+            description=validated_data.get('description'),
+            barcode=validated_data.get('barcode'),
+            category=Category.objects.get(name=category),
+            main_image=validated_data.get('main_image'),
+        )
+        for image in images:
+            # проверить наличие этой картинки для этого товара
+            if Product.objects.filter(product, image=image.get('image')).exists():
+                continue
+            ProductImage.objects.create(
+                product=product,
+                image=image.get('image'),
+            )
+        return product
 
 
 class ReviewSerializer(serializers.ModelSerializer):
