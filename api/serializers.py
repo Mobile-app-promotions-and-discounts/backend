@@ -79,7 +79,7 @@ class ProductsInStoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductsInStore
-        fields = ('id', 'discount', 'store', 'price')
+        fields = ('id', 'discount', 'store', 'initial_price', 'promo_price',)
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -184,7 +184,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductsInStore
-        fields = ("id", "price", "product", "discount")
+        fields = ('id', 'initial_price', 'promo_price', 'product', 'discount')
 
 
 class StoreProductsSerializer(serializers.ModelSerializer):
