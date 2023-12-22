@@ -7,7 +7,8 @@ from django.core.files.base import ContentFile
 
 from products.models import Category, Discount, Product, ProductsInStore
 
-
+url_products = 'https://web-gateway.middle-api.magnit.ru/v1/promotions'
+url_stores = 'https://web-gateway.middle-api.magnit.ru/v1/cities'
 headers = {
     'Accept': '*/*',
     'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
@@ -28,14 +29,16 @@ headers = {
     'x-device-tag': 'disabled',
     'x-platform-version': 'window.navigator.userAgent',
 }
-
-params = {
+params_products = {
     'offset': '0',
     'limit': '1',
     'storeId': '88871',
     'adult': 'true',
 }
-
+params_stores = {
+    'Limit': 1000000,
+    # 'query': 'Москва',
+}
 
 test_data = {
     'barcode': '4600300088867',
@@ -161,9 +164,9 @@ def read_data(request_data, store_id=None):
 
 
 def main():
-    total_products = get_url(url_chain_store, params=params, headers=headers).get('total')
-    params['limit'] = total_products
-    data = get_url(url_chain_store, params=params, headers=headers)
+    total_products = get_url(url_products, params=params_products, headers=headers).get('total')
+    params_products['limit'] = total_products
+    data = get_url(url_products, params=params_products, headers=headers)
     # categories, products = read_data(data)
     return read_data(data)
 
@@ -182,8 +185,4 @@ def main():
 # add_product(test_data)
 
 if __name__ == '__main__':
-
-
-    url_chain_store = 'https://web-gateway.middle-api.magnit.ru/v1/promotions'
-
     pprint(main()[1][0])
