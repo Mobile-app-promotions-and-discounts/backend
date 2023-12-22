@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django_filters',
     'api',
     'users',
+    'parsing_stores',
     'products',
     'drf_yasg',
 ]

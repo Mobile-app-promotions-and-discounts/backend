@@ -107,6 +107,12 @@ class Store(models.Model):
         default=1,
         verbose_name='Сеть магазинов'
     )
+    id_in_chain_store = models.CharField(
+        max_length=6,
+        null=True,
+        blank=True,
+        verbose_name='id магазина в сети',
+    )
 
     class Meta:
         ordering = ('name',)
@@ -180,6 +186,8 @@ class StoreLocation(models.Model):
     city = models.CharField('Город', max_length=100)
     street = models.CharField('Улица', max_length=255)
     building = models.CharField('Номер здания', max_length=20)
+    latitude = models.FloatField('Широта', blank=True, null=True)
+    longitude = models.FloatField('Долгота', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Адрес магазина'
