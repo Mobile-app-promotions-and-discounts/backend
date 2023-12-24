@@ -87,6 +87,7 @@ CATEGORIES = {
         'Соусы и приправы',
         'Здоровое питание',
         'Рыба и морепродукты',
+        'Готовая еда',
     ],
     'CLOTHES': [
         'Одежда и обувь',
@@ -157,31 +158,32 @@ def split_product_data(product_data):
 
 def _add_product(data, store=None):
     # discount = data.pop('discount')
-    image = data.pop('image')
-    # image = _get_product_image(image_url)
+    image_url = data.pop('image_url')
+    image = _get_product_image(image_url)
     name_category = data.pop('category')
+    category = ''
     if not Category.objects.all():
         raise ValueError('Категории товаров отсутствуют. Создайте категории товаров.')
     for key, value in CATEGORIES.items():
         if name_category in value and Category.objects.filter(name=key).exists():
             category = Category.objects.get(name=key)
+    print(name_category)
+    category = category if category else Category.objects.get(name='DIFFERENT')
     if not Product.objects.filter(category=category, **data).exists():
-        product = Product.objects.create(
+        return Product.objects.create(
             category=category,
             main_image=ContentFile(image, name='img.jpeg'),
             **data,
         )
-    else:
-        product = Product.objects.get(
-            # category=category,
-            # main_image=ContentFile(image, name='img.jpeg'),
-            **data,
+    # else:
+    return Product.objects.get(
+        category=category,
+        **data,
         )
-    return product
+    # return product
 
 
 def _add_discount(data_discount):
-    # print(data_discount)
     return Discount.objects.get_or_create(**data_discount)[0]
 
 
@@ -209,7 +211,7 @@ def read_data(request_data, store_id=None):
         product['discount']['discount_rate'] = item.get('discountPercentage', NO_DATA)
         product['price_in_store']['initial_price'] = item.get('oldPrice', NO_DATA)
         product['price_in_store']['promo_price'] = item.get('price', NO_DATA)
-        print(check_product_magnit(product))
+        # print(check_product_magnit(product))
         if check_product_magnit(product):
             products.append(product)
         # except NotImplementedError:
@@ -219,14 +221,15 @@ def read_data(request_data, store_id=None):
 
 
 def add_products_store_in_db(id_in_chain_store):
+    params_products['storeId'] = id_in_chain_store
     total_products = get_url(url_products, params=params_products, headers=headers).get('total')
     params_products['limit'] = total_products
     data = get_url(url_products, params=params_products, headers=headers)
     products = read_data(data)[1]
     store = Store.objects.get(id_in_chain_store=id_in_chain_store)
-    print(store)
+    # print(store)
     for product in products:
-        print(product)
+        # print(product)
         product_data, discount, price_in_store = split_product_data(product)
         price_in_store.pop('store_id')
         prod = _add_product(product_data)
