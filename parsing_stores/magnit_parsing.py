@@ -6,6 +6,18 @@ import requests
 from django.core.files.base import ContentFile
 
 from products.models import Category, Discount, Product, ProductsInStore, Store
+from parsing_stores.validators import check_product_magnit
+
+# def check_product_magnit(product):
+#     if requests.get(product['image_url']).status_code != 200:
+#         return False
+#     elif (
+#         product['price_in_store']['initial_price'] <= 0 and
+#         product['price_in_store']['promo_price'] <= 0
+#     ):
+#         return False
+#     else:
+#         return True
 
 url_products = 'https://web-gateway.middle-api.magnit.ru/v1/promotions'
 url_stores = 'https://web-gateway.middle-api.magnit.ru/v1/cities'
@@ -179,28 +191,30 @@ def read_data(request_data, store_id=None):
     products = []
     # pprint(request_data.get('data')[0])
     for item in request_data.get('data'):
-        try:
-            product = {
-                'price_in_store': {'store_id': 'Магнит ' + str(store_id)},
-                'discount': {},
-            }
-            product['name'] = item.get('name')
-            product['barcode'] = item.get('barcode')
-            product['image'] = _get_product_image(item.get('imageUrl'))
-            category = item.get('categoryName')
-            if category not in categories:
-                categories.append(category)
-            product['category'] = category
-            product['discount']['discount_unit'] = '%'
-            product['discount']['discount_start'] = item.get('startDate')
-            product['discount']['discount_end'] = item.get('endDate')
-            product['discount']['discount_rate'] = item.get('discountPercentage', NO_DATA)
-            product['price_in_store']['initial_price'] = item.get('oldPrice', NO_DATA)
-            product['price_in_store']['promo_price'] = item.get('price', NO_DATA)
+        # try:
+        product = {
+            'price_in_store': {'store_id': 'Магнит ' + str(store_id)},
+            'discount': {},
+        }
+        product['name'] = item.get('name')
+        product['barcode'] = item.get('barcode')
+        product['image_url'] = item.get('imageUrl')
+        category = item.get('categoryName')
+        if category not in categories:
+            categories.append(category)
+        product['category'] = category
+        product['discount']['discount_unit'] = '%'
+        product['discount']['discount_start'] = item.get('startDate')
+        product['discount']['discount_end'] = item.get('endDate')
+        product['discount']['discount_rate'] = item.get('discountPercentage', NO_DATA)
+        product['price_in_store']['initial_price'] = item.get('oldPrice', NO_DATA)
+        product['price_in_store']['promo_price'] = item.get('price', NO_DATA)
+        print(check_product_magnit(product))
+        if check_product_magnit(product):
             products.append(product)
-        except NotImplementedError:
-            print(f'изображение <<{item.get('imageUrl')}>> не найдено')
-            continue
+        # except NotImplementedError:
+        #     print(f'изображение <<{item.get("imageUrl")}>> не найдено')
+        #     continue
     return categories, products
 
 
@@ -232,6 +246,6 @@ def main():
 
 
 if __name__ == '__main__':
-    pass
     # pprint(main()[1][0])
-    # pprint(read_data(get_url(url_products, params=params_products, headers=headers))[1][0])
+    # pprint(read_data(get_url(url_products, params=params_products, headers=headers))[1])
+    pass
