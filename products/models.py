@@ -60,6 +60,7 @@ class Category(models.Model):
         ZOO = 'ZOO', 'Зоотовары'
         AUTO = 'AUTO', 'Авто'
         HOLIDAYS = 'HOLIDAYS', 'К празднику'
+        DIFFERENT = 'DIFFERENT', 'Разное'
 
     name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
 

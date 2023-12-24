@@ -5,7 +5,7 @@ import requests
 
 from django.core.files.base import ContentFile
 
-from products.models import Category, Discount, Product, ProductsInStore
+from products.models import Category, Discount, Product, ProductsInStore, Store
 
 url_products = 'https://web-gateway.middle-api.magnit.ru/v1/promotions'
 url_stores = 'https://web-gateway.middle-api.magnit.ru/v1/cities'
@@ -32,8 +32,10 @@ headers = {
 params_products = {
     'offset': '0',
     'limit': '1',
-    'storeId': '88871',
+    'storeId': '63452',
     'adult': 'true',
+    'sortBy': 'priority',
+    'order': 'desc',
 }
 params_stores = {
     'Limit': 1000000,
@@ -55,6 +57,7 @@ test_data = {
     'name': 'Шоколад АЛЁНКА молочный, 90г'
 }
 
+NO_DATA = -1
 
 CATEGORIES = {
     'PRODUCTS': [
@@ -68,8 +71,14 @@ CATEGORIES = {
         'Чай, кофе, какао',
         'Бакалея, соусы',
         'Кондитерские изделия',
+        'Снеки, орехи',
+        'Соусы и приправы',
+        'Здоровое питание',
+        'Рыба и морепродукты',
     ],
-    'CLOTHES': [], # 'CLOTHES', 'Одежда и обувь'
+    'CLOTHES': [
+        'Одежда и обувь',
+    ], # 'CLOTHES', 'Одежда и обувь'
     'HOME': [
         'Дом, сад',
         'Медтовары',
@@ -77,6 +86,12 @@ CATEGORIES = {
         'Бытовая химия',
         'Скидки по карте',
         'Новинки',
+        'Досуг',
+        'Канцтовары',
+        'Витамины и БАД',
+        'Аксессуары',
+        'Лекарства',
+        'Печатная продукция',
     ],
     'COSMETICS': [
         'Косметика и парфюмерия',
@@ -88,10 +103,21 @@ CATEGORIES = {
     'ZOO': [
         'Зоотовары',
     ], # 'Зоотовары'
-    'AUTO:': [], # 'Авто'
+    'AUTO:': ['Автотовары'], # 'Авто'
     'HOLIDAYS': [
         'Алкоголь',
+        'Новый год',
     ], # 'К празднику'
+    'DIFFERENT': [
+        'Скидки по карте',
+        'Скидки на категории',
+        '30% бонусами с подпиской',
+        'Новинки',
+        'Кешбек',
+        'Разные категории',
+        '0',
+        'Проездные. Лотереи',
+    ],
 }
 
 
@@ -110,32 +136,41 @@ def _get_product_image(url):
     return response.content
 
 
-def add_product(data, store=None):
+def split_product_data(product_data):
+    """Разделить данные по данным моделей."""
+    discount = product_data.pop('discount')
+    price_in_store = product_data.pop('price_in_store')
+    return product_data, discount, price_in_store
+
+
+def _add_product(data, store=None):
     # discount = data.pop('discount')
-    image_url = data.pop('image_url')
-    image = _get_product_image(image_url)
+    image = data.pop('image')
+    # image = _get_product_image(image_url)
     name_category = data.pop('category')
     if not Category.objects.all():
         raise ValueError('Категории товаров отсутствуют. Создайте категории товаров.')
     for key, value in CATEGORIES.items():
         if name_category in value and Category.objects.filter(name=key).exists():
             category = Category.objects.get(name=key)
-            if not Product.objects.filter(
-                category=category,
-                main_image=ContentFile(image, name='img.jpeg'),
-                **data,
-            ).exists():
-                Product.objects.create(
-                    category=category,
-                    main_image=ContentFile(image, name='img.jpeg'),
-                    **data,
-                )
-                break
-        # Product.objects.create(main_image=image, **data)
+    if not Product.objects.filter(category=category, **data).exists():
+        product = Product.objects.create(
+            category=category,
+            main_image=ContentFile(image, name='img.jpeg'),
+            **data,
+        )
+    else:
+        product = Product.objects.get(
+            # category=category,
+            # main_image=ContentFile(image, name='img.jpeg'),
+            **data,
+        )
+    return product
 
 
 def _add_discount(data_discount):
-    return Discount.objects.get_or_create(**data_discount)
+    # print(data_discount)
+    return Discount.objects.get_or_create(**data_discount)[0]
 
 
 def read_data(request_data, store_id=None):
@@ -144,45 +179,59 @@ def read_data(request_data, store_id=None):
     products = []
     # pprint(request_data.get('data')[0])
     for item in request_data.get('data'):
-        product = {'price_in_store': {'store_id': 'Магнит ' + str(store_id)}}
-        product['discount'] = {}
-        product['name'] = item.get('name')
-        product['barcode'] = item.get('barcode')
-        product['image_url'] = item.get('imageUrl')
-        category = item.get('categoryName')
-        if category not in categories:
-            categories.append(category)
-        product['category'] = category
-        product['discount']['discount_unit'] = '%'
-        product['discount']['discount_start'] = item.get('startDate')
-        product['discount']['discount_end'] = item.get('endDate')
-        product['discount']['discount_rate'] = item.get('discountPercentage')
-        product['price_in_store']['initial_price'] = item.get('oldPrice')
-        product['price_in_store']['promo_price'] = item.get('price')
-        products.append(product)
+        try:
+            product = {
+                'price_in_store': {'store_id': 'Магнит ' + str(store_id)},
+                'discount': {},
+            }
+            product['name'] = item.get('name')
+            product['barcode'] = item.get('barcode')
+            product['image'] = _get_product_image(item.get('imageUrl'))
+            category = item.get('categoryName')
+            if category not in categories:
+                categories.append(category)
+            product['category'] = category
+            product['discount']['discount_unit'] = '%'
+            product['discount']['discount_start'] = item.get('startDate')
+            product['discount']['discount_end'] = item.get('endDate')
+            product['discount']['discount_rate'] = item.get('discountPercentage', NO_DATA)
+            product['price_in_store']['initial_price'] = item.get('oldPrice', NO_DATA)
+            product['price_in_store']['promo_price'] = item.get('price', NO_DATA)
+            products.append(product)
+        except NotImplementedError:
+            print(f'изображение <<{item.get('imageUrl')}>> не найдено')
+            continue
     return categories, products
 
 
-def main():
+def add_products_store_in_db(id_in_chain_store):
     total_products = get_url(url_products, params=params_products, headers=headers).get('total')
     params_products['limit'] = total_products
     data = get_url(url_products, params=params_products, headers=headers)
-    # categories, products = read_data(data)
-    return read_data(data)
+    products = read_data(data)[1]
+    store = Store.objects.get(id_in_chain_store=id_in_chain_store)
+    print(store)
+    for product in products:
+        print(product)
+        product_data, discount, price_in_store = split_product_data(product)
+        price_in_store.pop('store_id')
+        prod = _add_product(product_data)
+        disc = _add_discount(discount)
+        ProductsInStore.objects.get_or_create(
+            product=prod,
+            store=store,
+            discount=disc,
+            **price_in_store,
+        )
 
-    # with open('categories_data.json', 'w') as file:
-    #     file.write(json.dumps(categories, sort_keys=True, indent=4))
 
-    # with open('products_data.json', 'w') as file:
-    #     file.write(json.dumps(products, sort_keys=True, indent=4))
+def main():
+    stores_id = [store.id_in_chain_store for store in Store.objects.all()]
+    for store_id in stores_id:
+        add_products_store_in_db(store_id)
 
-    # pprint(categories)
-    # pprint(products[0])
-    # pprint(products[-1])
-    # print(len(products))
-
-
-# add_product(test_data)
 
 if __name__ == '__main__':
-    pprint(main()[1][0])
+    pass
+    # pprint(main()[1][0])
+    # pprint(read_data(get_url(url_products, params=params_products, headers=headers))[1][0])
