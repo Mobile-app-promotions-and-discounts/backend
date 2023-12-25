@@ -1,23 +1,12 @@
-from time import sleep
-import json
-from pprint import pprint
-import requests
+# import json
+# from pprint import pprint
+# from time import sleep
 
+import requests
 from django.core.files.base import ContentFile
 
-from products.models import Category, Discount, Product, ProductsInStore, Store
 from parsing_stores.validators import check_product_magnit
-
-# def check_product_magnit(product):
-#     if requests.get(product['image_url']).status_code != 200:
-#         return False
-#     elif (
-#         product['price_in_store']['initial_price'] <= 0 and
-#         product['price_in_store']['promo_price'] <= 0
-#     ):
-#         return False
-#     else:
-#         return True
+from products.models import Category, Discount, Product, ProductsInStore, Store
 
 url_products = 'https://web-gateway.middle-api.magnit.ru/v1/promotions'
 url_stores = 'https://web-gateway.middle-api.magnit.ru/v1/cities'
@@ -30,7 +19,8 @@ headers = {
     'Sec-Fetch-Dest': 'empty',
     'Sec-Fetch-Mode': 'cors',
     'Sec-Fetch-Site': 'same-site',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                  'Chrome/119.0.0.0 Safari/537.36',
     'sec-ch-ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Linux"',
@@ -50,24 +40,10 @@ params_products = {
     'order': 'desc',
 }
 params_stores = {
-    'Limit': 1000000,
+    'Limit': 1100,
     # 'query': 'Москва',
 }
 
-test_data = {
-    'barcode': '4600300088867',
-    'category': 'Кондитерские изделия',
-    'discount': {
-        'discount_percentage': 50,
-        'end_date': '2024-01-09',
-        'old_price': 11999,
-        'price': 5999,
-        'start_date': '2023-12-20',
-        'store': 'Магнит'
-    },
-    'image_url': 'https://promo-images.prod.ya.magnit.ru/media/promo/images/2400022587.png?response-content-type=image%2Fpng&AWSAccessKeyId=YCAJEHBIaXWYCFuHFkQb6rnPh&Signature=lsoQresnodcLRsOQTHjf2bAk2xs%3D&Expires=1703255633',
-    'name': 'Шоколад АЛЁНКА молочный, 90г'
-}
 
 NO_DATA = -1
 
@@ -91,7 +67,7 @@ CATEGORIES = {
     ],
     'CLOTHES': [
         'Одежда и обувь',
-    ], # 'CLOTHES', 'Одежда и обувь'
+    ],
     'HOME': [
         'Дом, сад',
         'Медтовары',
@@ -109,18 +85,18 @@ CATEGORIES = {
     'COSMETICS': [
         'Косметика и парфюмерия',
         'Гигиена',
-    ], # 'Косметика и гигиена'
+    ],
     'KIDS': [
         'Детям',
-    ], # 'Для детей'
+    ],
     'ZOO': [
         'Зоотовары',
-    ], # 'Зоотовары'
-    'AUTO:': ['Автотовары'], # 'Авто'
+    ],
+    'AUTO:': ['Автотовары'],
     'HOLIDAYS': [
         'Алкоголь',
         'Новый год',
-    ], # 'К празднику'
+    ],
     'DIFFERENT': [
         'Скидки по карте',
         'Скидки на категории',
@@ -157,7 +133,6 @@ def split_product_data(product_data):
 
 
 def _add_product(data, store=None):
-    # discount = data.pop('discount')
     image_url = data.pop('image_url')
     image = _get_product_image(image_url)
     name_category = data.pop('category')
@@ -167,7 +142,8 @@ def _add_product(data, store=None):
     for key, value in CATEGORIES.items():
         if name_category in value and Category.objects.filter(name=key).exists():
             category = Category.objects.get(name=key)
-    print(name_category)
+    # print(name_category)
+    # КОСТЫЛЬ. если нет такой категории товар попадает в разное.
     category = category if category else Category.objects.get(name='DIFFERENT')
     if not Product.objects.filter(category=category, **data).exists():
         return Product.objects.create(
@@ -175,12 +151,10 @@ def _add_product(data, store=None):
             main_image=ContentFile(image, name='img.jpeg'),
             **data,
         )
-    # else:
     return Product.objects.get(
         category=category,
         **data,
-        )
-    # return product
+    )
 
 
 def _add_discount(data_discount):
@@ -191,9 +165,7 @@ def read_data(request_data, store_id=None):
     """Извлечение данных товаров из данных запроса."""
     categories = []
     products = []
-    # pprint(request_data.get('data')[0])
     for item in request_data.get('data'):
-        # try:
         product = {
             'price_in_store': {'store_id': 'Магнит ' + str(store_id)},
             'discount': {},
@@ -211,12 +183,8 @@ def read_data(request_data, store_id=None):
         product['discount']['discount_rate'] = item.get('discountPercentage', NO_DATA)
         product['price_in_store']['initial_price'] = item.get('oldPrice', NO_DATA)
         product['price_in_store']['promo_price'] = item.get('price', NO_DATA)
-        # print(check_product_magnit(product))
         if check_product_magnit(product):
             products.append(product)
-        # except NotImplementedError:
-        #     print(f'изображение <<{item.get("imageUrl")}>> не найдено')
-        #     continue
     return categories, products
 
 
@@ -227,9 +195,7 @@ def add_products_store_in_db(id_in_chain_store):
     data = get_url(url_products, params=params_products, headers=headers)
     products = read_data(data)[1]
     store = Store.objects.get(id_in_chain_store=id_in_chain_store)
-    # print(store)
     for product in products:
-        # print(product)
         product_data, discount, price_in_store = split_product_data(product)
         price_in_store.pop('store_id')
         prod = _add_product(product_data)
