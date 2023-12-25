@@ -181,8 +181,8 @@ def read_data(request_data, store_id=None):
         product['discount']['discount_start'] = item.get('startDate')
         product['discount']['discount_end'] = item.get('endDate')
         product['discount']['discount_rate'] = item.get('discountPercentage', NO_DATA)
-        product['price_in_store']['initial_price'] = item.get('oldPrice', NO_DATA)
-        product['price_in_store']['promo_price'] = item.get('price', NO_DATA)
+        product['price_in_store']['initial_price'] = str(item.get('oldPrice', NO_DATA))
+        product['price_in_store']['promo_price'] = str(item.get('price', NO_DATA))
         if check_product_magnit(product):
             products.append(product)
     return categories, products

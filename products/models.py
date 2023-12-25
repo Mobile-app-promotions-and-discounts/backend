@@ -5,6 +5,14 @@ from django.db import models
 User = get_user_model()
 
 
+def _get_default_category(category_name=None):
+    if category_name is None:
+        category_name = 'DIFFERENT'
+    if not Category.objects.filter(name=category_name).exists():
+        raise NotImplementedError('Создайте категории командой')
+    return Category.objects.get(name=category_name)
+
+
 class Product(models.Model):
     """Модель продукта/товара."""
     name = models.CharField('Название', max_length=255)
@@ -138,8 +146,8 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
-    initial_price = models.DecimalField('Цена товара без акции', decimal_places=2, max_digits=10)
-    promo_price = models.DecimalField('Цена товара по акции', decimal_places=2, max_digits=10)
+    initial_price = models.CharField('Цена товара без акции', max_length=10)
+    promo_price = models.CharField('Цена товара по акции', max_length=10)
     discount = models.ForeignKey(
         'Discount',
         related_name='discount',
