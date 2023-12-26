@@ -21,7 +21,7 @@ def get_and_save_all_stores():
     save_json_file(response_json, cfg.FILE_NAME['ALL_STORES'])
 
 
-def get_stores_in_city(city):
+def get_and_save_stores_in_city(city):
     """
     Получить список магазинов в городе -'city'
 
@@ -60,4 +60,7 @@ def get_stores_in_city(city):
         }
         stores_in_city.append(data)
     logger.debug(msg.SCR_STORE.format(len(stores_in_city), city))
-    return stores_in_city
+    save_json_file(
+        stores_in_city,
+        cfg.FILE_NAME['STORES_IN_SITY'].format(city)
+    )

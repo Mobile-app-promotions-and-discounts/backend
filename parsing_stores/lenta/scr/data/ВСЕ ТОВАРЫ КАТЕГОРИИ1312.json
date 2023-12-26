@@ -1,0 +1,128 @@
+[
+    {
+        "product": {
+            "name": "Клементины, весовые",
+            "description": "Клементин – гибрид мандарина и апельсина. Очень сладкий и сочный сорт с ярким цитрусовым ароматом. Плоды ярко-оранжевого цвета, сплющены сверху и снизу. Клементин богат витаминами и антиоксидантами. Цитрусы нормализуют работу кишечника, снижают тревожность и ускоряют обмен веществ.",
+            "barcode": "276366",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/27/63/66/312282_10.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/27/63/66/312282_10.png?preset=fullsize"
+            ]
+        },
+        "base_price": 24999,
+        "sale_price": 19999,
+        "discount": {
+            "discount_rate": 20,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Салат Айсберг",
+            "description": "Айсберг – кочанный салат со светло-зелеными, сочными и хрустящими листьями. Он содержит достаточное количество фолиевой кислоты, витаминов С, В, К и А, холина. Кроме того, салат богат фосфором, калием, натрием и магнием, в нем есть кальций и медь. Входящие в состав айсберга клетчатка и пищевые волокна помогают похудеть. Салат улучшает пищеварение, регулирует обмен веществ, благотворно влияет на состав крови. Он способствует укреплению нервной системы, помогает при стрессах и эмоциональных расстройствах.",
+            "barcode": "198359",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/19/83/59/514874.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/19/83/59/514874.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/19/83/59/514881.png?preset=fullsize"
+            ]
+        },
+        "base_price": 12999,
+        "sale_price": 10999,
+        "discount": {
+            "discount_rate": 15,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Апельсины отборные, фасованные, весовые",
+            "description": "Отборные апельсины – сочные и крупные, ярко-оранжевого цвета, без косточек. Спелые плоды сладкие с аппетитным цитрусовым ароматом. В них очень много витаминов С, А, В1, В2, РР и биологически активных веществ – фруктоза, глюкоза, калий, магний, фосфор, кальций, железо, клетчатка, лимонная кислота и флавоноиды. Апельсины оказывают антиоксидантное действие и укрепляют иммунитет.",
+            "barcode": "114858",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/11/48/58/540624.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/11/48/58/540624.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/11/48/58/540687.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/11/48/58/540688.png?preset=fullsize"
+            ]
+        },
+        "base_price": 25999,
+        "sale_price": 20999,
+        "discount": {
+            "discount_rate": 19,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Картофель для варки ЛЕНТА FRESH фасованный, весовой",
+            "description": "Картофель для варки ЛЕНТА FRESH фасованный, весовой подойдет для приготовления гарниров и супов. Употребление картофеля не только быстро утоляет голод и заряжает энергией, но и приносит пользу организму. Такой продукт улучшает работу сердца и сосудов, способствует выводу токсинов, помогает справиться со стрессом, укрепляет иммунитет.",
+            "barcode": "695004",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/69/50/04/525324_2.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/69/50/04/525324_2.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/69/50/04/533923_1.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/69/50/04/533926_1.png?preset=fullsize"
+            ]
+        },
+        "base_price": 5999,
+        "sale_price": 4999,
+        "discount": {
+            "discount_rate": 16,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Яблоки Айдаред, весовые",
+            "description": "Яблоки Айдаред имеют плоскоокруглую слабоконическую форму. Основной цвет плодов – желтый с малиновым или карминовым румянцем с полосками и штрихами. Эти яблоки очень сочные, слегка хрустящие, кисло-сладкие. Цвет и размер плодов может отличаться в зависимости от сезона и региона.",
+            "barcode": "043027",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/30/27/293773_3.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/30/27/293773_3.png?preset=fullsize"
+            ]
+        },
+        "base_price": 11499,
+        "sale_price": 8999,
+        "discount": {
+            "discount_rate": 21,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Хурма, весовая",
+            "description": "Хурма – ягода оранжевого цвета, с тонкой кожурой, мясистая и сладкая. Название с греческого – «божественный огонь». В хурме содержится множество витаминов, особенно А, С и В, а также микроэлементы (йод, железо, кальций, калий, фосфор, марганец, магний). Хурма рекомендуется как средство для общего оздоровления, восстановления нервной системы и всего организма. Ягода широко используется в кулинарии при изготовлении салатов, блюд из мяса и десертов (пудинги, желе, джем), а также напитков.",
+            "barcode": "082887",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/08/28/87/312272_9.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/08/28/87/312272_9.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/08/28/87/312298_9.png?preset=fullsize"
+            ]
+        },
+        "base_price": 15999,
+        "sale_price": 11999,
+        "discount": {
+            "discount_rate": 25,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-28",
+            "discount_card": true
+        }
+    }
+]

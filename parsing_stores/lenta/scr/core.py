@@ -21,7 +21,6 @@ def get_response(options, metod='get'):
                 options.get('url')))
             return response
         logger.error(msg.RESPONSE_STATUS.format(response.status_code))
-        return None
     except requests.RequestException as error:
         logger.error(msg.REQUEST_ERROR.format(options.get('url'), error))
 

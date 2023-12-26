@@ -1,0 +1,339 @@
+[
+    {
+        "product": {
+            "name": "Клементины, весовые",
+            "description": "Клементин – гибрид мандарина и апельсина. Очень сладкий и сочный сорт с ярким цитрусовым ароматом. Плоды ярко-оранжевого цвета, сплющены сверху и снизу. Клементин богат витаминами и антиоксидантами. Цитрусы нормализуют работу кишечника, снижают тревожность и ускоряют обмен веществ.",
+            "barcode": "276366",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/27/63/66/312282_10.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/27/63/66/312282_10.png?preset=fullsize"
+            ]
+        },
+        "base_price": 24999,
+        "sale_price": 19999,
+        "discount": {
+            "discount_rate": 20,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Томаты розовые Азербайджан, весовые",
+            "description": "Мясистые розовые томаты с сочной мякотью и нежной, сладковатой текстурой. Плоды обладают характерным ароматом.",
+            "barcode": "163593",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/16/35/93/536738_1.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/16/35/93/536738_1.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/16/35/93/536755_1.png?preset=fullsize"
+            ]
+        },
+        "base_price": 28999,
+        "sale_price": 23999,
+        "discount": {
+            "discount_rate": 17,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-28",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Манго спелое, Египет, весовое",
+            "description": "Манго спелое, Египет, весовое отличается приятным сладким вкусом. Такой фрукт можно употреблять в качестве отдельного лакомства, добавлять в салаты, использовать для приготовления смузи и десертов. Включение манго в рацион приносит пользу организму. Фрукт богат витаминами из группы В, С, А и Е, содержит магний, цинк, железо, кальций. При регулярном употреблении он улучшает состояние кожи и волос, снижает риск болезней сердца и сосудов, укрепляет иммунитет.",
+            "barcode": "662614",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/66/26/14/521532_1.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/66/26/14/521532_1.png?preset=fullsize"
+            ]
+        },
+        "base_price": 47999,
+        "sale_price": 37999,
+        "discount": {
+            "discount_rate": 20,
+            "discount_start": "2023-12-25",
+            "discount_end": "2024-01-09",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Салат Айсберг",
+            "description": "Айсберг – кочанный салат со светло-зелеными, сочными и хрустящими листьями. Он содержит достаточное количество фолиевой кислоты, витаминов С, В, К и А, холина. Кроме того, салат богат фосфором, калием, натрием и магнием, в нем есть кальций и медь. Входящие в состав айсберга клетчатка и пищевые волокна помогают похудеть. Салат улучшает пищеварение, регулирует обмен веществ, благотворно влияет на состав крови. Он способствует укреплению нервной системы, помогает при стрессах и эмоциональных расстройствах.",
+            "barcode": "198359",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/19/83/59/514874.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/19/83/59/514874.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/19/83/59/514881.png?preset=fullsize"
+            ]
+        },
+        "base_price": 12999,
+        "sale_price": 10999,
+        "discount": {
+            "discount_rate": 15,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Авокадо, весовой",
+            "description": "Авокадо – тропический плод, который также называют «аллигаторовой грушей». Он относится к семейству лавровых и ценится за высокое содержание белка и растительных жиров в составе. Включение авокадо в рацион снижает риск болезней сердца и сосудов, улучшает память и кровообращение, снижает артериальное давление, избавляет от токсинов, помогает справиться со стрессом. Плоды употребляют в свежем виде, добавляют в салаты, супы, закуски, используют для приготовления сэндвичей.",
+            "barcode": "638739",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/63/87/39/536746_1.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/63/87/39/536746_1.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/63/87/39/536761_1.png?preset=fullsize"
+            ]
+        },
+        "base_price": 52999,
+        "sale_price": 39999,
+        "discount": {
+            "discount_rate": 24,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Апельсины отборные, фасованные, весовые",
+            "description": "Отборные апельсины – сочные и крупные, ярко-оранжевого цвета, без косточек. Спелые плоды сладкие с аппетитным цитрусовым ароматом. В них очень много витаминов С, А, В1, В2, РР и биологически активных веществ – фруктоза, глюкоза, калий, магний, фосфор, кальций, железо, клетчатка, лимонная кислота и флавоноиды. Апельсины оказывают антиоксидантное действие и укрепляют иммунитет.",
+            "barcode": "114858",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/11/48/58/540624.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/11/48/58/540624.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/11/48/58/540687.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/11/48/58/540688.png?preset=fullsize"
+            ]
+        },
+        "base_price": 25999,
+        "sale_price": 20999,
+        "discount": {
+            "discount_rate": 19,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Томаты ЛЕНТА FRESH коктейльные на ветке, 450г",
+            "description": "Томаты ЛЕНТА FRESH коктейльные – это гибридные сорта помидоров. Отличительная особенность – небольшие размеры (вес 30–60г) и плотная кожица, что упрощает их транспортировку и хранение. Имеют насыщенный аромат и кисло-сладкий вкус. Форма может быть грушевидной, шарообразной, каплевидной или «сливки». Цвет – традиционным красным, желтым, розовым, фиолетовым и даже черным. Благодаря плотности кожуры и длительности сохранения плодов в неизменном виде, можно снимать не поочередно, после созревания одного-двух первых плодов, а, дождавшись созревания всех помидорок в кисти, сразу целую гроздь.",
+            "barcode": "520098",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/52/00/98/526481.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/52/00/98/526481.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/52/00/98/313129_9.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/52/00/98/465965_8.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/52/00/98/526501.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/52/00/98/526517.png?preset=fullsize"
+            ]
+        },
+        "base_price": 26999,
+        "sale_price": 19999,
+        "discount": {
+            "discount_rate": 25,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Картофель для варки ЛЕНТА FRESH фасованный, весовой",
+            "description": "Картофель для варки ЛЕНТА FRESH фасованный, весовой подойдет для приготовления гарниров и супов. Употребление картофеля не только быстро утоляет голод и заряжает энергией, но и приносит пользу организму. Такой продукт улучшает работу сердца и сосудов, способствует выводу токсинов, помогает справиться со стрессом, укрепляет иммунитет.",
+            "barcode": "695004",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/69/50/04/525324_2.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/69/50/04/525324_2.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/69/50/04/533923_1.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/69/50/04/533926_1.png?preset=fullsize"
+            ]
+        },
+        "base_price": 5999,
+        "sale_price": 4999,
+        "discount": {
+            "discount_rate": 16,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Авокадо Хасс, 700г",
+            "description": "Авокадо Хасс грушевидной формы – это мелкий сорт, который считается самым вкусным. Каждый плод весит от 100 до 200г. Кожура может быть от светло-зеленого до темно-зеленого цвета. Мякоть похожа на крем или масло с нежным ореховым вкусом. В середине фрукта находится твердая косточка. Авокадо содержит много калия, клетчатки и ненасыщенных жирных кислот.",
+            "barcode": "517875",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/51/78/75/539239.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/51/78/75/539239.png?preset=fullsize"
+            ]
+        },
+        "base_price": 42999,
+        "sale_price": 38999,
+        "discount": {
+            "discount_rate": 9,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-29",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Огурцы тепличные колючие среднеплодные, 600г",
+            "description": "Тепличные среднеплодные огурцы – бугорчатые плоды приятного зеленого цвета. Эти полезные, хрустящие овощи обладают отличным вкусом. Хорошо использовать в салатах.",
+            "barcode": "411110",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/41/11/10/524064.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/41/11/10/524064.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/41/11/10/320245_9.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/41/11/10/524086.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/41/11/10/524092.png?preset=fullsize"
+            ]
+        },
+        "base_price": 24999,
+        "sale_price": 19999,
+        "discount": {
+            "discount_rate": 20,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-28",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Огурец длинноплодный, шт",
+            "description": "Огурец длинноплодный обладает тонкой кожицей, сочной текстурой и почти незаметными семечками. Удобная упаковка подходит для разовой покупки.",
+            "barcode": "026884",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/02/68/84/312300_16.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/02/68/84/312300_16.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/02/68/84/311874_11.png?preset=fullsize"
+            ]
+        },
+        "base_price": 10999,
+        "sale_price": 7998,
+        "discount": {
+            "discount_rate": 27,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Яблоки Айдаред, весовые",
+            "description": "Яблоки Айдаред имеют плоскоокруглую слабоконическую форму. Основной цвет плодов – желтый с малиновым или карминовым румянцем с полосками и штрихами. Эти яблоки очень сочные, слегка хрустящие, кисло-сладкие. Цвет и размер плодов может отличаться в зависимости от сезона и региона.",
+            "barcode": "043027",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/30/27/293773_3.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/30/27/293773_3.png?preset=fullsize"
+            ]
+        },
+        "base_price": 11499,
+        "sale_price": 8999,
+        "discount": {
+            "discount_rate": 21,
+            "discount_start": "2023-12-22",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Хурма, весовая",
+            "description": "Хурма – ягода оранжевого цвета, с тонкой кожурой, мясистая и сладкая. Название с греческого – «божественный огонь». В хурме содержится множество витаминов, особенно А, С и В, а также микроэлементы (йод, железо, кальций, калий, фосфор, марганец, магний). Хурма рекомендуется как средство для общего оздоровления, восстановления нервной системы и всего организма. Ягода широко используется в кулинарии при изготовлении салатов, блюд из мяса и десертов (пудинги, желе, джем), а также напитков.",
+            "barcode": "082887",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/08/28/87/312272_9.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/08/28/87/312272_9.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/08/28/87/312298_9.png?preset=fullsize"
+            ]
+        },
+        "base_price": 15999,
+        "sale_price": 11999,
+        "discount": {
+            "discount_rate": 25,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-28",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Груши Конференц, весовые",
+            "description": "Груша Конференц считается одной из самых мягких и сладких. Ее плоды ровные, вытянутые, с сочной мякотью розовато-кремового цвета. Груша – природный источник минералов, витаминов и клетчатки. Высокое содержание витамина С укрепляет иммунитет. Цвет и размер плодов может отличаться в зависимости от сезона и региона.",
+            "barcode": "044185",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/41/85/522761.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/41/85/522761.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/41/85/522807.png?preset=fullsize"
+            ]
+        },
+        "base_price": 26999,
+        "sale_price": 24999,
+        "discount": {
+            "discount_rate": 7,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Перец красный, весовой",
+            "description": "Красный перец имеет конусообразную форму. Его яркая кожица съедобна. У него очень сочная и хрустящая мякоть со сладким вкусом.",
+            "barcode": "041203",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/12/03/509422_1.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/04/12/03/509422_1.png?preset=fullsize"
+            ]
+        },
+        "base_price": 27999,
+        "sale_price": 25999,
+        "discount": {
+            "discount_rate": 7,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-27",
+            "discount_card": true
+        }
+    },
+    {
+        "product": {
+            "name": "Капуста брокколи, весовая",
+            "description": "Брокколи – ближайший родственник цветной капусты. Цвет овоща может варьироваться от ярко-зеленого до фиолетово-зеленого. Брокколи является отличным источником витаминов K, С, фолиевой кислоты и хрома, в ней много клетчатки и протеинов, витамины группы В, А, Е, а также марганец, фосфор, холин, калий, медь, селен, Омега-3 жирные кислоты и полезные фитонутриенты. Замороженную капусту можно обжарить, добавить в суп, приготовить на пару.",
+            "barcode": "055648",
+            "category": "PRODUCTS",
+            "main_image": [
+                "https://lenta.servicecdn.ru/globalassets/1/-/05/56/48/526814.png?preset=fullsize",
+                "https://lenta.servicecdn.ru/globalassets/1/-/05/56/48/526814.png?preset=fullsize"
+            ]
+        },
+        "base_price": 32999,
+        "sale_price": 29999,
+        "discount": {
+            "discount_rate": 9,
+            "discount_start": "2023-12-26",
+            "discount_end": "2023-12-29",
+            "discount_card": true
+        }
+    }
+]
