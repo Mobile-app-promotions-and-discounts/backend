@@ -28,7 +28,7 @@ CATEGORY_LENTA = {
     # 'Хлеб и хлебобулочные изделия': None,
     # 'Бакалея': 'g7cc5c7251a3e5503dc4122139d606465',
     # 'Рыба и морепродукты': 'g523853c00788bbb520b022c130d1ae92',
-    # # 'Замороженная продукция': None,
+    # 'Замороженная продукция': None,
     # 'Кондитерские изделия': 'g301007c55a37d7ff8539f1f169a4b8ae',
     # 'Чай, кофе, какао': 'g68552e15008531b8ae99799a1d9391df',
     # 'Безалкогольные напитки': 'g9290c81c23578165223ca2befe178b47',
@@ -51,14 +51,42 @@ CATEGORY_LENTA = {
 }
 
 CATEGORY = {
-        'PRODUCTS': [CATEGORY_LENTA.get['Фрукты и овощи']],
-        'Одежда и обувь': [],
-        'Для дома и сада': [],
-        'Косметика и гигиена': [],
-        'Для детей': [],
-        'Зоотовары': [],
-        'Авто': [],
-        'К празднику': [],
+        'PRODUCTS': [
+            CATEGORY_LENTA.get['Фрукты и овощи'],
+            CATEGORY_LENTA.get['Алкогольные напитки'],
+            CATEGORY_LENTA.get['Продукция собственного производства'],
+            CATEGORY_LENTA.get['Мясо, птица, колбаса'],
+            CATEGORY_LENTA.get['Молоко, сыр, яйцо'],
+            CATEGORY_LENTA.get['Хлеб и хлебобулочные изделия'],
+            CATEGORY_LENTA.get['Бакалея'],
+            CATEGORY_LENTA.get['Рыба и морепродукты'],
+            CATEGORY_LENTA.get['Замороженная продукция'],
+            CATEGORY_LENTA.get['Кондитерские изделия'],
+            CATEGORY_LENTA.get['Чай, кофе, какао'],
+            CATEGORY_LENTA.get['Безалкогольные напитки'],
+            CATEGORY_LENTA.get['Здоровое питание'],
+        ],
+        'CLOTHES': [
+            CATEGORY_LENTA.get['Одежда и обувь'],
+            CATEGORY_LENTA.get['Спорт и активный отдых'],
+        ],
+        'HOME': [
+            CATEGORY_LENTA.get['Всё для дома'],
+            CATEGORY_LENTA.get['Посуда'],
+            CATEGORY_LENTA.get['Бытовая химия'],
+            CATEGORY_LENTA.get['Бытовая техника и электроника'],
+            CATEGORY_LENTA.get['Текстиль для дома'],
+            CATEGORY_LENTA.get['Дача, сад'],
+            CATEGORY_LENTA.get['Канцелярия и печатная продукция'],
+        ],
+        'COSMETICS': [CATEGORY_LENTA.get['Красота и здоровье'],],
+        'KIDS': [CATEGORY_LENTA.get['Товары для детей'],],
+        'ZOO': [
+            CATEGORY_LENTA.get['Лента Зоомаркет - профессиональный уход'],
+            CATEGORY_LENTA.get['Товары для животных'],
+        ],
+        'AUTO': [CATEGORY_LENTA.get['Автотовары'],],
+        'HOLIDAYS': [CATEGORY_LENTA.get['Цветы'],],
 }
 
 # requests headers
