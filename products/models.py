@@ -178,8 +178,9 @@ class StoreLocation(models.Model):
     """Модель для адреса конкретного магазина."""
     region = models.CharField('Регион', max_length=100)
     city = models.CharField('Город', max_length=100)
-    street = models.CharField('Улица', max_length=255)
-    building = models.CharField('Номер здания', max_length=20)
+    address = models.CharField('Адрес', max_length=100)
+    lat = models.DecimalField('Широта', max_digits=10)
+    long = models.DecimalField('Долгата', max_digits=10)
 
     class Meta:
         verbose_name = 'Адрес магазина'
