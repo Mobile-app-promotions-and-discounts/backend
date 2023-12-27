@@ -1,4 +1,3 @@
-# REQUEST
 REQUEST_START = 'Запрос {}'
 RESPONSE_STATUS = 'Response - Status code {}'
 REQUEST_ERROR = 'Запрос {} - {}'
@@ -8,3 +7,4 @@ SCR_PRODUCTS = 'Спарсено {} продуктов в магазине {}.'
 ALL_STORES_NOT_FOUND = 'Файл {} не найден.'
 CATEGORY_NOT_FOUND = 'Категории {} нет в БД.'
 IMAGE_NOT_FOUND = 'Картинки по адресу {} не найдено.'
+PARSING_OK = 'Все данные по городу {} добавлены в БД {}.'

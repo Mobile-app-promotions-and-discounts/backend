@@ -4,20 +4,23 @@ from django.core.files.base import ContentFile
 from scr.core import get_response
 import scr.msg as msg
 from products.models import (Category,
+                             ChainStore,
+                             Discount,
                              Product,
                              ProductsInStore,
-                             Store)
+                             Store,
+                             StoreLocation)
 
 
 logger = logging.getLogger()
 
 
-def add_category(category):
+def add_category(category_data):
     """Подготовка картинки для db"""
-    if Category.objects.filter(name=category).exists():
-        return Category.objects.get(name=category)
+    if Category.objects.filter(name=category_data).exists():
+        return Category.objects.get(name=category_data)
     else:
-        logger.debug(msg.CATEGORY_NOT_FOUND.format(category))
+        logger.debug(msg.CATEGORY_NOT_FOUND.format(category_data))
 
 
 def add_image(url):
@@ -26,31 +29,54 @@ def add_image(url):
     return response.content
 
 
-def add_products(data, category):
-    """Подготовка продукта для db"""
-    if not Product.objects.filter(category=category, **data).exists():
-        return Product.objects.create(
-            category=category,
-            main_image=ContentFile(
-                add_image(data.get('main_image')[0] if data.get('main_image') else None),
-                name='img.jpeg'
-            ),
-            **data,
-        )
-    return Product.objects.get(
-        category=category,
-        **data,
+def add_store(store_data):
+    """Подготовка магазина для db"""
+    return Store(
+        name=store_data.get('name'),
+        location=StoreLocation(**store_data.get('location')),
+        chain_store=ChainStore(**store_data.get('chain_store'))
     )
 
 
-def add_to_db():
+def add_products(product_data):
+    """Подготовка продукта для db"""
+    category_data = product_data.pop('category')
+
+    if product_data.get('main_image'):
+        main_image = product_data.pop('main_image')[0]
+        image = add_image(main_image)
+    else:
+        image = None
+    category = add_category(category_data)
+
+    if not Product.objects.filter(category=category, **product_data).exists():
+        return Product(
+            category=category,
+            main_image=ContentFile(image, name='img.jpeg'),
+            **product_data,
+        )
+    return Product.objects.get(
+        category=category,
+        **product_data,
+    )
+
+
+def add_to_db(all_products_in_store, store_data):
     data = []
 
-    ProductsInStore.objects.get_or_create(
-            product=prod,
-            store=store,
-            discount=disc,
-            **price_in_store,
+    for products_in_store in all_products_in_store:
+        product_data = products_in_store.pop('product')
+        discount_data = products_in_store.pop('discount')
+
+        product = add_products(product_data)
+        store = add_store(store_data)
+
+        data.append(
+            ProductsInStore(
+                product=product,
+                store=store,
+                discount=Discount(**discount_data),
+                **products_in_store,
+            )
         )
-    
-    ProductsInStore.objects.bulk_create(ingredients_obj)
+    ProductsInStore.objects.bulk_create(data)
