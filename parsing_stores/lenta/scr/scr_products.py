@@ -1,9 +1,8 @@
 import logging
 
-import scr.config as cfg
-# import scr.msg as msg
-from scr.core import (get_response,
-                      save_json_file)
+import parsing_stores.lenta.scr.config as cfg
+from parsing_stores.lenta.scr.core import (get_response,
+                                           save_json_file)
 
 
 logger = logging.getLogger()

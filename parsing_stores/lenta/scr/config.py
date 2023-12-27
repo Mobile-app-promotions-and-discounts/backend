@@ -11,7 +11,7 @@ URL_GET_PRODACT = 'https://lenta.com/api/v1/stores/{}/skus/'
 NAME_STORE = 'Лента'
 LENTA_VALUE = True
 PRODUCTS_ON_PAGE = 24
-PATH_FILE = 'scr/data/{}.json'
+PATH_FILE = 'parsing_stores/lenta/scr/data/{}.json'
 FILE_NAME = {
     'ALL_STORES': 'all_stores',
     'STORES_IN_SITY': 'stores_in_{}',

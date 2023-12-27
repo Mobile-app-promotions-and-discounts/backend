@@ -1,8 +1,8 @@
 import logging
 from django.core.files.base import ContentFile
 
-from scr.core import get_response
-import scr.msg as msg
+from parsing_stores.lenta.scr.core import get_response
+import parsing_stores.lenta.scr.msg as msg
 from products.models import (Category,
                              ChainStore,
                              Discount,

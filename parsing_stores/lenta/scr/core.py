@@ -3,8 +3,8 @@ import logging
 import requests
 import time
 
-import scr.config as cfg
-import scr.msg as msg
+import parsing_stores.lenta.scr.config as cfg
+import parsing_stores.lenta.scr.msg as msg
 
 logger = logging.getLogger()
 
