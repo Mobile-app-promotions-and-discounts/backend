@@ -53,7 +53,7 @@ class DiscountAdmin(admin.ModelAdmin):
 
 @admin.register(StoreLocation)
 class StoreLocationAdmin(admin.ModelAdmin):
-    list_display = ('region', 'city', 'street', 'building',)
+    list_display = ('region', 'city', 'address',)
     list_filter = ('city',)
 
 
