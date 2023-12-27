@@ -179,8 +179,8 @@ class StoreLocation(models.Model):
     region = models.CharField('Регион', max_length=100)
     city = models.CharField('Город', max_length=100)
     address = models.CharField('Адрес', max_length=100)
-    lat = models.DecimalField('Широта', max_digits=10, decimal_places=10)
-    long = models.DecimalField('Долгата', max_digits=10, decimal_places=10)
+    lat = models.CharField('Широта', max_length=100)
+    long = models.CharField('Долгата', max_length=100)
 
     class Meta:
         verbose_name = 'Адрес магазина'

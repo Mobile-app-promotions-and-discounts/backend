@@ -24,7 +24,8 @@ def main():
             stores_in_city = open_json_file(cfg.FILE_NAME['STORES_IN_SITY'].format(city))
             # for store in stores_in_city:
                 # add_to_db(*get_products_in_store(store))
-            add_to_db(*get_products_in_store(stores_in_city[0]))
+            all_products_in_store, store_data = get_products_in_store(stores_in_city[0])
+            add_to_db(all_products_in_store, store_data)
             logger.debug(
                 msg=msg.PARSING_OK.format(city, datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
             )

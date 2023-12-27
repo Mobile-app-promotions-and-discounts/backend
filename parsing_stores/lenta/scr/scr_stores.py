@@ -51,8 +51,8 @@ def get_and_save_stores_in_city(city):
                 'region': store.get('cityName'),
                 'city': store.get('cityName').split()[0].strip(),
                 'address': store.get('address'),
-                'lat': store.get('lat'),
-                'long': store.get('long'),
+                'lat': str(store.get('lat')),
+                'long': str(store.get('long')),
             },
             'chain_store': {
                 'name': cfg.NAME_STORE,

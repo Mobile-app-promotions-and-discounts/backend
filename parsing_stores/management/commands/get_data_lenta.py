@@ -8,7 +8,6 @@ class Command(BaseCommand):
     help = 'Парсинг и загрузка данных из магазинов Лента'
 
     def handle(self, *args, **options):
-        print('Начало работы парсинга Магнит.')
         start = datetime.today()
         main()
         print(f'Парсинг окончен за {datetime.today() - start}.')

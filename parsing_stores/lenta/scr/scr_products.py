@@ -67,11 +67,11 @@ def scr_products_discount(products_discount, name_cat_bd):
                 'discount_card': cfg.LENTA_VALUE
             }
         }
-        if value.get('image'):
-            products_in_store['product']['main_image'] = [
-                value.get('image').get('fullSize'),
-                *[i.get('fullSize') for i in value.get('images')]
-            ]
+        # if value.get('image'):
+        #     products_in_store['product']['main_image'] = [
+        #         value.get('image').get('fullSize'),
+        #         *[i.get('fullSize') for i in value.get('images')]
+        #     ]
         prodacts_data.append(products_in_store)
     logger.debug('scr_products_discount - OK')
     return prodacts_data
@@ -95,11 +95,10 @@ def get_products_in_store(store):
                     nodeCode,
                     offset
                 ).json().get('skus')
-                if len(product_page) != 0:
+                if product_page and len(product_page) != 0:
                     products_discount = filter_products_discount(product_page)
                     prodacts_data = scr_products_discount(products_discount, name_cat_bd)
                     all_products_store.extend(prodacts_data)
-                    # print(prodacts_data)
                 else:
                     break
                 offset += cfg.PRODUCTS_ON_PAGE
