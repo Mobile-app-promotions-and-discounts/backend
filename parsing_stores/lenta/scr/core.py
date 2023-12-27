@@ -1,6 +1,7 @@
 import json
 import logging
 import requests
+import time
 
 import scr.config as cfg
 import scr.msg as msg
@@ -8,7 +9,7 @@ import scr.msg as msg
 logger = logging.getLogger()
 
 
-def get_response(options, metod='get'):
+def get_response(options=None, metod='get'):
     logger.debug(msg.REQUEST_START.format(options.get('url')))
     try:
         response = (requests.get(**options)
@@ -19,10 +20,12 @@ def get_response(options, metod='get'):
             logger.debug(msg.RESPONSE_STATUS.format(
                 response.status_code,
                 options.get('url')))
-            return response
         logger.error(msg.RESPONSE_STATUS.format(response.status_code))
     except requests.RequestException as error:
         logger.error(msg.REQUEST_ERROR.format(options.get('url'), error))
+        time.sleep(5)
+        response = get_response(options, metod)
+    return response
 
 
 def save_json_file(file_, name_file, mode='w', newline='\n'):

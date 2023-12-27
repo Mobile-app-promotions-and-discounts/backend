@@ -131,8 +131,8 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
-    initial_price = models.DecimalField('Цена товара без акции', decimal_places=2, max_digits=10)
-    promo_price = models.DecimalField('Цена товара по акции', decimal_places=2, max_digits=10)
+    initial_price = models.IntegerField('Цена товара без акции')
+    promo_price = models.IntegerField('Цена товара по акции')
     discount = models.ForeignKey(
         'Discount',
         related_name='discount',

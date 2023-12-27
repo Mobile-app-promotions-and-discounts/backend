@@ -18,9 +18,9 @@ def main():
         get_and_save_all_stores()
         for city in cfg.CITY_APPLICATIONS:
             get_and_save_stores_in_city(city)
-            stores_in_city = open_json_file(cfg.FILE_NAME['ALL_STORES'])
+            stores_in_city = open_json_file(cfg.FILE_NAME['STORES_IN_SITY'].format(city))
             for store in stores_in_city:
-                get_products_in_store(store)
+                rez = get_products_in_store(store)
     except Exception as error:
         logger.critical(msg=error, exc_info=True)
         sys.exit()

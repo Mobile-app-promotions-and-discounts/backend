@@ -102,12 +102,12 @@ def get_products_in_store(store):
                     products_discount = filter_products_discount(product_page)
                     prodacts_data = scr_products_discount(products_discount, name_cat_bd)
                     all_products_store.extend(prodacts_data)
-                    print(prodacts_data)
+                    # print(prodacts_data)
                 else:
                     break
                 offset += cfg.PRODUCTS_ON_PAGE
-    print(len(all_products_store))
     save_json_file(
         all_products_store,
         f'ВСЕ ТОВАРЫ КАТЕГОРИИ{store.get("id_store")}',
     )
+    return all_products_store, store
