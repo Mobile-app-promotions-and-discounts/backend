@@ -1,23 +1,37 @@
+from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+User = get_user_model()
 
 
 class Product(models.Model):
     """Модель продукта/товара."""
     name = models.CharField('Название', max_length=255)
-    description = models.TextField('Описание')
+    description = models.TextField(
+        'Описание',
+        blank=True,
+        null=True,
+    )
+    barcode = models.CharField(
+        'Штрихкод',
+        max_length=13,
+        blank=True,
+        null=True,
+    )
     category = models.ForeignKey(
         'Category',
-        related_name='category',
         on_delete=models.SET_DEFAULT,
-        default='Без категории',
+        default=1,
+        related_name='category',
         verbose_name='Категория',
         help_text='Выберите категорию товара'
     )
-    image = models.ForeignKey(
-        'ProductImage',
-        related_name='image',
-        on_delete=models.CASCADE,
-        verbose_name='Изображение товара'
+    main_image = models.ImageField(
+        upload_to='product_images/',
+        blank=True,
+        null=True,
+        verbose_name='Главное изображение продукта',
     )
     stores = models.ManyToManyField(
         'Store',
@@ -37,7 +51,17 @@ class Product(models.Model):
 
 class Category(models.Model):
     """Модель категории, к которой относится товар."""
-    name = models.CharField('Название', max_length=255)
+    class CategoryType(models.TextChoices):
+        PRODUCTS = 'PRODUCTS', 'Продукты'
+        CLOTHES = 'CLOTHES', 'Одежда и обувь'
+        HOME = 'HOME', 'Для дома и сада'
+        COSMETICS = 'COSMETICS', 'Косметика и гигиена'
+        KIDS = 'KIDS', 'Для детей'
+        ZOO = 'ZOO', 'Зоотовары'
+        AUTO = 'AUTO', 'Авто'
+        HOLIDAYS = 'HOLIDAYS', 'К празднику'
+
+    name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
 
     class Meta:
         ordering = ('name',)
@@ -50,18 +74,21 @@ class Category(models.Model):
 
 class ProductImage(models.Model):
     """Модель фотографий товара."""
-    main_image = models.ImageField(
-        'Главное изображение',
-        upload_to='product_images',
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='images',
+        verbose_name='Фото товара',
     )
-    additional_photo = models.ImageField(
-        'Дополнительное изображение',
-        upload_to='product_images',
+    image = models.ImageField(
+        upload_to='product_images/',
+        unique=True,
+        verbose_name='Дополнительное изображение товара',
     )
 
     class Meta:
-        verbose_name = 'Изображение'
-        verbose_name_plural = 'Изображения'
+        verbose_name = 'Изображение товар'
+        verbose_name_plural = 'Изображения товара'
 
 
 class Store(models.Model):
@@ -76,7 +103,8 @@ class Store(models.Model):
     chain_store = models.ForeignKey(
         'ChainStore',
         related_name='chain_store',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_DEFAULT,
+        default=1,
         verbose_name='Сеть магазинов'
     )
 
@@ -103,7 +131,8 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
-    price = models.FloatField()
+    initial_price = models.DecimalField('Цена товара без акции', decimal_places=2, max_digits=10)
+    promo_price = models.DecimalField('Цена товара по акции', decimal_places=2, max_digits=10)
     discount = models.ForeignKey(
         'Discount',
         related_name='discount',
@@ -121,23 +150,19 @@ class ProductsInStore(models.Model):
 
 class Discount(models.Model):
     """Модель акции/скидки."""
-    RUBLES = 'RUB'
-    PERCENTAGE = '%'
-
-    UNIT_CHOICES = [
-        (RUBLES, 'Скидка в рублях'),
-        (PERCENTAGE, 'Скидка в процентах'),
-    ]
+    class UnitType(models.TextChoices):
+        RUBLES = 'RUB', 'Скидка в рублях'
+        PERCENTAGE = '%', 'Скидка в процентах'
 
     discount_rate = models.IntegerField('Размер скидки')
     discount_unit = models.CharField(
         'Единица измерения',
-        max_length=11,
-        choices=UNIT_CHOICES,
-        default=PERCENTAGE,
+        max_length=3,
+        choices=UnitType.choices,
+        default=UnitType.PERCENTAGE,
     )
-    discount_start = models.CharField('Начало акции', max_length=50)
-    discount_end = models.CharField('Окончание акции', max_length=50)
+    discount_start = models.DateField('Начало акции')
+    discount_end = models.DateField('Окончание акции')
     discount_card = models.BooleanField('Скидка по карте', default=False)
 
     class Meta:
@@ -175,3 +200,53 @@ class ChainStore(models.Model):
 
     def __str__(self):
         return f'Сеть {self.name}'
+
+
+class Favorites(models.Model):
+    "Модель для избранных товаров"
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Избранный товар')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites',
+                             verbose_name='Пользователь')
+
+    class Meta:
+        ordering = ('product',)
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+        constraints = [models.UniqueConstraint(fields=['product', 'user'], name='unique favorite product')]
+
+    def __str__(self):
+        return f'{self.user.username}`s favorite product {self.product.name}'
+
+
+class Review(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Ссылка на товар'
+    )
+    customer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Покупатель'
+    )
+    text = models.TextField(
+        help_text='Поделитесь своим мнением о товаре',
+        verbose_name='Текст отзыва'
+    )
+    score = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name='Оценка товара'
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата добавления отзыва'
+    )
+
+    class Meta:
+        verbose_name = 'Отзыв на товар'
+        verbose_name_plural = 'Отзывы на товары'
+
+    def __str__(self):
+        return self.text[:30]
