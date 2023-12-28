@@ -92,29 +92,35 @@ CATEGORY = {
 
 # requests headers
 HEADERS = {
-        'Accept': 'application/json',
-        'Accept-Language': 'en,ru-RU;q=0.9,ru;q=0.8,en-US;q=0.7,uk;q=0.6',
-        'Connection': 'keep-alive',
-        'Content-Type': 'application/json',
-        'DNT': '1',
-        'Origin': 'https://lenta.com',
-        'Referer': 'https://lenta.com/promo/frukty-i-ovoshchi/frukty/',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'same-origin',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-        'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-        'sec-ch-ua-mobile': '?1',
-        'sec-ch-ua-platform': '"Android"',
-    }
+    'Accept': 'application/json',
+    'Accept-Language': 'en,ru-RU;q=0.9,ru;q=0.8,en-US;q=0.7,uk;q=0.6',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/json',
+    'DNT': '1',
+    'Origin': 'https://lenta.com',
+    'Referer': 'https://lenta.com/promo/frukty-i-ovoshchi/frukty/',
+    'Sec-Fetch-Dest': 'empty',
+    'Sec-Fetch-Mode': 'cors',
+    'Sec-Fetch-Site': 'same-origin',
+    'User-Agent': ('Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/'
+                   'MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
+                   '/120.0.0.0 Mobile Safari/537.36'),
+    'sec-ch-ua': ('"Not_A Brand";v="8", "Chromium'
+                  '";v="120", "Google Chrome";v="120"'),
+    'sec-ch-ua-mobile': '?1',
+    'sec-ch-ua-platform': '"Android"',
+}
 
 # requests cookies
 cookies = {
     'KFP_DID': 'cda1cfa9-63f0-931d-71f0-99caa85965f4',
-    'oxxfgh': 'caa429fd-33a7-4dcf-b241-26cdf35bbf1f#0#5184000000#5000#1800000#44965',
+    'oxxfgh': ('caa429fd-33a7-4dcf-b241-26cdf35bbf1f#0#5184000000#5000#18'
+               '00000#44965'),
     '_gid': 'GA1.2.433868370.1703450819',
     'splses.d58d': '*',
-    '.ASPXANONYMOUS': 'IwzFt9mMQQX1bDam_1RPrXO37fW7XQ9pDywfvnRZPq6cDKKwRhxtE3pEWr_T9HVeqEys58bmbHNNSyROjzc8xlT88uXMeCeOaDYRWYfHrJIHPtYJjaleA68DzgecmXx2BExA2g2',
+    '.ASPXANONYMOUS': ('IwzFt9mMQQX1bDam_1RPrXO37fW7XQ9pDywfvnRZPq6cDKKwRhxt'
+                       'E3pEWr_T9HVeqEys58bmbHNNSyROjzc8xlT88uXMeCeOaDYRWYfH'
+                       'rJIHPtYJjaleA68DzgecmXx2BExA2g2'),
     'ASP.NET_SessionId': 'yyg0ywhb0emhs5uh1dp52qih',
     'cookiesession1': '678B286D68C34367DB0D4BEA1FC1E493',
     'qrator_ssid': '1703450819.710.maJA9ERPvYdlwII8-cpcg93tn2dmgpa4hbah7hr4u70o1cq85',
@@ -154,7 +160,9 @@ cookies = {
     '_ga': 'GA1.2.2140699981.1703103881',
     'tmr_detect': '0%7C1703454278504',
     '_ga_R6J1ZT7WKM': 'GS1.2.1703450819.9.1.1703454304.0.0.0',
-    'splid.d58d': '53e8ede6-f3fe-4ca3-9688-2d4b848d0889.1703450819.9.1703454305..26270234-2cf9-4dfc-bbd4-c97759feb5a9..f188ad02-d288-4e3b-990d-a7b9c1a4f30a.1703450819364.159',
+    'splid.d58d': ('53e8ede6-f3fe-4ca3-9688-2d4b848d0889.1703450819.9.170'
+                   '3454305..26270234-2cf9-4dfc-bbd4-c97759feb5a9..f188ad02'
+                   '-d288-4e3b-990d-a7b9c1a4f30a.1703450819364.159'),
     '_ga_QB4J0GGLM': 'GS1.1.1703450819.9.1.1703454304.0.0.0',
     '_ga_QB4J0GGLMG': 'GS1.1.1703450819.9.1.1703454304.0.0.0',
     '_ga_7T2BMDLJY8': 'GS1.1.1703450819.9.1.1703454304.0.0.0',

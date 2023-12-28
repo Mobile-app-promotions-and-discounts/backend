@@ -1,7 +1,8 @@
 import json
 import logging
-import requests
 import time
+
+import requests
 
 import parsing_stores.lenta.scr.config as cfg
 import parsing_stores.lenta.scr.msg as msg
