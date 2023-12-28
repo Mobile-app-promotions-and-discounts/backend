@@ -79,7 +79,7 @@ class ProductsInStoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductsInStore
-        fields = ('id', 'discount', 'store', 'initial_price', 'promo_price',)
+        fields = ('id', 'discount', 'store', 'initial_price', 'promo_price')
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -95,18 +95,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = (
-            'id',
-            'name',
-            'rating',
-            'category',
-            'barcode',
-            'description',
-            'main_image',
-            'stores',
-            'is_favorited',
-            'images'
-        )
+        fields = ('id', 'name', 'rating', 'category', 'barcode', 'description',
+                  'main_image', 'stores', 'is_favorited', 'images')
 
     def get_is_favorited(self, obj):
         user_requsting = self.context['request'].user
@@ -156,10 +146,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ('customer', 'text', 'score', 'pub_date')
 
     def validate_review(self, value):
-        """Валидация для оценки рейтинга."""
+        """Валидация для оценки товара."""
         if not (0 < value <= 5):
             raise serializers.ValidationError(
-                'Рейтинг должен быть целым числом от 0 до 5.'
+                'Оценка должна быть целым числом от 1 до 5.'
             )
         return value
 
