@@ -4,7 +4,6 @@ import parsing_stores.lenta.scr.config as cfg
 from parsing_stores.lenta.scr.core import get_response
 
 
-
 logger = logging.getLogger()
 
 
@@ -58,8 +57,8 @@ def scr_products_discount(products_discount, name_cat_bd):
                 'barcode': value.get('code'),
                 'category': name_cat_bd,
             },
-            'initial_price': int(value.get('regularPrice') * 100),
-            'promo_price': int(value.get('discountPrice') * 100),
+            'initial_price': str(value.get('regularPrice')).replace('.', ''),
+            'promo_price': str(value.get('discountPrice')).replace('.', ''),
             'discount': {
                 'discount_rate': value.get('promoPercent'),
                 'discount_start': value.get('validityStartDate')[:10],

@@ -32,8 +32,8 @@ def get_and_save_stores_in_city(city):
     'name': 'Лента',
     'city': 'Москва и МО',
     'street': 'ул. 9-я Парковая, д. 68, корп. 5',
-    'lat': 54.907765,
-    'long': 52.255366,
+    'latitude': 54.907765,
+    'longitude': 52.255366,
     }
     """
 
@@ -51,8 +51,8 @@ def get_and_save_stores_in_city(city):
                 'region': store.get('cityName'),
                 'city': store.get('cityName').split()[0].strip(),
                 'address': store.get('address'),
-                'lat': str(store.get('lat')),
-                'long': str(store.get('long')),
+                'latitude': str(store.get('lat')),
+                'longitude': str(store.get('long')),
             },
             'chain_store': {
                 'name': cfg.NAME_STORE,

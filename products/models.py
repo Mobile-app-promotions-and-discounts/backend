@@ -131,8 +131,8 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
-    initial_price = models.IntegerField('Цена товара без акции')
-    promo_price = models.IntegerField('Цена товара по акции')
+    initial_price = models.CharField('Цена товара без акции', max_length=10)
+    promo_price = models.CharField('Цена товара по акции', max_length=10)
     discount = models.ForeignKey(
         'Discount',
         related_name='discount',
@@ -143,6 +143,12 @@ class ProductsInStore(models.Model):
     class Meta:
         verbose_name = 'Скидка на товар в магазине'
         verbose_name_plural = 'Скидки на товар в магазине'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['product', 'store'],
+                name='unique_product_store'
+            )
+        ]
 
     def __str__(self):
         return f'{self.product.name} в {self.store}'
@@ -179,8 +185,8 @@ class StoreLocation(models.Model):
     region = models.CharField('Регион', max_length=100)
     city = models.CharField('Город', max_length=100)
     address = models.CharField('Адрес', max_length=100)
-    lat = models.CharField('Широта', max_length=100)
-    long = models.CharField('Долгата', max_length=100)
+    latitude = models.CharField('Широта', max_length=100)
+    longitude = models.CharField('Долгата', max_length=100)
 
     class Meta:
         verbose_name = 'Адрес магазина'
