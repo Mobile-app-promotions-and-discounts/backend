@@ -71,6 +71,6 @@ class FavoritesAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'product', 'text', 'score', 'pub_date')
+    list_display = ('user', 'product', 'text', 'score', 'pub_date')
     list_filter = ('product',)
     search_fields = ('product', 'pub_date')
