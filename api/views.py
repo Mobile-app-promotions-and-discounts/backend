@@ -20,7 +20,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend, SearchFilter)
     filterset_fields = ('category',)
-    search_fields = ('barcode',)
+    search_fields = ('=barcode', '@name')
 
     def get_queryset(self):
         if self.action == "favorites":
