@@ -1,40 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import CheckConstraint, Q, UniqueConstraint
 
 User = get_user_model()
-
-
-class Category(models.Model):
-    """Модель категории, к которой относится товар."""
-    class CategoryType(models.TextChoices):
-        PRODUCTS = 'PRODUCTS', 'Продукты'
-        CLOTHES = 'CLOTHES', 'Одежда и обувь'
-        HOME = 'HOME', 'Для дома и сада'
-        COSMETICS = 'COSMETICS', 'Косметика и гигиена'
-        KIDS = 'KIDS', 'Для детей'
-        ZOO = 'ZOO', 'Зоотовары'
-        AUTO = 'AUTO', 'Авто'
-        HOLIDAYS = 'HOLIDAYS', 'К празднику'
-        DIFFERENT = 'DIFFERENT', 'Разное'
-
-    name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
-
-    class Meta:
-        ordering = ('name',)
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
-
-    def __str__(self):
-        return self.name
-
-
-def _get_default_category(category_name=None):
-    if category_name is None:
-        category_name = 'DIFFERENT'
-    if not Category.objects.filter(name=category_name).exists():
-        raise NotImplementedError('Создайте категории командой <python manage.py add_categories>')
-    return Category.objects.get(name=category_name).id
 
 
 class Product(models.Model):
@@ -76,6 +45,31 @@ class Product(models.Model):
         ordering = ('name',)
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    """Модель категории, к которой относится товар."""
+    class CategoryType(models.TextChoices):
+        PRODUCTS = 'PRODUCTS', 'Продукты'
+        CLOTHES = 'CLOTHES', 'Одежда и обувь'
+        HOME = 'HOME', 'Для дома и сада'
+        COSMETICS = 'COSMETICS', 'Косметика и гигиена'
+        KIDS = 'KIDS', 'Для детей'
+        ZOO = 'ZOO', 'Зоотовары'
+        AUTO = 'AUTO', 'Авто'
+        HOLIDAYS = 'HOLIDAYS', 'К празднику'
+        DIFFERENT = 'DIFFERENT', 'Разное'
+
+    name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
+    image = models.ImageField(upload_to='category_images/', verbose_name='Изображение категории', blank=True, null=True)
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
     def __str__(self):
         return self.name
@@ -158,6 +152,12 @@ class ProductsInStore(models.Model):
     class Meta:
         verbose_name = 'Скидка на товар в магазине'
         verbose_name_plural = 'Скидки на товар в магазине'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['product', 'store'],
+                name='unique_product_store'
+            )
+        ]
 
     def __str__(self):
         return f'{self.product.name} в {self.store}'
@@ -193,22 +193,22 @@ class StoreLocation(models.Model):
     """Модель для адреса конкретного магазина."""
     region = models.CharField('Регион', max_length=100)
     city = models.CharField('Город', max_length=100)
-    street = models.CharField('Улица', max_length=255)
-    building = models.CharField('Номер здания', max_length=20)
-    latitude = models.FloatField('Широта', blank=True, null=True)
-    longitude = models.FloatField('Долгота', blank=True, null=True)
+    address = models.CharField('Адрес', max_length=255)
+    latitude = models.CharField('Широта', max_length=100)
+    longitude = models.CharField('Долгата', max_length=100)
 
     class Meta:
         verbose_name = 'Адрес магазина'
         verbose_name_plural = 'Адреса магазинов'
 
     def __str__(self):
-        return f'{self.city}, {self.street}, {self.building}'
+        return f'{self.city}, {self.address}'
 
 
 class ChainStore(models.Model):
     """Модель для сети магазинов."""
     name = models.CharField('Название сети магазинов', max_length=100)
+    logo = models.ImageField(upload_to='store_logos/', verbose_name='Логотип сети', blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
@@ -220,7 +220,7 @@ class ChainStore(models.Model):
 
 
 class Favorites(models.Model):
-    "Модель для избранных товаров"
+    """Модель для избранных товаров"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Избранный товар')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites',
                              verbose_name='Пользователь')
@@ -229,7 +229,7 @@ class Favorites(models.Model):
         ordering = ('product',)
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
-        constraints = [models.UniqueConstraint(fields=['product', 'user'], name='unique favorite product')]
+        constraints = [UniqueConstraint(fields=['product', 'user'], name='unique favorite product')]
 
     def __str__(self):
         return f'{self.user.username}`s favorite product {self.product.name}'
@@ -242,7 +242,7 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name='Ссылка на товар'
     )
-    customer = models.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='reviews',
@@ -264,6 +264,10 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв на товар'
         verbose_name_plural = 'Отзывы на товары'
+        constraints = [
+            CheckConstraint(check=Q(score__range=(1, 5)), name='valid_score'),
+            UniqueConstraint(fields=['user', 'product'], name='score_once')
+        ]
 
     def __str__(self):
         return self.text[:30]
