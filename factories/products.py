@@ -1,4 +1,7 @@
+import os
+
 from datetime import timedelta
+from decimal import Decimal
 
 import factory.fuzzy
 from factory.django import DjangoModelFactory
@@ -8,10 +11,14 @@ from products.models import (Category, ChainStore, Discount, Favorites,
                              Product, ProductImage, ProductsInStore, Review,
                              Store, StoreLocation)
 
-from .constants import CHAIN_STORES
+from .constants import CHAIN_STORES, PRODUCTS_NAMES, PRODUCTS_DESCRIPTIONS
 from .users import UserFactory
 
 fake = Faker(locale='ru_RU')
+
+absolute_path = os.path.dirname(__file__)
+relative_path = "categories_images"
+PATH = os.path.join(absolute_path, relative_path)
 
 
 class ChainStoreFactory(DjangoModelFactory):
@@ -20,6 +27,7 @@ class ChainStoreFactory(DjangoModelFactory):
         django_get_or_create = ('name',)
 
     name = factory.Iterator(CHAIN_STORES)
+    logo = factory.django.ImageField(color=factory.Faker('color'))
 
 
 class CategoryFactory(DjangoModelFactory):
@@ -28,6 +36,7 @@ class CategoryFactory(DjangoModelFactory):
         django_get_or_create = ('name',)
 
     name = factory.Iterator(Category.CategoryType.values)
+    image = factory.django.ImageField(color=factory.Faker('color'))
 
 
 class StoreLocationFactory(DjangoModelFactory):
@@ -44,17 +53,9 @@ class StoreFactory(DjangoModelFactory):
     class Meta:
         model = Store
 
-    name = factory.Faker('text', max_nb_chars=255, locale='ru_RU')
+    name = factory.Faker('text', max_nb_chars=10, locale='ru_RU')
     location = factory.SubFactory(StoreLocationFactory)
     chain_store = factory.SubFactory(ChainStoreFactory)
-
-
-class ProductImageFactory(DjangoModelFactory):
-    class Meta:
-        model = ProductImage
-
-    main_image = factory.django.ImageField(color=factory.Faker('color'))
-    additional_photo = factory.django.ImageField(color=factory.Faker('color'))
 
 
 class DiscountFactory(DjangoModelFactory):
@@ -73,11 +74,19 @@ class ProductFactory(DjangoModelFactory):
         model = Product
         django_get_or_create = ('name',)
 
-    name = factory.Faker('text', max_nb_chars=255, locale='ru_RU')
-    description = factory.Faker('text', max_nb_chars=255, locale='ru_RU')
+    name = factory.Iterator(PRODUCTS_NAMES)
+    description = factory.Iterator(PRODUCTS_DESCRIPTIONS)
     barcode = factory.LazyAttribute(lambda _: fake.ean(length=13))
     category = factory.SubFactory(CategoryFactory)
-    image = factory.SubFactory(ProductImageFactory)
+    main_image = factory.django.ImageField(color=factory.Faker('color'))
+
+
+class ProductImageFactory(DjangoModelFactory):
+    class Meta:
+        model = ProductImage
+
+    product = factory.SubFactory(ProductFactory)
+    image = factory.django.ImageField(color=factory.Faker('color'))
 
 
 class ProductsInStoreFactory(DjangoModelFactory):
@@ -86,8 +95,11 @@ class ProductsInStoreFactory(DjangoModelFactory):
 
     product = factory.SubFactory(ProductFactory)
     store = factory.SubFactory(StoreFactory)
-    price = factory.fuzzy.FuzzyDecimal(low=10.0, high=1000.0)
+    initial_price = factory.fuzzy.FuzzyDecimal(low=10.0, high=1000.0)
     discount = factory.SubFactory(DiscountFactory)
+    promo_price = factory.LazyAttribute(
+        lambda x: x.initial_price - x.discount.discount_rate if x.discount.discount_unit == 'RUB'
+        else x.initial_price - x.initial_price * (Decimal(str(x.discount.discount_rate / 100))))
 
 
 class ProductWithStoreFactory(ProductFactory):
@@ -107,7 +119,7 @@ class ReviewFactory(DjangoModelFactory):
         model = Review
 
     product = factory.SubFactory(ProductFactory)
-    customer = factory.SubFactory(UserFactory)
-    text = factory.Faker('text', max_nb_chars=255, locale='ru_RU')
+    user = factory.SubFactory(UserFactory)
+    text = factory.Faker('text', max_nb_chars=50, locale='ru_RU')
     score = factory.Faker('pyint', min_value=1, max_value=5)
     pub_date = factory.LazyAttribute(lambda _: fake.date_this_month(before_today=False))
