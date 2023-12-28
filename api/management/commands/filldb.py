@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from factories.products import FavoritesFactory, ProductImageFactory, ProductsInStoreFactory, ReviewFactory
+from factories.products import (FavoritesFactory, ProductImageFactory,
+                                ProductsInStoreFactory, ReviewFactory)
 
 OBJECTS_COUNT = 20
 

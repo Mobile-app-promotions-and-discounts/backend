@@ -1,5 +1,4 @@
 import os
-
 from datetime import timedelta
 from decimal import Decimal
 
@@ -11,7 +10,7 @@ from products.models import (Category, ChainStore, Discount, Favorites,
                              Product, ProductImage, ProductsInStore, Review,
                              Store, StoreLocation)
 
-from .constants import CHAIN_STORES, PRODUCTS_NAMES, PRODUCTS_DESCRIPTIONS
+from .constants import CHAIN_STORES, PRODUCTS_DESCRIPTIONS, PRODUCTS_NAMES
 from .users import UserFactory
 
 fake = Faker(locale='ru_RU')
