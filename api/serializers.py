@@ -43,7 +43,7 @@ class StoreLocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StoreLocation
-        fields = ('id', 'region', 'city', 'street', 'building')
+        fields = ('id', 'region', 'city', 'address')
 
 
 class ChainStoreSerializer(serializers.ModelSerializer):
