@@ -44,8 +44,7 @@ class StoreLocationFactory(DjangoModelFactory):
 
     region = factory.Faker('region', locale='ru_RU')
     city = factory.Faker('city', locale='ru_RU')
-    street = factory.Faker('street_name', locale='ru_RU')
-    building = factory.Faker('building_number', locale='ru_RU')
+    address = factory.Faker('street_address', locale='ru_RU')
 
 
 class StoreFactory(DjangoModelFactory):
