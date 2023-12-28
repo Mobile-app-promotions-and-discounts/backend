@@ -23,7 +23,7 @@ class Product(models.Model):
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
-        default=1,
+        default=_get_default_category(),
         related_name='category',
         verbose_name='Категория',
         help_text='Выберите категорию товара'
@@ -61,6 +61,7 @@ class Category(models.Model):
         ZOO = 'ZOO', 'Зоотовары'
         AUTO = 'AUTO', 'Авто'
         HOLIDAYS = 'HOLIDAYS', 'К празднику'
+        DIFFERENT = 'DIFFERENT', 'Разное'
 
     name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
     image = models.ImageField(upload_to='category_images/', verbose_name='Изображение категории', blank=True, null=True)
@@ -108,6 +109,12 @@ class Store(models.Model):
         on_delete=models.SET_DEFAULT,
         default=1,
         verbose_name='Сеть магазинов'
+    )
+    id_in_chain_store = models.CharField(
+        max_length=6,
+        null=True,
+        blank=True,
+        verbose_name='id магазина в сети',
     )
 
     class Meta:
