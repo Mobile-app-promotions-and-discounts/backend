@@ -93,8 +93,9 @@ class ProductsInStoreFactory(DjangoModelFactory):
 
     product = factory.SubFactory(ProductFactory)
     store = factory.SubFactory(StoreFactory)
-    initial_price = factory.fuzzy.FuzzyDecimal(low=10.0, high=1000.0)
     discount = factory.SubFactory(DiscountFactory)
+    # TODO: исправить типы данных у полей initial_price и promo_price
+    initial_price = factory.fuzzy.FuzzyDecimal(low=10.0, high=1000.0)
     promo_price = factory.LazyAttribute(
         lambda x: x.initial_price - x.discount.discount_rate if x.discount.discount_unit == 'RUB'
         else x.initial_price - x.initial_price * (Decimal(str(x.discount.discount_rate / 100))))
