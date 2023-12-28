@@ -1,6 +1,5 @@
 # Перенести в проект
 CITY_APPLICATIONS = ['Москва',]
-MAIN_CATEGORY = ['Продукты',]
 
 # URL
 URL_GET_STORES = 'https://lenta.com/api/v1/stores/'

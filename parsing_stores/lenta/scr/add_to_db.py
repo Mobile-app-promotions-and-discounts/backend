@@ -1,7 +1,8 @@
 import logging
 from django.core.files.base import ContentFile
 
-from parsing_stores.lenta.scr.core import get_response
+import parsing_stores.lenta.scr.config as cfg
+from parsing_stores.lenta.scr.core import (get_response)
 from products.models import (Category,
                              ChainStore,
                              Discount,
@@ -23,7 +24,10 @@ def add_category(category_data):
 
 def add_image(url):
     """Подготовка картинки для db"""
-    response = get_response(options={'url': url})
+    response = get_response(options={'url': url,
+                                     'cookies': cfg.cookies,
+                                     'headers': cfg.HEADERS}
+                            )
     return response.content
 
 
@@ -40,17 +44,18 @@ def add_products(product_data):
     """Подготовка продукта для db"""
     category_data = product_data.pop('category')
 
-    # if product_data.get('main_image'):
-    #     main_image = product_data.pop('main_image')[0]
-    #     image = add_image(main_image)
-    # else:
-    #     image = None
+    if product_data.get('main_image'):
+        main_image = product_data.pop('main_image')[0]
+        image = add_image(main_image)
+        _image = ContentFile(image, name='img_product.jpeg')
+    else:
+        _image = None
     category = add_category(category_data)
 
     if not Product.objects.filter(category=category, **product_data).exists():
         return Product.objects.create(
             category=category,
-            # main_image=ContentFile(image, name='img.jpeg'),
+            main_image=_image,
             **product_data
         )
     return Product.objects.get(
@@ -61,7 +66,6 @@ def add_products(product_data):
 
 def add_to_db(all_products_in_store, store_data):
     data = []
-    logger.debug('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     for products_in_store in all_products_in_store:
         product_data = products_in_store.pop('product')
         discount_data = products_in_store.pop('discount')

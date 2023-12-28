@@ -1,8 +1,8 @@
 import logging
 
 import parsing_stores.lenta.scr.config as cfg
-from parsing_stores.lenta.scr.core import (get_response,
-                                           save_json_file)
+from parsing_stores.lenta.scr.core import get_response
+
 
 
 logger = logging.getLogger()
@@ -67,11 +67,11 @@ def scr_products_discount(products_discount, name_cat_bd):
                 'discount_card': cfg.LENTA_VALUE
             }
         }
-        # if value.get('image'):
-        #     products_in_store['product']['main_image'] = [
-        #         value.get('image').get('fullSize'),
-        #         *[i.get('fullSize') for i in value.get('images')]
-        #     ]
+        if value.get('image'):
+            products_in_store['product']['main_image'] = [
+                value.get('image').get('thumbnail'),
+                *[i.get('thumbnail') for i in value.get('images')]
+            ]
         prodacts_data.append(products_in_store)
     logger.debug('scr_products_discount - OK')
     return prodacts_data
@@ -102,8 +102,4 @@ def get_products_in_store(store):
                 else:
                     break
                 offset += cfg.PRODUCTS_ON_PAGE
-    save_json_file(
-        all_products_store,
-        f'ВСЕ ТОВАРЫ КАТЕГОРИИ{store.get("id_store")}',
-    )
     return all_products_store, store
