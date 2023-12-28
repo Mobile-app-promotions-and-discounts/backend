@@ -63,7 +63,7 @@ class Category(models.Model):
         HOLIDAYS = 'HOLIDAYS', 'К празднику'
 
     name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
-    image = models.ImageField(upload_to='category_images/', verbose_name='Изображение категории')
+    image = models.ImageField(upload_to='category_images/', verbose_name='Изображение категории', blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
@@ -194,7 +194,7 @@ class StoreLocation(models.Model):
 class ChainStore(models.Model):
     """Модель для сети магазинов."""
     name = models.CharField('Название сети магазинов', max_length=100)
-    logo = models.ImageField(upload_to='store_logos/', verbose_name='Логотип сети')
+    logo = models.ImageField(upload_to='store_logos/', verbose_name='Логотип сети', blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
