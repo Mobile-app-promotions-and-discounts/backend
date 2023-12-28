@@ -14,10 +14,14 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.LazyAttribute(lambda _: fake.unique.email())
     username = email
     password = factory.PostGenerationMethodCall('set_password', 'pass')
+    first_name = factory.LazyAttribute(lambda _: fake.first_name())
+    last_name = factory.LazyAttribute(lambda _: fake.last_name())
     phone = factory.Faker('phone_number', locale='ru_RU')
     role = factory.fuzzy.FuzzyChoice(User.RoleType.values)
-    foto = factory.django.ImageField(
+    photo = factory.django.ImageField(
         color=factory.Faker('color'),
         width=factory.Faker('random_int', min=10, max=1000),
         height=factory.SelfAttribute('width'),
     )
+    gender = factory.fuzzy.FuzzyChoice(User.GenderType.values)
+    date_of_birth = factory.LazyAttribute(lambda _: fake.date_of_birth(minimum_age=7, maximum_age=110))

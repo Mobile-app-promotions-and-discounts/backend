@@ -15,7 +15,7 @@ class ProductImageInline(admin.TabularInline):
 
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'image')
+    list_display = ('id', 'product', 'image',)
     list_filter = ('product',)
 
 
@@ -41,19 +41,19 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
     list_display = ('name', 'location', 'chain_store',)
-    list_filter = ('name', 'chain_store')
+    list_filter = ('name', 'chain_store',)
     search_fields = ('name', 'id', 'chain_store')
 
 
 @admin.register(Discount)
 class DiscountAdmin(admin.ModelAdmin):
-    list_display = ('discount_rate', 'discount_unit', 'discount_start', 'discount_end', 'discount_card')
+    list_display = ('discount_rate', 'discount_unit', 'discount_start', 'discount_end', 'discount_card',)
     list_filter = ('discount_rate',)
 
 
 @admin.register(StoreLocation)
 class StoreLocationAdmin(admin.ModelAdmin):
-    list_display = ('region', 'city', 'street', 'building',)
+    list_display = ('region', 'city', 'address',)
     list_filter = ('city',)
 
 
@@ -66,11 +66,11 @@ class ChainStoreAdmin(admin.ModelAdmin):
 
 @admin.register(Favorites)
 class FavoritesAdmin(admin.ModelAdmin):
-    list_display = ('product', 'user')
+    list_display = ('product', 'user',)
 
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'product', 'text', 'score', 'pub_date')
+    list_display = ('user', 'product', 'text', 'score', 'pub_date',)
     list_filter = ('product',)
-    search_fields = ('product', 'pub_date')
+    search_fields = ('product', 'pub_date',)
