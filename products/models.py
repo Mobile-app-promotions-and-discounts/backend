@@ -5,12 +5,36 @@ from django.db import models
 User = get_user_model()
 
 
+class Category(models.Model):
+    """Модель категории, к которой относится товар."""
+    class CategoryType(models.TextChoices):
+        PRODUCTS = 'PRODUCTS', 'Продукты'
+        CLOTHES = 'CLOTHES', 'Одежда и обувь'
+        HOME = 'HOME', 'Для дома и сада'
+        COSMETICS = 'COSMETICS', 'Косметика и гигиена'
+        KIDS = 'KIDS', 'Для детей'
+        ZOO = 'ZOO', 'Зоотовары'
+        AUTO = 'AUTO', 'Авто'
+        HOLIDAYS = 'HOLIDAYS', 'К празднику'
+        DIFFERENT = 'DIFFERENT', 'Разное'
+
+    name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.name
+
+
 def _get_default_category(category_name=None):
     if category_name is None:
         category_name = 'DIFFERENT'
     if not Category.objects.filter(name=category_name).exists():
-        raise NotImplementedError('Создайте категории командой')
-    return Category.objects.get(name=category_name)
+        raise NotImplementedError('Создайте категории командой <python manage.py add_categories>')
+    return Category.objects.get(name=category_name).id
 
 
 class Product(models.Model):
@@ -30,7 +54,7 @@ class Product(models.Model):
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
-        default=1,
+        default=_get_default_category(),
         related_name='category',
         verbose_name='Категория',
         help_text='Выберите категорию товара'
@@ -52,30 +76,6 @@ class Product(models.Model):
         ordering = ('name',)
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
-
-    def __str__(self):
-        return self.name
-
-
-class Category(models.Model):
-    """Модель категории, к которой относится товар."""
-    class CategoryType(models.TextChoices):
-        PRODUCTS = 'PRODUCTS', 'Продукты'
-        CLOTHES = 'CLOTHES', 'Одежда и обувь'
-        HOME = 'HOME', 'Для дома и сада'
-        COSMETICS = 'COSMETICS', 'Косметика и гигиена'
-        KIDS = 'KIDS', 'Для детей'
-        ZOO = 'ZOO', 'Зоотовары'
-        AUTO = 'AUTO', 'Авто'
-        HOLIDAYS = 'HOLIDAYS', 'К празднику'
-        DIFFERENT = 'DIFFERENT', 'Разное'
-
-    name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
-
-    class Meta:
-        ordering = ('name',)
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
 
     def __str__(self):
         return self.name

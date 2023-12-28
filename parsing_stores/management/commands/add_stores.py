@@ -19,8 +19,7 @@ class Command(BaseCommand):
                 for store in stores:
                     location['region'] = store.pop('region')
                     location['city'] = store.pop('city')
-                    location['street'] = store.pop('street')
-                    location['building'] = store.pop('building')
+                    location['address'] = store.pop('address')
                     location['latitude'] = store.pop('latitude')
                     location['longitude'] = store.pop('longitude')
                     chain_store_name = store.pop('chain_store')
