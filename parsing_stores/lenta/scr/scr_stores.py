@@ -1,25 +1,27 @@
 import logging
+from typing import List
 
 import parsing_stores.lenta.scr.config as cfg
-import parsing_stores.lenta.scr.msg as msg
 from parsing_stores.lenta.scr.core import (get_response, open_json_file,
                                            save_json_file)
 
 logger = logging.getLogger()
 
+SCR_STORE = 'Спарсено {} магазинов в городе {}.'
 
-def get_and_save_all_stores():
+
+def get_and_save_all_stores() -> None:
     """Получить список магазинов сети и записать его в файл."""
 
-    requests_options = {'url': cfg.URL_GET_STORES,
-                        'cookies': cfg.cookies,
-                        'headers': cfg.HEADERS}
+    requests_options: dict = {'url': cfg.URL_GET_STORES,
+                              'cookies': cfg.cookies,
+                              'headers': cfg.HEADERS}
 
     response_json = get_response(options=requests_options).json()
     save_json_file(response_json, cfg.FILE_NAME['ALL_STORES'])
 
 
-def get_and_save_stores_in_city(city):
+def get_and_save_stores_in_city(city: str) -> None:
     """
     Получить список магазинов в городе -'city'
 
@@ -35,14 +37,14 @@ def get_and_save_stores_in_city(city):
     }
     """
 
-    all_stores = open_json_file(cfg.FILE_NAME['ALL_STORES'])
-    stores_in_city = []
+    all_stores: List[dict] = open_json_file(cfg.FILE_NAME['ALL_STORES'])
+    stores_in_city: List[dict] = []
 
-    stores_city_list = list(
+    stores_city_list: List[dict] = list(
         filter(lambda d: d['cityName'].split()[0] == city, all_stores)
     )
     for store in stores_city_list:
-        data = {
+        data: dict = {
             'id_store': store.get('id'),
             'name': cfg.NAME_STORE,
             'location': {
@@ -57,7 +59,7 @@ def get_and_save_stores_in_city(city):
             },
         }
         stores_in_city.append(data)
-    logger.debug(msg.SCR_STORE.format(len(stores_in_city), city))
+    logger.debug(SCR_STORE.format(len(stores_in_city), city))
     save_json_file(
         stores_in_city,
         cfg.FILE_NAME['STORES_IN_SITY'].format(city)

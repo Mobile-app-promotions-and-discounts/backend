@@ -3,7 +3,7 @@ CITY_APPLICATIONS = ['Москва',]
 
 # URL
 URL_GET_STORES = 'https://lenta.com/api/v1/stores/'
-URL_GET_PRODACT = 'https://lenta.com/api/v1/stores/{}/skus/'
+URL_GET_PRODUCT = 'https://lenta.com/api/v1/stores/{}/skus/'
 
 
 # КОНСТАНТЫ ДЛЯ ПАРСИНГА

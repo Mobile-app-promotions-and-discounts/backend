@@ -1,49 +1,55 @@
 import json
 import logging
 import time
+from typing import Any
 
 import requests
+from requests import Response
 
 import parsing_stores.lenta.scr.config as cfg
-import parsing_stores.lenta.scr.msg as msg
 
 logger = logging.getLogger()
 
+ALL_STORES_NOT_FOUND = 'Файл {} не найден.'
+RESPONSE_STATUS = 'Response - Status code {}'
+REQUEST_START = 'Запрос {}'
+REQUEST_ERROR = 'Запрос {} - {}'
 
-def get_response(options=None, metod='get'):
-    logger.debug(msg.REQUEST_START.format(options.get('url')))
+
+def get_response(options: dict = None, method: str = 'get') -> Response:
+    logger.debug(REQUEST_START.format(options.get('url')))
     try:
-        response = (requests.get(**options)
-                    if metod == 'get'
-                    else requests.post(**options))
+        response: Response = (requests.get(**options)
+                              if method == 'get'
+                              else requests.post(**options))
         response.raise_for_status()
         if response.status_code == requests.codes.ok:
-            logger.debug(msg.RESPONSE_STATUS.format(
+            logger.debug(RESPONSE_STATUS.format(
                 response.status_code,
                 options.get('url')))
-        logger.error(msg.RESPONSE_STATUS.format(response.status_code))
+        logger.error(RESPONSE_STATUS.format(response.status_code))
     except requests.RequestException as error:
-        logger.error(msg.REQUEST_ERROR.format(options.get('url'), error))
+        logger.error(REQUEST_ERROR.format(options.get('url'), error))
         time.sleep(5)
-        response = get_response(options, metod)
+        response: Response = get_response(options, method)
     return response
 
 
-def save_json_file(file_, name_file, mode='w', newline='\n'):
+def save_json_file(file_: Any, name_file: str, mode: str = 'w') -> None:
     """Записать файл json c именем 'name_file'."""
     with open(cfg.PATH_FILE.format(name_file), mode, encoding='utf-8') as file:
         json.dump(file_, file, indent=4, ensure_ascii=False)
         file.write('\n')
 
 
-def open_json_file(name_file):
+def open_json_file(name_file: str) -> Any:
     """
     Открывает и возвращает файл
-      'path_file'- путь к файлу в виде строки
+      'PATH_FILE'- путь к файлу в виде строки
     """
     try:
         with open(cfg.PATH_FILE.format(name_file), encoding='utf-8') as file:
             file = file.read()
         return json.loads(file)
     except FileNotFoundError:
-        logger.exception(msg.ALL_STORES_NOT_FOUND.format(name_file))
+        logger.exception(ALL_STORES_NOT_FOUND.format(name_file))
