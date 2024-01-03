@@ -193,7 +193,7 @@ class StoreLocation(models.Model):
         verbose_name_plural = 'Адреса магазинов'
 
     def __str__(self):
-        return f'{self.city}, {self.street}, {self.building}'
+        return f'{self.city}, {self.address}'
 
 
 class ChainStore(models.Model):

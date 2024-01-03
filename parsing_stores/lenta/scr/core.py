@@ -12,8 +12,8 @@ logger = logging.getLogger()
 
 ALL_STORES_NOT_FOUND = 'Файл {} не найден.'
 RESPONSE_STATUS = 'Response - Status code {}'
-REQUEST_START = 'Запрос {}'
 REQUEST_ERROR = 'Запрос {} - {}'
+REQUEST_START = 'Запрос {}'
 
 
 def get_response(options: dict = None, method: str = 'get') -> Response:
@@ -27,7 +27,8 @@ def get_response(options: dict = None, method: str = 'get') -> Response:
             logger.debug(RESPONSE_STATUS.format(
                 response.status_code,
                 options.get('url')))
-        logger.error(RESPONSE_STATUS.format(response.status_code))
+        else:
+            logger.error(RESPONSE_STATUS.format(response.status_code))
     except requests.RequestException as error:
         logger.error(REQUEST_ERROR.format(options.get('url'), error))
         time.sleep(5)

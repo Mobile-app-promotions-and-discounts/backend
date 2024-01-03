@@ -8,9 +8,10 @@ from parsing_stores.lenta.scr.core import get_response
 
 logger = logging.getLogger()
 
-LOG_PRODUCTS_ON_PAGE = 'get_products_on_page - OK'
 LOG_FILTER_PRODUCTS_DISCOUNT = 'filter_products_discount - OK'
 LOG_PRODUCTS_DISCOUNT = 'scr_products_discount - OK'
+LOG_PRODUCTS_IN_STORE = 'get_products_in_store - OK'
+LOG_PRODUCTS_ON_PAGE = 'get_products_on_page - OK'
 
 
 def get_products_on_page(store_id: str, nodeCode: str, offset: int) -> Response:
@@ -107,4 +108,5 @@ def get_products_in_store(store: dict) -> Tuple[list, dict]:
                 else:
                     break
                 offset += cfg.PRODUCTS_ON_PAGE
+    logger.debug(LOG_PRODUCTS_IN_STORE)
     return all_products_store, store

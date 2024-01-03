@@ -27,19 +27,19 @@ def add_image(url: str) -> bytes:
 
 def add_store(store_data: dict) -> Store:
     """Подготовка магазина для db"""
-    return Store.objects.create(
+    return Store.objects.get_or_create(
         name=store_data.get('name'),
-        location=StoreLocation.objects.create(**store_data.get('location')),
-        chain_store=ChainStore.objects.create(**store_data.get('chain_store'))
-    )
+        location=StoreLocation.objects.get_or_create(**store_data.get('location'))[0],
+        chain_store=ChainStore.objects.get_or_create(**store_data.get('chain_store'))[0]
+    )[0]
 
 
 def add_products(product_data: dict) -> Product:
     """Подготовка продукта для db"""
-    category_data: str = product_data.pop('category')
+    category_data: str = product_data.pop('category', None)
 
     if product_data.get('main_image'):
-        main_image: str = product_data.pop('main_image')[0]
+        main_image: str = product_data.pop('main_image', None)[0]
         image: bytes = add_image(main_image)
         _image: ContentFile = ContentFile(image, name='img_product.jpeg')
     else:
@@ -62,8 +62,8 @@ def add_to_db(all_products_in_store: list, store_data: dict) -> None:
     """Заполнеиние БД ProductsInStore"""
     data = []
     for products_in_store in all_products_in_store:
-        product_data: dict = products_in_store.pop('product')
-        discount_data: dict = products_in_store.pop('discount')
+        product_data: dict = products_in_store.pop('product', None)
+        discount_data: dict = products_in_store.pop('discount', None)
 
         product: Product = add_products(product_data)
         store: Store = add_store(store_data)

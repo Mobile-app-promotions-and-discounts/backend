@@ -14,10 +14,11 @@ from parsing_stores.lenta.scr.scr_stores import (get_and_save_all_stores,
 fileConfig('logging.ini')
 logger = logging.getLogger()
 
-PARSING_OK = 'Все данные по городу {} добавлены в БД {}.'
+PARSING_OK = 'Все данные по городу {} добавлены в БД {}. Время парсинга составило {}'
 
 
 def main() -> None:
+    start_parsing = datetime.today()
     try:
         get_and_save_all_stores()
         for city in cfg.CITY_APPLICATIONS:
@@ -26,7 +27,11 @@ def main() -> None:
             for store in stores_in_city:
                 add_to_db(*get_products_in_store(store))
             logger.debug(
-                msg=PARSING_OK.format(city, datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+                msg=PARSING_OK.format(
+                    city,
+                    datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+                    datetime.today() - start_parsing
+                )
             )
     except Exception as error:
         logger.critical(msg=error, exc_info=True)
