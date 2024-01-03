@@ -1,6 +1,8 @@
 import logging
 
+import backoff
 from django.core.files.base import ContentFile
+from psycopg2 import DatabaseError
 from requests import Response
 
 import parsing_stores.lenta.scr.config as cfg
@@ -9,6 +11,9 @@ from products.models import (Category, ChainStore, Discount, Product,
                              ProductsInStore, Store, StoreLocation)
 
 logger = logging.getLogger()
+
+LOG_START_ADD_TO_DB = 'Начало добавления данных в DB...'
+LOG_ADD_TO_DB = 'add_to_db - OK'
 
 
 def add_category(category_data: dict) -> Category:
@@ -58,8 +63,10 @@ def add_products(product_data: dict) -> Product:
     )
 
 
+@backoff.on_exception(backoff.expo, exception=[DatabaseError,], logger=logger)
 def add_to_db(all_products_in_store: list, store_data: dict) -> None:
     """Заполнеиние БД ProductsInStore"""
+    logger.debug(LOG_START_ADD_TO_DB)
     data = []
     for products_in_store in all_products_in_store:
         product_data: dict = products_in_store.pop('product', None)
@@ -77,3 +84,4 @@ def add_to_db(all_products_in_store: list, store_data: dict) -> None:
             )
         )
     ProductsInStore.objects.bulk_create(data)
+    logger.debug(LOG_ADD_TO_DB)

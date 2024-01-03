@@ -1,8 +1,8 @@
 import json
 import logging
-import time
 from typing import Any
 
+import backoff
 import requests
 from requests import Response
 
@@ -16,23 +16,21 @@ REQUEST_ERROR = 'Запрос {} - {}'
 REQUEST_START = 'Запрос {}'
 
 
+@backoff.on_exception(backoff.expo,
+                      requests.exceptions.RequestException,
+                      logger=logger)
 def get_response(options: dict = None, method: str = 'get') -> Response:
     logger.debug(REQUEST_START.format(options.get('url')))
-    try:
-        response: Response = (requests.get(**options)
-                              if method == 'get'
-                              else requests.post(**options))
-        response.raise_for_status()
-        if response.status_code == requests.codes.ok:
-            logger.debug(RESPONSE_STATUS.format(
-                response.status_code,
-                options.get('url')))
-        else:
-            logger.error(RESPONSE_STATUS.format(response.status_code))
-    except requests.RequestException as error:
-        logger.error(REQUEST_ERROR.format(options.get('url'), error))
-        time.sleep(5)
-        response: Response = get_response(options, method)
+    response: Response = (requests.get(**options)
+                          if method == 'get'
+                          else requests.post(**options))
+    response.raise_for_status()
+    if response.status_code == requests.codes.ok:
+        logger.debug(RESPONSE_STATUS.format(
+            response.status_code,
+            options.get('url')))
+    else:
+        logger.error(RESPONSE_STATUS.format(response.status_code))
     return response
 
 
