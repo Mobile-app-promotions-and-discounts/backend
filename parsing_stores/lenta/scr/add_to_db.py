@@ -2,6 +2,7 @@ import logging
 
 import backoff
 from django.core.files.base import ContentFile
+from django.db.utils import DatabaseError
 from psycopg2 import DatabaseError
 from requests import Response
 
@@ -16,6 +17,7 @@ LOG_START_ADD_TO_DB = 'Начало добавления данных в DB...'
 LOG_ADD_TO_DB = 'add_to_db - OK'
 
 
+@backoff.on_exception(backoff.expo, exception=[DatabaseError, DatabaseError,], logger=logger)
 def add_category(category_data: dict) -> Category:
     """Подготовка картинки для db"""
     if not Category.objects.filter(name=category_data).exists():
@@ -23,6 +25,7 @@ def add_category(category_data: dict) -> Category:
     return Category.objects.get(name=category_data)
 
 
+@backoff.on_exception(backoff.expo, exception=[DatabaseError, DatabaseError,], logger=logger)
 def add_image(url: str) -> bytes:
     """Подготовка картинки для db"""
     response: Response = get_response(
@@ -30,6 +33,7 @@ def add_image(url: str) -> bytes:
     return response.content
 
 
+@backoff.on_exception(backoff.expo, exception=[DatabaseError, DatabaseError,], logger=logger)
 def add_store(store_data: dict) -> Store:
     """Подготовка магазина для db"""
     return Store.objects.get_or_create(
@@ -39,6 +43,7 @@ def add_store(store_data: dict) -> Store:
     )[0]
 
 
+@backoff.on_exception(backoff.expo, exception=[DatabaseError, DatabaseError,], logger=logger)
 def add_products(product_data: dict) -> Product:
     """Подготовка продукта для db"""
     category_data: str = product_data.pop('category', None)
@@ -63,7 +68,9 @@ def add_products(product_data: dict) -> Product:
     )
 
 
-@backoff.on_exception(backoff.expo, exception=[DatabaseError,], logger=logger)
+@backoff.on_exception(backoff.expo,
+                      exception=[DatabaseError, DatabaseError,],
+                      logger=logger)
 def add_to_db(all_products_in_store: list, store_data: dict) -> None:
     """Заполнеиние БД ProductsInStore"""
     logger.debug(LOG_START_ADD_TO_DB)
@@ -74,14 +81,22 @@ def add_to_db(all_products_in_store: list, store_data: dict) -> None:
 
         product: Product = add_products(product_data)
         store: Store = add_store(store_data)
-
         data.append(
             ProductsInStore(
                 store=store,
                 product=product,
-                discount=Discount.objects.create(**discount_data),
+                discount=Discount.objects.get_or_create(**discount_data)[0],
                 **products_in_store,
             )
         )
-    ProductsInStore.objects.bulk_create(data)
+    ProductsInStore.objects.bulk_create(data,
+                                        update_conflicts=True,
+                                        unique_fields=['product', 'store'],
+                                        update_fields=[
+                                            'product',
+                                            'store',
+                                            'initial_price',
+                                            'promo_price',
+                                            'discount']
+                                        )
     logger.debug(LOG_ADD_TO_DB)

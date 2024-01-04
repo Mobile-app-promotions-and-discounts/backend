@@ -18,6 +18,7 @@ REQUEST_START = 'Запрос {}'
 
 @backoff.on_exception(backoff.expo,
                       requests.exceptions.RequestException,
+                      max_time=10,
                       logger=logger)
 def get_response(options: dict = None, method: str = 'get') -> Response:
     logger.debug(REQUEST_START.format(options.get('url')))

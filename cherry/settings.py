@@ -64,7 +64,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cherry.wsgi.application'
 
-PSQL = {
+DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE'),
         'NAME': os.environ.get('POSTGRES_DB'),
@@ -74,15 +74,6 @@ PSQL = {
         'PORT': os.environ.get('DB_PORT'),
     }
 }
-
-SQLITE = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-DATABASES = SQLITE if DEBUG else PSQL
 
 AUTH_PASSWORD_VALIDATORS = [
     {
