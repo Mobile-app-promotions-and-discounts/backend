@@ -4,6 +4,7 @@
 
 import requests
 from django.core.files.base import ContentFile
+from django.core.exceptions import MultipleObjectsReturned
 
 from parsing_stores.validators import check_product_magnit
 from products.models import Category, Discount, Product, ProductsInStore, Store
@@ -145,20 +146,26 @@ def _add_product(data, store=None):
     # print(name_category)
     # КОСТЫЛЬ. если нет такой категории товар попадает в разное.
     category = category if category else Category.objects.get(name='DIFFERENT')
-    if not Product.objects.filter(category=category, **data).exists():
+    if not Product.objects.filter(**data).exists():
         return Product.objects.create(
             category=category,
             main_image=ContentFile(image, name='img.jpeg'),
             **data,
         )
-    return Product.objects.get(
-        category=category,
-        **data,
-    )
+    return Product.objects.get(**data)
 
 
 def _add_discount(data_discount):
-    return Discount.objects.get_or_create(**data_discount)[0]
+    try:
+        if not Discount.objects.filter(**data_discount).exists():
+            # print('Вот и фиг.')
+            return Discount.objects.create(**data_discount)
+        # print(Discount.objects.filter(**data_discount).first())
+        # print(data_discount)
+        return Discount.objects.get(**data_discount)
+    except MultipleObjectsReturned as ex:
+        print(ex)
+        return Discount.objects.filter(**data_discount).first()
 
 
 def read_data(request_data, store_id=None):
@@ -200,16 +207,19 @@ def add_products_store_in_db(id_in_chain_store):
         price_in_store.pop('store_id')
         prod = _add_product(product_data)
         disc = _add_discount(discount)
-        ProductsInStore.objects.get_or_create(
-            product=prod,
-            store=store,
-            discount=disc,
-            **price_in_store,
-        )
+        # print(prod.name)
+        # print(store)
+        if not ProductsInStore.objects.filter(product=prod, store=store).exists():
+            ProductsInStore.objects.create(
+                product=prod,
+                store=store,
+                discount=disc,
+                **price_in_store,
+            )
 
 
 def main():
-    stores_id = [store.id_in_chain_store for store in Store.objects.all()]
+    stores_id = [store.id_in_chain_store for store in Store.objects.filter(chain_store__name='Магнит')]
     for store_id in stores_id:
         add_products_store_in_db(store_id)
 

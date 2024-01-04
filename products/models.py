@@ -23,7 +23,7 @@ class Product(models.Model):
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
-        default=_get_default_category(),
+        default=1,
         related_name='category',
         verbose_name='Категория',
         help_text='Выберите категорию товара'
