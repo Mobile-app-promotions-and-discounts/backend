@@ -132,11 +132,11 @@ LOGGER_MAGNIT = {
     'version': 1,
     'formatters': {
         'consoleFormatter': {
-            'format': '%(asctime)s - %(levelname)-8s - %(message)s - [* %(filename)s:%(lineno)d *]',
+            'format': '%(asctime)s - %(name)s - %(levelname)-8s - %(message)s - [* %(filename)s:%(lineno)d *]',
             'datefmt': '%Y-%m-%d %H:%M:%S',
         },
         'fileFormatter': {
-            'format': '%(asctime)s - %(levelname)-8s - %(message)s - [* %(filename)s:%(lineno)d *]',
+            'format': '%(asctime)s - %(name)s - %(levelname)-8s - %(message)s - [* %(filename)s:%(lineno)d *]',
             'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },

@@ -1,128 +1,40 @@
-# import json
-# from pprint import pprint
-# from time import sleep
-
+import logging
+from logging.config import dictConfig
 import requests
+from requests.exceptions import RequestException
+
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.exceptions import MultipleObjectsReturned
 
 from parsing_stores.validators import check_product_magnit
 from products.models import Category, Discount, Product, ProductsInStore, Store
 
-url_products = 'https://web-gateway.middle-api.magnit.ru/v1/promotions'
-url_stores = 'https://web-gateway.middle-api.magnit.ru/v1/cities'
-headers = {
-    'Accept': '*/*',
-    'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    'Connection': 'keep-alive',
-    'Origin': 'https://magnit.ru',
-    'Referer': 'https://magnit.ru/',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-site',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                  'Chrome/119.0.0.0 Safari/537.36',
-    'sec-ch-ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Linux"',
-    'x-app-version': '0.1.0',
-    'x-client-name': 'magnit',
-    'x-device-id': 'v66jbingss',
-    'x-device-platform': 'Web',
-    'x-device-tag': 'disabled',
-    'x-platform-version': 'window.navigator.userAgent',
-}
-params_products = {
-    'offset': '0',
-    'limit': '1',
-    'storeId': '63452',
-    'adult': 'true',
-    'sortBy': 'priority',
-    'order': 'desc',
-}
-params_stores = {
-    'Limit': 1100,
-    # 'query': 'Москва',
-}
 
+dictConfig(settings.LOGGER_MAGNIT)
+logger = logging.getLogger(f'root.{__name__}')
 
-NO_DATA = -1
-
-CATEGORIES = {
-    'PRODUCTS': [
-        'Хлеб и выпечка',
-        'Овощи и фрукты',
-        'Молоко, сыр, яйца',
-        'Мясо, птица, колбасы',
-        'Замороженные продукты',
-        'Напитки',
-        'Готовая еда',
-        'Чай, кофе, какао',
-        'Бакалея, соусы',
-        'Кондитерские изделия',
-        'Снеки, орехи',
-        'Соусы и приправы',
-        'Здоровое питание',
-        'Рыба и морепродукты',
-        'Готовая еда',
-    ],
-    'CLOTHES': [
-        'Одежда и обувь',
-    ],
-    'HOME': [
-        'Дом, сад',
-        'Медтовары',
-        'Бытовая техника',
-        'Бытовая химия',
-        'Скидки по карте',
-        'Новинки',
-        'Досуг',
-        'Канцтовары',
-        'Витамины и БАД',
-        'Аксессуары',
-        'Лекарства',
-        'Печатная продукция',
-    ],
-    'COSMETICS': [
-        'Косметика и парфюмерия',
-        'Гигиена',
-    ],
-    'KIDS': [
-        'Детям',
-    ],
-    'ZOO': [
-        'Зоотовары',
-    ],
-    'AUTO:': ['Автотовары'],
-    'HOLIDAYS': [
-        'Алкоголь',
-        'Новый год',
-    ],
-    'DIFFERENT': [
-        'Скидки по карте',
-        'Скидки на категории',
-        '30% бонусами с подпиской',
-        'Новинки',
-        'Кешбек',
-        'Разные категории',
-        '0',
-        'Проездные. Лотереи',
-    ],
-}
+url_products = settings.PARSING_MAGNIT.get('URL_PRODUCTS')
+url_stores = settings.PARSING_MAGNIT.get('URL_STORES')
+headers = settings.PARSING_MAGNIT.get('HEADERS')
+params_products = settings.PARSING_MAGNIT.get('PARAMS_PRODUCTS')
+params_stores = settings.PARSING_MAGNIT.get('PARAMS_STORES')
+no_data = settings.PARSING_MAGNIT.get('NO_DATA')
+CATEGORIES = settings.PARSING_MAGNIT.get('CATEGORIES')
 
 
 def get_url(url: str, params: dict, headers: dict) -> dict:
     """Получение данных с сайта."""
     response = requests.get(url=url, params=params, headers=headers)
     if response.status_code != 200:
-        raise NotImplementedError(f'Адрес <<{url}>> недоступен')
+        raise RequestException(f'Адрес <<{url}>> недоступен')
     return response.json()
 
 
 def _get_product_image(url):
     response = requests.get(url=url)
     if response.status_code != 200:
-        raise NotImplementedError(f'Изображение по адресу <<{url}>> недоступно')
+        raise RequestException(f'Изображение по адресу <<{url}>> недоступно')
     return response.content
 
 
@@ -135,7 +47,10 @@ def split_product_data(product_data):
 
 def _add_product(data, store=None):
     image_url = data.pop('image_url')
-    image = _get_product_image(image_url)
+    try:
+        image = _get_product_image(image_url)
+    except RequestException as exc:
+        logger.exception(msg=exc)
     name_category = data.pop('category')
     category = ''
     if not Category.objects.all():
@@ -143,28 +58,28 @@ def _add_product(data, store=None):
     for key, value in CATEGORIES.items():
         if name_category in value and Category.objects.filter(name=key).exists():
             category = Category.objects.get(name=key)
-    # print(name_category)
     # КОСТЫЛЬ. если нет такой категории товар попадает в разное.
     category = category if category else Category.objects.get(name='DIFFERENT')
     if not Product.objects.filter(**data).exists():
+        logger.info(f'Добавление продукта в категорию <<{category}>> с данными <<{data}>> в БД')
         return Product.objects.create(
             category=category,
             main_image=ContentFile(image, name='img.jpeg'),
             **data,
         )
+    logger.info(f'Извлечение продукта с данными <<{data}>> из БД')
     return Product.objects.get(**data)
 
 
 def _add_discount(data_discount):
     try:
         if not Discount.objects.filter(**data_discount).exists():
-            # print('Вот и фиг.')
+            logger.info(msg=f'Добавление акции с данными <<{data_discount}>>')
             return Discount.objects.create(**data_discount)
-        # print(Discount.objects.filter(**data_discount).first())
-        # print(data_discount)
+        logger.info(msg=f'Извлечение акции с данными <<{data_discount}>> из БД')
         return Discount.objects.get(**data_discount)
-    except MultipleObjectsReturned as ex:
-        print(ex)
+    except MultipleObjectsReturned as exc:
+        logger.exception(exc)
         return Discount.objects.filter(**data_discount).first()
 
 
@@ -187,9 +102,9 @@ def read_data(request_data, store_id=None):
         product['discount']['discount_unit'] = '%'
         product['discount']['discount_start'] = item.get('startDate')
         product['discount']['discount_end'] = item.get('endDate')
-        product['discount']['discount_rate'] = item.get('discountPercentage', NO_DATA)
-        product['price_in_store']['initial_price'] = str(item.get('oldPrice', NO_DATA))
-        product['price_in_store']['promo_price'] = str(item.get('price', NO_DATA))
+        product['discount']['discount_rate'] = item.get('discountPercentage', no_data)
+        product['price_in_store']['initial_price'] = str(item.get('oldPrice', no_data))
+        product['price_in_store']['promo_price'] = str(item.get('price', no_data))
         if check_product_magnit(product):
             products.append(product)
     return categories, products
@@ -202,13 +117,12 @@ def add_products_store_in_db(id_in_chain_store):
     data = get_url(url_products, params=params_products, headers=headers)
     products = read_data(data)[1]
     store = Store.objects.get(id_in_chain_store=id_in_chain_store)
+    logger.info(f'товары по магазину <<{store}>> получены')
     for product in products:
         product_data, discount, price_in_store = split_product_data(product)
         price_in_store.pop('store_id')
         prod = _add_product(product_data)
         disc = _add_discount(discount)
-        # print(prod.name)
-        # print(store)
         if not ProductsInStore.objects.filter(product=prod, store=store).exists():
             ProductsInStore.objects.create(
                 product=prod,
@@ -216,12 +130,17 @@ def add_products_store_in_db(id_in_chain_store):
                 discount=disc,
                 **price_in_store,
             )
+            logger.info(msg=f'Товар {prod} добавлен в магазин {store}')
 
 
 def main():
     stores_id = [store.id_in_chain_store for store in Store.objects.filter(chain_store__name='Магнит')]
     for store_id in stores_id:
-        add_products_store_in_db(store_id)
+        try:
+            add_products_store_in_db(store_id)
+        except RequestException as exc:
+            logger.exception(exc)
+            continue
 
 
 if __name__ == '__main__':
