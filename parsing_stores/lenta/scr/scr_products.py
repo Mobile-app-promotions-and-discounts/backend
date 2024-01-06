@@ -1,21 +1,28 @@
 import logging
+from typing import List, Tuple
+
+from requests import Response
 
 import parsing_stores.lenta.scr.config as cfg
 from parsing_stores.lenta.scr.core import get_response
-
-
 logger = logging.getLogger()
 
+LOG_FILTER_PRODUCTS_DISCOUNT = 'filter_products_discount - OK'
+LOG_PRODUCTS_DISCOUNT = 'scr_products_discount - OK'
+LOG_PRODUCTS_IN_STORE = 'get_products_in_store - OK'
+LOG_PRODUCTS_ON_PAGE = 'get_products_on_page - OK'
 
-def get_products_on_page(store_id, nodeCode, offset):
+
+def get_products_on_page(store_id: str, nodeCode: str, offset: int) -> Response:
     """
     Получить список продуктов в определеной категории и записать его в файл.
     'store' - словарь данных магазина
     'nodeCode' - параметр категории на сайте магазина
     """
 
-    json_data = {
+    json_data: dict = {
         'nodeCode': nodeCode,
+        'pageId': 'cc4fe51d-b4c0-4c96-be9b-ffebb9d67753',
         'filters': [],
         'typeSearch': 1,
         'sortingType': 'ByPriority',
@@ -23,39 +30,30 @@ def get_products_on_page(store_id, nodeCode, offset):
         'limit': cfg.PRODUCTS_ON_PAGE,
         'updateFilters': True,
     }
-    requests_options = {
-        'url': cfg.URL_GET_PRODACT.format(store_id),
-        'cookies': cfg.cookies,
+    requests_options: dict = {
+        'url': cfg.URL_GET_PRODUCT.format(store_id),
+        'cookies': cfg.COOKIES,
         'headers': cfg.HEADERS,
         'json': json_data
     }
-    response = get_response(options=requests_options,
-                            metod='post')
-    logger.debug('get_products_on_page - OK')
+    response: Response = get_response(options=requests_options,
+                                      method='post')
+    logger.debug(LOG_PRODUCTS_ON_PAGE)
     return response
 
 
-def filter_products_discount(product_page):
-    """Отфильтровать товары со скидками."""
-    products_discount = list(
-        filter(lambda d: d['regularPrice'] != d['discountPrice'], product_page)
-    )
-    logger.debug('filter_products_discount - OK')
-    return products_discount
-
-
-def scr_products_discount(products_discount, name_cat_bd):
+def scr_products_discount(products_discount: List[dict], category_in_bd: str) -> List[dict]:
     """Получить необходимые данные продуктов."""
-    prodacts_data = []
+    products_data = []
 
     for value in products_discount:
-        products_in_store = {
+        products_in_store: dict = {
             'product': {
                 'name': value.get('title'),
                 'description': (value.get('description')
                                 .replace('\r', '').replace('\n', '')),
                 'barcode': value.get('code'),
-                'category': name_cat_bd,
+                'category': category_in_bd,
             },
             'initial_price': str(value.get('regularPrice')).replace('.', ''),
             'promo_price': str(value.get('discountPrice')).replace('.', ''),
@@ -71,34 +69,38 @@ def scr_products_discount(products_discount, name_cat_bd):
                 value.get('image').get('thumbnail'),
                 *[i.get('thumbnail') for i in value.get('images')]
             ]
-        prodacts_data.append(products_in_store)
-    logger.debug('scr_products_discount - OK')
-    return prodacts_data
+        products_data.append(products_in_store)
+    logger.debug(LOG_PRODUCTS_DISCOUNT)
+    return products_data
 
 
-def get_products_in_store(store):
+def get_products_in_store(store: dict) -> Tuple[list, dict]:
     """
     Получить список продуктов для магазина.
     """
     all_products_store = []
 
-    for name_cat_bd, nodeCode_list in cfg.CATEGORY.items():
+    for category_in_bd, nodeCode_list in cfg.CATEGORY.items():
         for nodeCode in nodeCode_list:
             if not nodeCode:
                 continue
-            offset = 0
-
-            while True:
-                product_page = get_products_on_page(
+            offset: int = 0
+            amount_products: int = 0
+            while amount_products > 0 or offset == 0:
+                product_page: List[dict] = get_products_on_page(
                     store.get('id_store'),
                     nodeCode,
                     offset
-                ).json().get('skus')
-                if product_page and len(product_page) != 0:
-                    products_discount = filter_products_discount(product_page)
-                    prodacts_data = scr_products_discount(products_discount, name_cat_bd)
+                ).json()
+                if offset == 0:
+                    amount_products: int = product_page.get('total')
+                amount_products -= cfg.PRODUCTS_ON_PAGE
+                if product_page and product_page != []:
+                    product_page = product_page.get('skus')
+                    prodacts_data: List[dict] = scr_products_discount(product_page, category_in_bd)
                     all_products_store.extend(prodacts_data)
                 else:
                     break
                 offset += cfg.PRODUCTS_ON_PAGE
+    logger.debug(LOG_PRODUCTS_IN_STORE)
     return all_products_store, store
