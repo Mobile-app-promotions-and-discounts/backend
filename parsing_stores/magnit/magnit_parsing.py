@@ -15,7 +15,7 @@ dictConfig(settings.LOGGER_MAGNIT)
 logger = logging.getLogger(f'root.{__name__}')
 
 url_products = settings.PARSING_MAGNIT.get('URL_PRODUCTS')
-url_stores = settings.PARSING_MAGNIT.get('URL_STORES')
+
 headers = settings.PARSING_MAGNIT.get('HEADERS')
 params_products = settings.PARSING_MAGNIT.get('PARAMS_PRODUCTS')
 params_stores = settings.PARSING_MAGNIT.get('PARAMS_STORES')

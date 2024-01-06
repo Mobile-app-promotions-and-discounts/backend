@@ -167,7 +167,8 @@ LOGGER_MAGNIT = {
 
 PARSING_MAGNIT = {
     'URL_PRODUCTS': 'https://web-gateway.middle-api.magnit.ru/v1/promotions',
-    'URL_STORES': 'https://web-gateway.middle-api.magnit.ru/v1/cities',
+    'URL_CITY': 'https://web-gateway.middle-api.magnit.ru/v1/cities',
+    'URL_STORES': 'https://web-gateway.middle-api.magnit.ru/v1/geolocation/store',
     'HEADERS': {
         'Accept': '*/*',
         'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
@@ -198,7 +199,8 @@ PARSING_MAGNIT = {
         'order': 'desc',
     },
     'PARAMS_STORES': {
-        'Limit': 10,
+        'Limit': 3,
+        'Radius': 20,
     },
     # Распределение категорий "Магнит" по категориям приложения
     'CATEGORIES': {
