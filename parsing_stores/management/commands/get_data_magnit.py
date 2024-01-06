@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.core.management.base import BaseCommand
 
-from parsing_stores.magnit_parsing import main
+from parsing_stores.magnit.magnit_parsing import main
 
 
 class Command(BaseCommand):

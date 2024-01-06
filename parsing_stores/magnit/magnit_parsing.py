@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.exceptions import MultipleObjectsReturned
 
-from parsing_stores.validators import check_product_magnit
+from parsing_stores.magnit.validators import check_product_magnit
 from products.models import Category, Discount, Product, ProductsInStore, Store
 
 
