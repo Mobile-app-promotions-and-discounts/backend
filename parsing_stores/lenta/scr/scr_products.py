@@ -5,7 +5,6 @@ from requests import Response
 
 import parsing_stores.lenta.scr.config as cfg
 from parsing_stores.lenta.scr.core import get_response
-
 logger = logging.getLogger()
 
 LOG_FILTER_PRODUCTS_DISCOUNT = 'filter_products_discount - OK'
@@ -23,6 +22,7 @@ def get_products_on_page(store_id: str, nodeCode: str, offset: int) -> Response:
 
     json_data: dict = {
         'nodeCode': nodeCode,
+        'pageId': 'cc4fe51d-b4c0-4c96-be9b-ffebb9d67753',
         'filters': [],
         'typeSearch': 1,
         'sortingType': 'ByPriority',
@@ -32,7 +32,7 @@ def get_products_on_page(store_id: str, nodeCode: str, offset: int) -> Response:
     }
     requests_options: dict = {
         'url': cfg.URL_GET_PRODUCT.format(store_id),
-        'cookies': cfg.cookies,
+        'cookies': cfg.COOKIES,
         'headers': cfg.HEADERS,
         'json': json_data
     }
@@ -40,15 +40,6 @@ def get_products_on_page(store_id: str, nodeCode: str, offset: int) -> Response:
                                       method='post')
     logger.debug(LOG_PRODUCTS_ON_PAGE)
     return response
-
-
-def filter_products_discount(product_page: List[dict]) -> List[dict]:
-    """Отфильтровать товары со скидками."""
-    products_discount: List[dict] = list(
-        filter(lambda d: d['regularPrice'] != d['discountPrice'], product_page)
-    )
-    logger.debug(LOG_FILTER_PRODUCTS_DISCOUNT)
-    return products_discount
 
 
 def scr_products_discount(products_discount: List[dict], category_in_bd: str) -> List[dict]:
@@ -94,16 +85,19 @@ def get_products_in_store(store: dict) -> Tuple[list, dict]:
             if not nodeCode:
                 continue
             offset: int = 0
-
-            while True:
+            amount_products: int = 0
+            while amount_products > 0 or offset == 0:
                 product_page: List[dict] = get_products_on_page(
                     store.get('id_store'),
                     nodeCode,
                     offset
-                ).json().get('skus')
-                if product_page and len(product_page) != 0:
-                    products_discount: List[dict] = filter_products_discount(product_page)
-                    prodacts_data: List[dict] = scr_products_discount(products_discount, category_in_bd)
+                ).json()
+                if offset == 0:
+                    amount_products: int = product_page.get('total')
+                amount_products -= cfg.PRODUCTS_ON_PAGE
+                if product_page and product_page != []:
+                    product_page = product_page.get('skus')
+                    prodacts_data: List[dict] = scr_products_discount(product_page, category_in_bd)
                     all_products_store.extend(prodacts_data)
                 else:
                     break

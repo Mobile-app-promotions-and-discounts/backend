@@ -14,7 +14,7 @@ def get_and_save_all_stores() -> None:
     """Получить список магазинов сети и записать его в файл."""
 
     requests_options: dict = {'url': cfg.URL_GET_STORES,
-                              'cookies': cfg.cookies,
+                              'cookies': cfg.COOKIES,
                               'headers': cfg.HEADERS}
 
     response_json = get_response(options=requests_options).json()

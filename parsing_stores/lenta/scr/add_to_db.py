@@ -28,7 +28,7 @@ def add_category(category_data: dict) -> Category:
 def add_image(url: str) -> bytes:
     """Подготовка картинки для db"""
     response: Response = get_response(
-        options={'url': url, 'cookies': cfg.cookies, 'headers': cfg.HEADERS})
+        options={'url': url, 'cookies': cfg.COOKIES, 'headers': cfg.HEADERS})
     return response.content
 
 

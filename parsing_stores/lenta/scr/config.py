@@ -5,7 +5,6 @@ CITY_APPLICATIONS = ['Москва',]
 URL_GET_STORES = 'https://lenta.com/api/v1/stores/'
 URL_GET_PRODUCT = 'https://lenta.com/api/v1/stores/{}/skus/'
 
-
 # КОНСТАНТЫ ДЛЯ ПАРСИНГА
 NAME_STORE = 'Лента'
 LENTA_VALUE = True
@@ -108,7 +107,7 @@ HEADERS = {
 }
 
 # requests cookies
-cookies = {
+COOKIES = {
     'KFP_DID': 'cda1cfa9-63f0-931d-71f0-99caa85965f4',
     'oxxfgh': ('caa429fd-33a7-4dcf-b241-26cdf35bbf1f#0#5184000000#5000#18'
                '00000#44965'),
