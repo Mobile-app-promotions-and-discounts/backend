@@ -72,8 +72,8 @@ class StoreProductsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = StoreProductsSerializer
     pagination_class = PageNumberPagination
     filter_backends = (OrderingFilter,)
-    ordering_fields = ('promo_price',)
-    ordering = ('promo_price',)
+    ordering_fields = ('name', 'chain_store',)
+    ordering = ('chain_store',)
 
     def get_queryset(self):
         store_id = self.kwargs.get("store_id")
@@ -96,7 +96,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     queryset = Review.objects.all()
     filter_backends = (OrderingFilter,)
-    ordering_fields = ('pub_date', 'product__name')
+    ordering_fields = ('pub_date',)
     ordering = ('pub_date',)
 
     def get_product(self):
