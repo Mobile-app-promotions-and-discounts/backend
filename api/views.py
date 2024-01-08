@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,9 +18,11 @@ from products.models import (Category, ChainStore, Favorites, Product, Review,
 
 class ProductViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter)
+    filter_backends = (DjangoFilterBackend, OrderingFilter, SearchFilter)
     filterset_fields = ('category',)
     search_fields = ('=barcode', '@name')
+    ordering_fields = ('name', 'category')
+    ordering = ('name',)
 
     def get_queryset(self):
         if self.action == "favorites":
@@ -52,17 +54,26 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = None
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('name',)
+    ordering = ('name',)
 
 
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     pagination_class = PageNumberPagination
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('name', 'chain_store')
+    ordering = ('chain_store',)
 
 
 class StoreProductsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = StoreProductsSerializer
     pagination_class = PageNumberPagination
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('product__name', 'promo_price', 'discount__discount_rate')
+    ordering = ('product__name',)
 
     def get_queryset(self):
         store_id = self.kwargs.get("store_id")
@@ -75,12 +86,18 @@ class ChainStoreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = ChainStore.objects.all()
     serializer_class = ChainStoreSerializer
     pagination_class = None
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('name',)
+    ordering = ('name',)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
     queryset = Review.objects.all()
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('pub_date', 'product__name')
+    ordering = ('pub_date',)
 
     def get_product(self):
         return get_object_or_404(Product, id=self.kwargs.get('product_id'))
