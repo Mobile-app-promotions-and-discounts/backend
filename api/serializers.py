@@ -51,7 +51,7 @@ class ChainStoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ChainStore
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'logo', 'website')
 
 
 class CategorySerializer(serializers.ModelSerializer):

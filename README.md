@@ -39,3 +39,4 @@ HOST=IP_host
 * Савелий Худяк https://github.com/rakikz
 * Арина Сухова https://github.com/sukhovarina
 * Наталья Арлазарова https://github.com/sic15
+* Сергей Тыртычный https://github.com/TSergey1
