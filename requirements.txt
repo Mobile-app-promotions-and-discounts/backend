@@ -10,3 +10,5 @@ python-dotenv==1.0.0
 drf-yasg==1.21.7
 factory-boy==3.3.0
 Faker==20.1.0
+requests==2.31.0
+colorlog==6.7.0

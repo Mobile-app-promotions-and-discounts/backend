@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django_filters',
     'api',
     'users',
+    'parsing_stores',
     'products',
     'drf_yasg',
 ]
@@ -93,6 +94,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'PAGE_SIZE': 25,
 }
 
 DJOSER = {

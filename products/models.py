@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import CheckConstraint, Q, UniqueConstraint
 
 User = get_user_model()
 
@@ -22,7 +23,7 @@ class Product(models.Model):
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
-        default=1,
+        default=_get_default_category(),
         related_name='category',
         verbose_name='Категория',
         help_text='Выберите категорию товара'
@@ -60,8 +61,10 @@ class Category(models.Model):
         ZOO = 'ZOO', 'Зоотовары'
         AUTO = 'AUTO', 'Авто'
         HOLIDAYS = 'HOLIDAYS', 'К празднику'
+        DIFFERENT = 'DIFFERENT', 'Разное'
 
     name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
+    image = models.ImageField(upload_to='category_images/', verbose_name='Изображение категории', blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
@@ -107,6 +110,12 @@ class Store(models.Model):
         default=1,
         verbose_name='Сеть магазинов'
     )
+    id_in_chain_store = models.CharField(
+        max_length=6,
+        null=True,
+        blank=True,
+        verbose_name='id магазина в сети',
+    )
 
     class Meta:
         ordering = ('name',)
@@ -131,8 +140,8 @@ class ProductsInStore(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Магазин'
     )
-    initial_price = models.DecimalField('Цена товара без акции', decimal_places=2, max_digits=10)
-    promo_price = models.DecimalField('Цена товара по акции', decimal_places=2, max_digits=10)
+    initial_price = models.CharField('Цена товара без акции', max_length=10)
+    promo_price = models.CharField('Цена товара по акции', max_length=10)
     discount = models.ForeignKey(
         'Discount',
         related_name='discount',
@@ -143,6 +152,12 @@ class ProductsInStore(models.Model):
     class Meta:
         verbose_name = 'Скидка на товар в магазине'
         verbose_name_plural = 'Скидки на товар в магазине'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['product', 'store'],
+                name='unique_product_store'
+            )
+        ]
 
     def __str__(self):
         return f'{self.product.name} в {self.store}'
@@ -178,20 +193,22 @@ class StoreLocation(models.Model):
     """Модель для адреса конкретного магазина."""
     region = models.CharField('Регион', max_length=100)
     city = models.CharField('Город', max_length=100)
-    street = models.CharField('Улица', max_length=255)
-    building = models.CharField('Номер здания', max_length=20)
+    address = models.CharField('Адрес', max_length=255)
+    latitude = models.CharField('Широта', max_length=100)
+    longitude = models.CharField('Долгата', max_length=100)
 
     class Meta:
         verbose_name = 'Адрес магазина'
         verbose_name_plural = 'Адреса магазинов'
 
     def __str__(self):
-        return f'{self.city}, {self.street}, {self.building}'
+        return f'{self.city}, {self.address}'
 
 
 class ChainStore(models.Model):
     """Модель для сети магазинов."""
     name = models.CharField('Название сети магазинов', max_length=100)
+    logo = models.ImageField(upload_to='store_logos/', verbose_name='Логотип сети', blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
@@ -203,7 +220,7 @@ class ChainStore(models.Model):
 
 
 class Favorites(models.Model):
-    "Модель для избранных товаров"
+    """Модель для избранных товаров"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Избранный товар')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites',
                              verbose_name='Пользователь')
@@ -212,7 +229,7 @@ class Favorites(models.Model):
         ordering = ('product',)
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
-        constraints = [models.UniqueConstraint(fields=['product', 'user'], name='unique favorite product')]
+        constraints = [UniqueConstraint(fields=['product', 'user'], name='unique favorite product')]
 
     def __str__(self):
         return f'{self.user.username}`s favorite product {self.product.name}'
@@ -225,7 +242,7 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name='Ссылка на товар'
     )
-    customer = models.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='reviews',
@@ -247,6 +264,10 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв на товар'
         verbose_name_plural = 'Отзывы на товары'
+        constraints = [
+            CheckConstraint(check=Q(score__range=(1, 5)), name='valid_score'),
+            UniqueConstraint(fields=['user', 'product'], name='score_once')
+        ]
 
     def __str__(self):
         return self.text[:30]

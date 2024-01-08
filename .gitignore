@@ -161,8 +161,8 @@ cython_debug/
 
 .gitignore
 
-migrations/
-
 media/
 
 endpoints.md
+
+/data
