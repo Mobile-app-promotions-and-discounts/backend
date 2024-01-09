@@ -10,6 +10,7 @@ NAME_STORE = 'Лента'
 LENTA_VALUE = True
 PRODUCTS_ON_PAGE = 24
 PATH_FILE = 'parsing_stores/lenta/scr/data/{}.json'
+PAGE_ID = 'cc4fe51d-b4c0-4c96-be9b-ffebb9d67753'
 FILE_NAME = {
     'ALL_STORES': 'all_stores',
     'STORES_IN_SITY': 'stores_in_{}',
