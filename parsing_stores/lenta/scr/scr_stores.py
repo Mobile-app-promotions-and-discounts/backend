@@ -2,10 +2,8 @@ import logging
 
 import parsing_stores.lenta.scr.config as cfg
 import parsing_stores.lenta.scr.msg as msg
-from parsing_stores.lenta.scr.core import (get_response,
-                                           save_json_file,
-                                           open_json_file)
-
+from parsing_stores.lenta.scr.core import (get_response, open_json_file,
+                                           save_json_file)
 
 logger = logging.getLogger()
 

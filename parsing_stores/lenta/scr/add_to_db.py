@@ -1,16 +1,11 @@
 import logging
+
 from django.core.files.base import ContentFile
 
 import parsing_stores.lenta.scr.config as cfg
-from parsing_stores.lenta.scr.core import (get_response)
-from products.models import (Category,
-                             ChainStore,
-                             Discount,
-                             Product,
-                             ProductsInStore,
-                             Store,
-                             StoreLocation)
-
+from parsing_stores.lenta.scr.core import get_response
+from products.models import (Category, ChainStore, Discount, Product,
+                             ProductsInStore, Store, StoreLocation)
 
 logger = logging.getLogger()
 

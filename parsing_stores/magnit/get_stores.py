@@ -1,16 +1,12 @@
-from pprint import pprint
-from datetime import datetime
 import json
 import logging
+from datetime import datetime
 from logging.config import dictConfig
-import requests
-from requests.exceptions import RequestException
 
 from django.conf import settings
 
 from parsing_stores.magnit.magnit_parsing import get_url
 from products.models import ChainStore, Store, StoreLocation
-
 
 dictConfig(settings.LOGGER_MAGNIT)
 logger = logging.getLogger(f'root.{__name__}')
@@ -88,7 +84,6 @@ def add_stores_in_db(stores):
             logger.info(f'Добавлен магазин <<{store_data}>> по адресу {st_location}')
         else:
             logger.info(f'Магазин <<{store_data}>> по адресу {st_location} уже есть в БД')
-        #     return Store.objects.filter(location=st_location, **store_data).first()
 
 
 def main():
@@ -96,12 +91,4 @@ def main():
     logger.info('Начало получения данных магазинов "Магнит"')
     stores = get_stores(get_cities())
     add_stores_in_db(stores)
-    # pprint(stores)
-    # print(len(stores))
-    # print(get_url(url=url_city, headers=headers, params={}))
     logger.info(f'За время {datetime.today() - start} получены данные по {len(stores)} магазинам сети "Магнит"')
-
-
-if __name__ == '__main__':
-    print(get_url(url=url_stores, headers=headers, params=params_stores))
-    logger.info('Получилось')

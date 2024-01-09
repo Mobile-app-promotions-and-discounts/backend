@@ -3,7 +3,6 @@ import logging
 import parsing_stores.lenta.scr.config as cfg
 from parsing_stores.lenta.scr.core import get_response
 
-
 logger = logging.getLogger()
 
 

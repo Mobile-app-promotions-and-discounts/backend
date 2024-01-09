@@ -1,15 +1,14 @@
 import logging
 from logging.config import dictConfig
-import requests
-from requests.exceptions import RequestException
 
+import requests
 from django.conf import settings
-from django.core.files.base import ContentFile
 from django.core.exceptions import MultipleObjectsReturned
+from django.core.files.base import ContentFile
+from requests.exceptions import RequestException
 
 from parsing_stores.magnit.validators import check_product_magnit
 from products.models import Category, Discount, Product, ProductsInStore, Store
-
 
 dictConfig(settings.LOGGER_MAGNIT)
 logger = logging.getLogger(f'root.{__name__}')
@@ -116,7 +115,11 @@ def add_products_store_in_db(id_in_chain_store):
     params_products['limit'] = total_products
     data = get_url(url_products, params=params_products, headers=headers)
     products = read_data(data)[1]
-    store = Store.objects.get(id_in_chain_store=id_in_chain_store)
+    if Store.objects.filter(id_in_chain_store=id_in_chain_store).count() == 1:
+        store = Store.objects.get(id_in_chain_store=id_in_chain_store)
+    else:
+        logger.error(f'Найдено более 1 магазина с <<{id_in_chain_store}>> сети "Магнит"')
+        store = Store.objects.filter(id_in_chain_store=id_in_chain_store).first()
     logger.info(f'товары по магазину <<{store}>> получены')
     for product in products:
         product_data, discount, price_in_store = split_product_data(product)
@@ -141,9 +144,3 @@ def main():
         except RequestException as exc:
             logger.exception(exc)
             continue
-
-
-if __name__ == '__main__':
-    # pprint(main()[1][0])
-    # pprint(read_data(get_url(url_products, params=params_products, headers=headers))[1])
-    pass

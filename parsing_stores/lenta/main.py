@@ -5,12 +5,11 @@ from logging.config import fileConfig
 
 import parsing_stores.lenta.scr.config as cfg
 import parsing_stores.lenta.scr.msg as msg
-from parsing_stores.lenta.scr.core import open_json_file
 from parsing_stores.lenta.scr.add_to_db import add_to_db
+from parsing_stores.lenta.scr.core import open_json_file
 from parsing_stores.lenta.scr.scr_products import get_products_in_store
 from parsing_stores.lenta.scr.scr_stores import (get_and_save_all_stores,
                                                  get_and_save_stores_in_city)
-
 
 fileConfig('logging.ini')
 logger = logging.getLogger()
