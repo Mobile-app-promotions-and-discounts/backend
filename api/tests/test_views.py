@@ -3,7 +3,8 @@ from http import HTTPStatus
 from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 
-from factories.products import CategoryFactory, ProductFactory, ReviewFactory, StoreFactory
+from factories.products import (CategoryFactory, ProductFactory, ReviewFactory,
+                                StoreFactory)
 from factories.users import UserFactory
 from products.models import Product
 
