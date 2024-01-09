@@ -3,8 +3,7 @@ CITY_APPLICATIONS = ['Москва',]
 
 # URL
 URL_GET_STORES = 'https://lenta.com/api/v1/stores/'
-URL_GET_PRODACT = 'https://lenta.com/api/v1/stores/{}/skus/'
-
+URL_GET_PRODUCT = 'https://lenta.com/api/v1/stores/{}/skus/'
 
 # КОНСТАНТЫ ДЛЯ ПАРСИНГА
 NAME_STORE = 'Лента'
@@ -19,34 +18,32 @@ FILE_NAME = {
 
 # Cловарь связи категории приложения и ключа категории на сайте
 CATEGORY_LENTA = {
-    # 'Алкогольные напитки': None,
-    # 'Продукция собственного производства': None,
+    'Алкогольные напитки': 'g0a4c6ef96090b5b3db5f6aa0f2c20563',
+    'Продукция собственного производства': 'geee7643ec01603a5db2cf4819de1a033',
     'Фрукты и овощи': 'g6b6be260dbddd6da54dcc3ca020bf380',
     'Мясо, птица, колбаса': 'gd6dd9b5e854cf23f28aa622863dd6913',
     'Молоко, сыр, яйцо': 'g604e486481b04594c32002c67a2b459a',
-    # 'Хлеб и хлебобулочные изделия': None,
+    'Хлеб и хлебобулочные изделия': 'g36505197bc9614e24d1020b3cfb38ee5',
     'Бакалея': 'g7cc5c7251a3e5503dc4122139d606465',
     'Рыба и морепродукты': 'g523853c00788bbb520b022c130d1ae92',
-    # 'Замороженная продукция': None,
+    'Замороженная продукция': 'g1baf1ddaa150137098383967c9a8e732',
     'Кондитерские изделия': 'g301007c55a37d7ff8539f1f169a4b8ae',
     'Чай, кофе, какао': 'g68552e15008531b8ae99799a1d9391df',
     'Безалкогольные напитки': 'g9290c81c23578165223ca2befe178b47',
     'Всё для дома': 'g6f4a2d852409e5804606d640dc97a2b1',
-    # 'Посуда': None,
-    # 'Товары для детей': None,
-    # 'Лента Зоомаркет - профессиональный уход': None,
-    # 'Товары для животных': None,
-    # 'Здоровое питание': None,
-    # 'Красота и здоровье': None,
-    # 'Бытовая химия': None,
-    # 'Бытовая техника и электроника': None,
-    # 'Текстиль для дома': None,
-    # 'Одежда и обувь': None,
-    # 'Спорт и активный отдых': None,
-    # 'Дача, сад': None,
-    # 'Автотовары': None,
-    # 'Цветы': None,
-    # 'Канцелярия и печатная продукция': None,
+    'Посуда': 'gf925791ef5e5040add50a6e391cae599',
+    'Товары для детей': 'ga4638d8e16b266a51b9906c290531afb',
+    'Товары для животных': 'gad95d0db03fef392c89dff187253909a',
+    'Здоровое питание': 'g1d79df330af0458391dd6307863d333e',
+    'Красота и здоровье': 'g81ed6bb4ec3cd75cbf9117a7e9722a1d',
+    'Бытовая химия': 'g7886175ed64de08827c4fb2a9ad914f3',
+    'Бытовая техника и электроника': 'g4258530b46e66c5ac62f88a56ee8bce1',
+    'Одежда и обувь': 'g4477ab807af5fd53f280b1aac7816659',
+    'Спорт и активный отдых': 'gb90175be6caae9b1599e7d11326b22c3',
+    'Дача, сад': 'gce3c6ce98ad51e02445da35b93d2c7b7',
+    'Автотовары': 'ge638b7ffc736e21c16b21710b4086220',
+    'Цветы': 'gb57865aeafbfc5aa8e086b86d3000a27',
+    'Канцелярия и печатная продукция': 'g648e6f3e83892dabd3f63281dab529fd',
 }
 
 CATEGORY = {
@@ -74,7 +71,6 @@ CATEGORY = {
         CATEGORY_LENTA.get('Посуда'),
         CATEGORY_LENTA.get('Бытовая химия'),
         CATEGORY_LENTA.get('Бытовая техника и электроника'),
-        CATEGORY_LENTA.get('Текстиль для дома'),
         CATEGORY_LENTA.get('Дача, сад'),
         CATEGORY_LENTA.get('Канцелярия и печатная продукция'),
     ],
@@ -83,7 +79,6 @@ CATEGORY = {
     ],
     'KIDS': [CATEGORY_LENTA.get('Товары для детей'),],
     'ZOO': [
-        CATEGORY_LENTA.get('Лента Зоомаркет - профессиональный уход'),
         CATEGORY_LENTA.get('Товары для животных'),
     ],
     'AUTO': [CATEGORY_LENTA.get('Автотовары'),],
@@ -92,29 +87,35 @@ CATEGORY = {
 
 # requests headers
 HEADERS = {
-        'Accept': 'application/json',
-        'Accept-Language': 'en,ru-RU;q=0.9,ru;q=0.8,en-US;q=0.7,uk;q=0.6',
-        'Connection': 'keep-alive',
-        'Content-Type': 'application/json',
-        'DNT': '1',
-        'Origin': 'https://lenta.com',
-        'Referer': 'https://lenta.com/promo/frukty-i-ovoshchi/frukty/',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'same-origin',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-        'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-        'sec-ch-ua-mobile': '?1',
-        'sec-ch-ua-platform': '"Android"',
-    }
+    'Accept': 'application/json',
+    'Accept-Language': 'en,ru-RU;q=0.9,ru;q=0.8,en-US;q=0.7,uk;q=0.6',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/json',
+    'DNT': '1',
+    'Origin': 'https://lenta.com',
+    'Referer': 'https://lenta.com/promo/frukty-i-ovoshchi/frukty/',
+    'Sec-Fetch-Dest': 'empty',
+    'Sec-Fetch-Mode': 'cors',
+    'Sec-Fetch-Site': 'same-origin',
+    'User-Agent': ('Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/'
+                   'MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
+                   '/120.0.0.0 Mobile Safari/537.36'),
+    'sec-ch-ua': ('"Not_A Brand";v="8", "Chromium'
+                  '";v="120", "Google Chrome";v="120"'),
+    'sec-ch-ua-mobile': '?1',
+    'sec-ch-ua-platform': '"Android"',
+}
 
 # requests cookies
-cookies = {
+COOKIES = {
     'KFP_DID': 'cda1cfa9-63f0-931d-71f0-99caa85965f4',
-    'oxxfgh': 'caa429fd-33a7-4dcf-b241-26cdf35bbf1f#0#5184000000#5000#1800000#44965',
+    'oxxfgh': ('caa429fd-33a7-4dcf-b241-26cdf35bbf1f#0#5184000000#5000#18'
+               '00000#44965'),
     '_gid': 'GA1.2.433868370.1703450819',
     'splses.d58d': '*',
-    '.ASPXANONYMOUS': 'IwzFt9mMQQX1bDam_1RPrXO37fW7XQ9pDywfvnRZPq6cDKKwRhxtE3pEWr_T9HVeqEys58bmbHNNSyROjzc8xlT88uXMeCeOaDYRWYfHrJIHPtYJjaleA68DzgecmXx2BExA2g2',
+    '.ASPXANONYMOUS': ('IwzFt9mMQQX1bDam_1RPrXO37fW7XQ9pDywfvnRZPq6cDKKwRhxt'
+                       'E3pEWr_T9HVeqEys58bmbHNNSyROjzc8xlT88uXMeCeOaDYRWYfH'
+                       'rJIHPtYJjaleA68DzgecmXx2BExA2g2'),
     'ASP.NET_SessionId': 'yyg0ywhb0emhs5uh1dp52qih',
     'cookiesession1': '678B286D68C34367DB0D4BEA1FC1E493',
     'qrator_ssid': '1703450819.710.maJA9ERPvYdlwII8-cpcg93tn2dmgpa4hbah7hr4u70o1cq85',
@@ -154,7 +155,9 @@ cookies = {
     '_ga': 'GA1.2.2140699981.1703103881',
     'tmr_detect': '0%7C1703454278504',
     '_ga_R6J1ZT7WKM': 'GS1.2.1703450819.9.1.1703454304.0.0.0',
-    'splid.d58d': '53e8ede6-f3fe-4ca3-9688-2d4b848d0889.1703450819.9.1703454305..26270234-2cf9-4dfc-bbd4-c97759feb5a9..f188ad02-d288-4e3b-990d-a7b9c1a4f30a.1703450819364.159',
+    'splid.d58d': ('53e8ede6-f3fe-4ca3-9688-2d4b848d0889.1703450819.9.170'
+                   '3454305..26270234-2cf9-4dfc-bbd4-c97759feb5a9..f188ad02'
+                   '-d288-4e3b-990d-a7b9c1a4f30a.1703450819364.159'),
     '_ga_QB4J0GGLM': 'GS1.1.1703450819.9.1.1703454304.0.0.0',
     '_ga_QB4J0GGLMG': 'GS1.1.1703450819.9.1.1703454304.0.0.0',
     '_ga_7T2BMDLJY8': 'GS1.1.1703450819.9.1.1703454304.0.0.0',
