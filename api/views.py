@@ -51,7 +51,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.all()
+    # FIXME: временно не отдаем на фронт категорию 'Разное', вернемся к этому вопросу позднее
+    queryset = Category.objects.exclude(name='DIFFERENT')
     serializer_class = CategorySerializer
     pagination_class = None
     filter_backends = (OrderingFilter,)
