@@ -14,7 +14,7 @@ LOG_PRODUCTS_IN_STORE = 'Из магазина c id {} спарсено {} то�
 LOG_PRODUCTS_ON_PAGE = 'get_products_on_page - OK'
 
 
-def get_products_on_page(store_id: str, nodeCode: str, offset: int) -> Response:
+def get_products_on_page(store_id: str, node_code: str, offset: int) -> Response:
     """
     Получить список продуктов в определеной категории.
     'store_id' - id магазина на сайте
@@ -24,7 +24,7 @@ def get_products_on_page(store_id: str, nodeCode: str, offset: int) -> Response:
     """
 
     json_data: dict = {
-        'nodeCode': nodeCode,
+        'nodeCode': node_code,
         'pageId': cfg.PAGE_ID,
         'filters': [],
         'typeSearch': 1,
@@ -83,16 +83,16 @@ def get_products_in_store(store: dict) -> Tuple[list, dict]:
     """
     all_products_store = []
 
-    for category_in_bd, nodeCode_list in cfg.CATEGORY.items():
-        for nodeCode in nodeCode_list:
-            if not nodeCode:
+    for category_in_bd, node_code_list in cfg.CATEGORY.items():
+        for node_code in node_code_list:
+            if not node_code:
                 continue
             offset: int = 0
             amount_products: int = 0
             while amount_products > 0 or offset == 0:
                 product_page: List[dict] = get_products_on_page(
                     store.get('id_store'),
-                    nodeCode,
+                    node_code,
                     offset
                 ).json()
                 if offset == 0:
