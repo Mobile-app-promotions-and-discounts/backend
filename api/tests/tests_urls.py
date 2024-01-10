@@ -1,10 +1,10 @@
 from http import HTTPStatus
+
 from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 
 from factories.products import ProductFactory, ReviewFactory, StoreFactory
 from factories.users import UserFactory
-
 
 PRODUCTS_URL = reverse('api:products-list')
 CATEGORIES_URL = reverse('api:categories-list')
