@@ -5,6 +5,7 @@ from requests import Response
 
 import parsing_stores.lenta.scr.config as cfg
 from parsing_stores.lenta.scr.core import get_response
+
 logger = logging.getLogger()
 
 LOG_FILTER_PRODUCTS_DISCOUNT = 'filter_products_discount - OK'

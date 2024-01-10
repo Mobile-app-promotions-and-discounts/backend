@@ -26,7 +26,6 @@ def main() -> None:
             stores_in_city: List[dict] = open_json_file(cfg.FILE_NAME['STORES_IN_SITY'].format(city))
             for store in stores_in_city:
                 add_to_db(*get_products_in_store(store))
-            # add_to_db(*get_products_in_store(stores_in_city[0]))
             logger.debug(
                 msg=PARSING_OK.format(
                     city,
