@@ -1,5 +1,4 @@
 from http import HTTPStatus
-
 from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 
