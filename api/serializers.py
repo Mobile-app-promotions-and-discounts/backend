@@ -143,7 +143,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('customer', 'text', 'score', 'pub_date')
+        fields = ('user', 'text', 'score', 'pub_date')
 
     def validate_review(self, value):
         """Валидация для оценки товара."""
