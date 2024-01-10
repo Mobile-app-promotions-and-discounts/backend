@@ -209,7 +209,7 @@ class ChainStore(models.Model):
     """Модель для сети магазинов."""
     name = models.CharField('Название сети магазинов', max_length=100)
     logo = models.ImageField(upload_to='store_logos/', verbose_name='Логотип сети', blank=True, null=True)
-    website = models.URLField('Сайт сети магазинов', max_length=200)
+    website = models.URLField('Сайт сети магазинов', max_length=200, blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
