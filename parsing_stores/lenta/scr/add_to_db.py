@@ -88,13 +88,6 @@ def add_store_products_in_db(products_in_store: list, store_data: dict) -> None:
         )
     rez_list: List[ProductsInStore] = ProductsInStore.objects.bulk_create(
         data,
-        update_conflicts=True,
-        unique_fields=['product', 'store'],
-        update_fields=[
-            'product',
-            'store',
-            'initial_price',
-            'promo_price',
-            'discount']
+        ignore_conflicts=True
     )
     logger.debug(LOG_ADD_TO_DB.format(store_data.get('id_store'), len(rez_list)))
