@@ -40,12 +40,18 @@ class ProductViewSet(viewsets.ModelViewSet):
         user = request.user
         product = get_object_or_404(Product, id=pk)
         if request.method == 'POST':
-            Favorites.objects.get_or_create(user=user, product=product)
-            return Response('Товар успешно добавлен в избранное', status.HTTP_201_CREATED)
-        user.favorites.get(product=product).delete()
-        return Response('Товар успешно удален из избранного', status.HTTP_204_NO_CONTENT)
+            if Favorites.objects.filter(user=user, product=product).exists():
+                return Response('Товар уже есть в Избранном', status.HTTP_422_UNPROCESSABLE_ENTITY)
+            Favorites.objects.create(user=user, product=product)
+            return Response('Товар успешно добавлен в Избранное', status.HTTP_201_CREATED)
+        else:
+            user_favorite_product = user.favorites.filter(product=product)
+            if user_favorite_product.exists():
+                user_favorite_product.delete()
+                return Response('Товар успешно удален из Избранного', status.HTTP_204_NO_CONTENT)
+            return Response('Данный товар не найден в Избранном', status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    @action(detail=False, methods=['get',], permission_classes=[IsAuthenticated,])
+    @action(detail=False, methods=['get',])
     def favorites(self, request):
         return super().list(request)
 
