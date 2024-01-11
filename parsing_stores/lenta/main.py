@@ -24,9 +24,8 @@ def main() -> None:
         for city in cfg.CITY_APPLICATIONS:
             get_and_save_stores_in_city(city)
             stores_in_city: List[dict] = open_json_file(cfg.FILE_NAME['STORES_IN_SITY'].format(city))
-            for store in stores_in_city:
+            for store in stores_in_city[:10]:
                 add_store_products_in_db(*get_products_in_store(store))
-            add_store_products_in_db(*get_products_in_store(stores_in_city[:10]))
             logger.debug(
                 msg=PARSING_OK.format(
                     city,
