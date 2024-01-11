@@ -51,7 +51,7 @@ class ChainStoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ChainStore
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'logo', 'website')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -59,7 +59,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name')
+        fields = ('id', 'get_name_display', 'image')
 
 
 class StoreSerializer(serializers.ModelSerializer):
@@ -137,13 +137,13 @@ class CreateProductSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    customer = serializers.SlugRelatedField(
+    user = serializers.SlugRelatedField(
         read_only=True, slug_field='username'
     )
 
     class Meta:
         model = Review
-        fields = ('customer', 'text', 'score', 'pub_date')
+        fields = ('user', 'text', 'score', 'pub_date')
 
     def validate_review(self, value):
         """Валидация для оценки товара."""

@@ -64,7 +64,7 @@ class Category(models.Model):
         DIFFERENT = 'DIFFERENT', 'Разное'
 
     name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
-    image = models.ImageField(upload_to='category_images/', verbose_name='Изображение категории', blank=True, null=True)
+    image = models.ImageField(upload_to='category_images/', verbose_name='Иконка категории', blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
@@ -195,7 +195,7 @@ class StoreLocation(models.Model):
     city = models.CharField('Город', max_length=100)
     address = models.CharField('Адрес', max_length=255)
     latitude = models.CharField('Широта', max_length=100)
-    longitude = models.CharField('Долгата', max_length=100)
+    longitude = models.CharField('Долгота', max_length=100)
 
     class Meta:
         verbose_name = 'Адрес магазина'
@@ -209,6 +209,7 @@ class ChainStore(models.Model):
     """Модель для сети магазинов."""
     name = models.CharField('Название сети магазинов', max_length=100)
     logo = models.ImageField(upload_to='store_logos/', verbose_name='Логотип сети', blank=True, null=True)
+    website = models.URLField('Сайт сети магазинов', max_length=200, blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
