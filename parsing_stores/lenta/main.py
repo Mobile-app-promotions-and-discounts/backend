@@ -5,7 +5,7 @@ from logging.config import fileConfig
 from typing import List
 
 import parsing_stores.lenta.scr.config as cfg
-from parsing_stores.lenta.scr.add_to_db import add_to_db
+from parsing_stores.lenta.scr.add_to_db import add_store_products_in_db
 from parsing_stores.lenta.scr.core import open_json_file
 from parsing_stores.lenta.scr.scr_products import get_products_in_store
 from parsing_stores.lenta.scr.scr_stores import (get_and_save_all_stores,
@@ -24,8 +24,8 @@ def main() -> None:
         for city in cfg.CITY_APPLICATIONS:
             get_and_save_stores_in_city(city)
             stores_in_city: List[dict] = open_json_file(cfg.FILE_NAME['STORES_IN_SITY'].format(city))
-            for store in stores_in_city:
-                add_to_db(*get_products_in_store(store))
+            for store in stores_in_city[:10]:
+                add_store_products_in_db(*get_products_in_store(store))
             logger.debug(
                 msg=PARSING_OK.format(
                     city,
