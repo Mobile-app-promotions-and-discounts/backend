@@ -59,7 +59,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'get_name_display')
+        fields = ('id', 'get_name_display', 'image')
 
 
 class StoreSerializer(serializers.ModelSerializer):
@@ -137,7 +137,7 @@ class CreateProductSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    customer = serializers.SlugRelatedField(
+    user = serializers.SlugRelatedField(
         read_only=True, slug_field='username'
     )
 
