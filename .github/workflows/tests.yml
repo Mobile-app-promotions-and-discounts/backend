@@ -72,3 +72,4 @@ jobs:
           sudo docker exec -it cherry_app python manage.py collectstatic --no-input
           sudo docker exec -it cherry_app python manage.py add_categories
           echo log=конец скрипта >> ../backend/.env
+# просто строка
