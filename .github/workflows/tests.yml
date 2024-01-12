@@ -53,22 +53,14 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-          echo test=test >> .env
           cd ~/infra/
           sudo docker compose stop
-          echo log=стоп контейнер >> ../backend/.env
           sudo docker container rm cherry_app
-          echo log=удалил контейнер >> ../backend/.env
           sudo docker image rm cherry_app
-          echo log=удалил имидж >> ../backend/.env
           sudo docker build -t cherry_app ../backend/
-          echo log=создал имидж >> ../backend/.env
           sudo docker compose up -d
-          echo log=запустил контейнеры >> ../backend/.env
           sudo docker exec -it cherry_app python manage.py makemigrations
-          echo log=создал миграции >> ../backend/.env
           sudo docker exec -it cherry_app python manage.py migrate
-          echo log=запустил миграции >> ../backend/.env
           sudo docker exec -it cherry_app python manage.py collectstatic --no-input
           sudo docker exec -it cherry_app python manage.py add_categories
           echo log=конец скрипта >> ../backend/.env
