@@ -3,9 +3,9 @@ name: tests
 on:
   push:
     branches:
-      - feature-deploy-last
-      # - develop
-      # - main
+      # - feature-deploy-last
+      - develop
+      - main
 #  pull_request:
 #    branches:
 #      - main
@@ -63,4 +63,3 @@ jobs:
           sudo docker exec -it cherry_app python manage.py migrate
           sudo docker exec -it cherry_app python manage.py collectstatic --no-input
           sudo docker exec -it cherry_app python manage.py add_categories
-          echo log=конец скрипта >> ../backend/.env
