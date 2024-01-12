@@ -28,6 +28,4 @@ jobs:
         python -m flake8
     - name: Test with django tests
       run: |
-        pwd
-        cd backend/
         python3 manage.py test -v 2
