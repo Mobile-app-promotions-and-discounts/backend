@@ -28,5 +28,6 @@ jobs:
     - name: Test with django tests
       env:
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
         python3 manage.py test -v2
