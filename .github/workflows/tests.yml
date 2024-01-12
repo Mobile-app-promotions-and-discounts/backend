@@ -29,5 +29,6 @@ jobs:
       env:
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       run: |
         python3 manage.py test -v2
