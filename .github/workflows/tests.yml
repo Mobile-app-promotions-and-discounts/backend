@@ -26,5 +26,7 @@ jobs:
       run: |
         python -m flake8
     - name: Test with django tests
+      env:
+        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
       run: |
-        python manage.py test
+        python3 manage.py test -v2
