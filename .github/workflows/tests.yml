@@ -27,4 +27,4 @@ jobs:
         python -m flake8
     - name: Test with django tests
       run: |
-        python3 manage.py test -v 2
+        python manage.py test
