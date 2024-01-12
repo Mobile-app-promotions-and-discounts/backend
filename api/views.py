@@ -1,3 +1,5 @@
+import random
+
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -24,9 +26,17 @@ class ProductViewSet(viewsets.ModelViewSet):
     ordering = ('name',)
 
     def get_queryset(self):
-        if self.action == "favorites":
+        if self.action == 'favorites':
             return Product.objects.filter(id__in=Favorites.objects.filter(
                 user=self.request.user).values('product_id')).annotate(rating=Avg('reviews__score'))
+        if self.action == 'random_discounts':
+            categories = Category.objects.exclude(name='DIFFERENT')
+            products_ids = []
+            for category in categories:
+                products_in_category = list(Product.objects.filter(category=category))
+                random_product = random.choice(products_in_category)
+                products_ids.append(random_product.id)
+            return Product.objects.filter(id__in=products_ids).annotate(rating=Avg('reviews__score'))
         return Product.objects.annotate(rating=Avg('reviews__score'))
 
     def get_serializer_class(self):
@@ -51,6 +61,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get',])
     def favorites(self, request):
+        return super().list(request)
+
+    @action(detail=False, methods=['get',])
+    def random_discounts(self, request):
         return super().list(request)
 
 
