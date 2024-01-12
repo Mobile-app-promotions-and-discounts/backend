@@ -10,20 +10,22 @@ logger = logging.getLogger()
 
 LOG_FILTER_PRODUCTS_DISCOUNT = 'filter_products_discount - OK'
 LOG_PRODUCTS_DISCOUNT = 'scr_products_discount - OK'
-LOG_PRODUCTS_IN_STORE = 'get_products_in_store - OK'
+LOG_PRODUCTS_IN_STORE = 'Из магазина c id {} спарсено {} товаров'
 LOG_PRODUCTS_ON_PAGE = 'get_products_on_page - OK'
 
 
-def get_products_on_page(store_id: str, nodeCode: str, offset: int) -> Response:
+def get_products_on_page(store_id: str, node_code: str, offset: int) -> Response:
     """
-    Получить список продуктов в определеной категории и записать его в файл.
-    'store' - словарь данных магазина
+    Получить список продуктов в определеной категории.
+    'store_id' - id магазина на сайте
     'nodeCode' - параметр категории на сайте магазина
+    'offset' - параметр пагинации.
+    PAGE_ID - параметр запроса(получения только товаров со скидкой)
     """
 
     json_data: dict = {
-        'nodeCode': nodeCode,
-        'pageId': 'cc4fe51d-b4c0-4c96-be9b-ffebb9d67753',
+        'nodeCode': node_code,
+        'pageId': cfg.PAGE_ID,
         'filters': [],
         'typeSearch': 1,
         'sortingType': 'ByPriority',
@@ -81,27 +83,27 @@ def get_products_in_store(store: dict) -> Tuple[list, dict]:
     """
     all_products_store = []
 
-    for category_in_bd, nodeCode_list in cfg.CATEGORY.items():
-        for nodeCode in nodeCode_list:
-            if not nodeCode:
+    for category_in_bd, node_code_list in cfg.CATEGORY.items():
+        for node_code in node_code_list:
+            if not node_code:
                 continue
             offset: int = 0
             amount_products: int = 0
             while amount_products > 0 or offset == 0:
                 product_page: List[dict] = get_products_on_page(
                     store.get('id_store'),
-                    nodeCode,
+                    node_code,
                     offset
                 ).json()
                 if offset == 0:
                     amount_products: int = product_page.get('total')
                 amount_products -= cfg.PRODUCTS_ON_PAGE
-                if product_page and product_page != []:
+                if product_page:
                     product_page = product_page.get('skus')
                     prodacts_data: List[dict] = scr_products_discount(product_page, category_in_bd)
                     all_products_store.extend(prodacts_data)
                 else:
                     break
                 offset += cfg.PRODUCTS_ON_PAGE
-    logger.debug(LOG_PRODUCTS_IN_STORE)
+    logger.debug(LOG_PRODUCTS_IN_STORE.format(store.get('id_store'), len(all_products_store)))
     return all_products_store, store
