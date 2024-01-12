@@ -32,5 +32,8 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
         POSTGRES_DB: github_actions
+        DB_ENGINE: ${{ secrets.DB_ENGINE }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
       run: |
         python3 manage.py test -v2
