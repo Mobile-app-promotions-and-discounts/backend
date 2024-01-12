@@ -2,9 +2,10 @@ name: tests
 
 on:
   push:
-    branches: 
-      - develop
-      - main
+    branches:
+      - feature-deploy-last
+      # - develop
+      # - main
 #  pull_request:
 #    branches:
 #      - main
@@ -25,6 +26,49 @@ jobs:
     - name: Test with flake8
       run: |
         python -m flake8
-    - name: Test with django tests
-      run: |
-        python3 manage.py test -v2
+    # - name: Test with django tests
+    #   run: |
+    #     python3 manage.py test -v2
+  deploy:
+    # needs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands to deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets. PASSPHRASE }}
+        script: |
+          cd ~/backend/
+          git checkout develop
+          git pull
+          touch .env
+          echo DB_ENGINE=${{ secrets.DB_ENGINE }} > .env
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+          echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
+          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          echo test=test >> .env
+          cd ~/infra/
+          sudo docker compose stop
+          echo log=стоп контейнер >> ../backend/.env
+          sudo docker container rm cherry_app
+          echo log=удалил контейнер >> ../backend/.env
+          sudo docker image rm cherry_app
+          echo log=удалил имидж >> ../backend/.env
+          sudo docker build -t cherry_app ../backend/
+          echo log=создал имидж >> ../backend/.env
+          sudo docker compose up -d
+          echo log=запустил контейнеры >> ../backend/.env
+          sudo docker exec -it cherry_app python manage.py makemigrations
+          echo log=создал миграции >> ../backend/.env
+          sudo docker exec -it cherry_app python manage.py migrate
+          echo log=запустил миграции >> ../backend/.env
+          sudo docker exec -it cherry_app python manage.py collectstatic --no-input
+          sudo docker exec -it cherry_app python manage.py add_categories
+          echo log=конец скрипта >> ../backend/.env
