@@ -65,6 +65,7 @@ class Category(models.Model):
 
     name = models.CharField('Название', max_length=9, choices=CategoryType.choices, default=CategoryType.PRODUCTS)
     image = models.ImageField(upload_to='category_images/', verbose_name='Иконка категории', blank=True, null=True)
+    priority = models.PositiveSmallIntegerField('Приоритет категории в дизайн-макете', blank=True, null=True)
 
     class Meta:
         ordering = ('name',)

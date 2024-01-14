@@ -59,7 +59,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'get_name_display', 'image')
+        fields = ('id', 'priority', 'get_name_display', 'image')
 
 
 class StoreSerializer(serializers.ModelSerializer):
