@@ -3,7 +3,6 @@ name: tests
 on:
   push:
     branches:
-      - fix-action-deploy
       - develop
       - main
 #  pull_request:
@@ -64,4 +63,3 @@ jobs:
           sudo docker exec cherry_app python manage.py migrate
           sudo docker exec cherry_app python manage.py collectstatic --no-input
           sudo docker exec cherry_app python manage.py add_categories
-# контрольный деплой
