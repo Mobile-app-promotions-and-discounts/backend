@@ -3,7 +3,7 @@ name: tests
 on:
   push:
     branches:
-      # - feature-deploy-last
+      - fix-action-deploy
       - develop
       - main
 #  pull_request:
@@ -59,6 +59,7 @@ jobs:
           sudo docker image rm cherry_app
           sudo docker build -t cherry_app ../backend/
           sudo docker compose up -d
+          sleep 5
           sudo docker exec -it cherry_app python manage.py makemigrations
           sudo docker exec -it cherry_app python manage.py migrate
           sudo docker exec -it cherry_app python manage.py collectstatic --no-input
