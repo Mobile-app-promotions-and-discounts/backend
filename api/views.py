@@ -124,5 +124,28 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return self.get_product().reviews.all()
 
-    def perform_create(self, serializer):
-        serializer.save(product=self.get_product(), user=self.request.user)
+    @action(detail=True, methods=['post', 'delete'])
+    def create_review(self, request, pk=None):
+        user = request.user
+        queryset = get_object_or_404(Review, pk=pk)
+        if request.method == 'POST':
+            if Review.objects.filter(user=user, review=queryset).exists():
+                return Response('Нельзя оставлять больше одного отзыва на товар.', status.HTTP_422_UNPROCESSABLE_ENTITY)
+            Review.objects.create(user=user, review=queryset)
+            return Response('Отзыв на товар успешно написан.', status.HTTP_201_CREATED)
+        user_review = Review.objects.filter(user=user, review=queryset)
+        if user_review.exists():
+            user_review.delete()
+            return Response('Отзыв успешно удален.', status.HTTP_204_NO_CONTENT)
+        return Response('Данного отзыва не существует.', status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+
+class UserReviewsViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewSerializer
+    pagination_class = PageNumberPagination
+    ordering_fields = ('pub_date',)
+    ordering = ('pub_date',)
+
+    def get_queryset(self):
+        queryset = Review.objects.filter(user=self.request.user)
+        return queryset
