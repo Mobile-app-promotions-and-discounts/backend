@@ -8,7 +8,7 @@ from factories.products import (CategoryFactory, ProductFactory, ReviewFactory,
 from factories.users import UserFactory
 from products.models import Product
 
-FIRST_CATEGORY = 'AUTO'
+FIRST_CATEGORY = 'Авто'
 # FIXME: временно не отдаем на фронт категорию 'Разное', поэтому в качестве количества категорий указано 8
 CATEGORIES_COUNT = 8
 PRODUCTS_URL = reverse('api:products-list')
@@ -52,7 +52,7 @@ class APIViewsTest(APITestCase):
         response = self.authorized_client.get(CATEGORIES_URL)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.data[0].get('name'), FIRST_CATEGORY)
+        self.assertEqual(response.data[0].get('get_name_display'), FIRST_CATEGORY)
 
 
 class PaginatorViewsTest(APITestCase):

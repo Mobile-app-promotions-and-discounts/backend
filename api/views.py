@@ -74,8 +74,8 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySerializer
     pagination_class = None
     filter_backends = (OrderingFilter,)
-    ordering_fields = ('name',)
-    ordering = ('name',)
+    ordering_fields = ('get_name_display',)
+    ordering = ('get_name_display',)
 
 
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
