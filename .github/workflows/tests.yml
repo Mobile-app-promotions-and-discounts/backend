@@ -43,6 +43,7 @@ jobs:
         python3 manage.py test -v2
       env:
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
         DB_ENGINE: django.db.backends.postgresql
         POSTGRES_DB: postgres
         POSTGRES_USER: postgres
