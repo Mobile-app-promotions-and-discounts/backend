@@ -42,6 +42,7 @@ jobs:
       run: |
         python3 manage.py test -v2
       env:
+        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         DB_ENGINE: django.db.backends.postgresql
         POSTGRES_DB: postgres
         POSTGRES_USER: postgres
