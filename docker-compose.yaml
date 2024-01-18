@@ -19,6 +19,15 @@ services:
       - db
     env_file:
       - .env
+  
+  redis_src:
+    image: redis:7.0.5-alpine
+    container_name: redis_src
+    command: redis-server --requirepass ${REDIS_SRC_PASSWORD} --save 20 1
+    volumes:
+      - redis_src_data:/data
+    ports:
+      - '${REDIS_SRC_PORT}:6379'
 
   nginx:
     image: nginx:1.25.3-alpine
@@ -34,3 +43,4 @@ services:
 volumes:
   static_value:
   media_value:
+  redis_src_data:
