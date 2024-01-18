@@ -1,2 +1,2 @@
 #!/bin/bash
-celery -A cherry worker -B --loglevel=DEBUG
+celery -A run_parsing worker -B --loglevel=DEBUG
