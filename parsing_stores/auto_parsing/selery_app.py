@@ -10,9 +10,9 @@ app = Celery('run_parsing')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
-# app.conf.beat_schedule = {
-#     'send_notifications': {
-#         'task': 'notifications.tasks.send_notifications',
-#         'schedule': crontab()
-#     },
-# }
+app.conf.beat_schedule = {
+    'run_parsing': {
+        'task': 'parsing_stores.tasks.run_src_lenta',
+        'schedule': crontab(minute=5)
+    },
+}

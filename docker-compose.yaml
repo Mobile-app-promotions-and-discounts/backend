@@ -28,6 +28,20 @@ services:
       - redis_src_data:/data
     ports:
       - '${REDIS_SRC_PORT}:6379'
+  
+  task_worker:
+    container_name: task_worker
+    build: .
+    command: ./parsing_stores/auto_parsing/run_celery.sh
+    volumes:
+      - worker_celery_data:/data
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - redis_src
+      - web
+      - db
 
   nginx:
     image: nginx:1.25.3-alpine
@@ -44,3 +58,4 @@ volumes:
   static_value:
   media_value:
   redis_src_data:
+  worker_celery_data:
