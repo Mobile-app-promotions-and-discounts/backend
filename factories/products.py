@@ -1,6 +1,4 @@
-import os
 from datetime import timedelta
-from decimal import Decimal
 
 import factory.fuzzy
 from factory.django import DjangoModelFactory
@@ -15,10 +13,6 @@ from .users import UserFactory
 
 fake = Faker(locale='ru_RU')
 
-absolute_path = os.path.dirname(__file__)
-relative_path = "categories_images"
-PATH = os.path.join(absolute_path, relative_path)
-
 
 class ChainStoreFactory(DjangoModelFactory):
     class Meta:
@@ -27,6 +21,7 @@ class ChainStoreFactory(DjangoModelFactory):
 
     name = factory.Iterator(CHAIN_STORES)
     logo = factory.django.ImageField(color=factory.Faker('color'))
+    website = factory.LazyAttribute(lambda _: fake.url())
 
 
 class CategoryFactory(DjangoModelFactory):
@@ -45,6 +40,8 @@ class StoreLocationFactory(DjangoModelFactory):
     region = factory.Faker('region', locale='ru_RU')
     city = factory.Faker('city', locale='ru_RU')
     address = factory.Faker('street_address', locale='ru_RU')
+    latitude = factory.LazyAttribute(lambda _: str(fake.latitude()))
+    longitude = factory.LazyAttribute(lambda _: str(fake.longitude()))
 
 
 class StoreFactory(DjangoModelFactory):
@@ -54,6 +51,7 @@ class StoreFactory(DjangoModelFactory):
     name = factory.Faker('text', max_nb_chars=10, locale='ru_RU')
     location = factory.SubFactory(StoreLocationFactory)
     chain_store = factory.SubFactory(ChainStoreFactory)
+    id_in_chain_store = factory.LazyAttribute(lambda _: fake.pystr_format(string_format='######'))
 
 
 class DiscountFactory(DjangoModelFactory):
@@ -74,7 +72,7 @@ class ProductFactory(DjangoModelFactory):
 
     name = factory.Iterator(PRODUCTS_NAMES)
     description = factory.Iterator(PRODUCTS_DESCRIPTIONS)
-    barcode = factory.LazyAttribute(lambda _: fake.ean(length=13))
+    barcode = factory.LazyAttribute(lambda _: str(fake.ean(length=13)))
     category = factory.SubFactory(CategoryFactory)
     main_image = factory.django.ImageField(color=factory.Faker('color'))
 
@@ -94,11 +92,8 @@ class ProductsInStoreFactory(DjangoModelFactory):
     product = factory.SubFactory(ProductFactory)
     store = factory.SubFactory(StoreFactory)
     discount = factory.SubFactory(DiscountFactory)
-    # TODO: исправить типы данных у полей initial_price и promo_price
-    initial_price = factory.fuzzy.FuzzyDecimal(low=10.0, high=1000.0)
-    promo_price = factory.LazyAttribute(
-        lambda x: x.initial_price - x.discount.discount_rate if x.discount.discount_unit == 'RUB'
-        else x.initial_price - x.initial_price * (Decimal(str(x.discount.discount_rate / 100))))
+    initial_price = factory.LazyAttribute(lambda _: fake.pystr_format(string_format='######'))
+    promo_price = factory.LazyAttribute(lambda _: fake.pystr_format(string_format='######'))
 
 
 class ProductWithStoreFactory(ProductFactory):
