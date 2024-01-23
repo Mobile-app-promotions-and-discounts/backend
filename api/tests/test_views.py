@@ -8,11 +8,14 @@ from factories.products import (CategoryFactory, ProductFactory, ReviewFactory,
 from factories.users import UserFactory
 from products.models import Product
 
-FIRST_CATEGORY = 'Авто'
+FIRST_CATEGORY_BY_PRIORITY = 'Продукты'
 # FIXME: временно не отдаем на фронт категорию 'Разное', поэтому в качестве количества категорий указано 8
 CATEGORIES_COUNT = 8
 PRODUCTS_URL = reverse('api:products-list')
+PRODUCT_DETAIL_URL = 'api:products-detail'
 CATEGORIES_URL = reverse('api:categories-list')
+REVIEWS_URL = 'api:reviews-list'
+STORE_PRODUCTS_URL = 'api:store-products-list'
 STORES_URL = reverse('api:stores-list')
 STORE_CHAINS_URL = reverse('api:chains-list')
 
@@ -29,9 +32,9 @@ class APIViewsTest(APITestCase):
         self.store = StoreFactory()
         self.categories = CategoryFactory.create_batch(CATEGORIES_COUNT)
         self.review = ReviewFactory(product=self.product, user=self.user_2)
-        self.REVIEWS_URL = reverse('api:reviews-list', args=[self.product.id])
-        self.STORE_PRODUCTS_URL = reverse('api:store-products-list', args=[self.store.id])
-        self.PRODUCT_DETAIL_URL = reverse('api:products-detail', args=[self.product.id])
+        self.REVIEWS_URL = reverse(REVIEWS_URL, args=[self.product.id])
+        self.STORE_PRODUCTS_URL = reverse(STORE_PRODUCTS_URL, args=[self.store.id])
+        self.PRODUCT_DETAIL_URL = reverse(PRODUCT_DETAIL_URL, args=[self.product.id])
 
     def test_get_all_categories(self):
         response = self.authorized_client.get(CATEGORIES_URL)
@@ -52,7 +55,7 @@ class APIViewsTest(APITestCase):
         response = self.authorized_client.get(CATEGORIES_URL)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.data[0].get('get_name_display'), FIRST_CATEGORY)
+        self.assertEqual(response.data[0].get('get_name_display'), FIRST_CATEGORY_BY_PRIORITY)
 
 
 class PaginatorViewsTest(APITestCase):
