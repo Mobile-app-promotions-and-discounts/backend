@@ -5,7 +5,7 @@ from logging.config import fileConfig
 from typing import List
 
 import parsing_stores.lenta.scr.config as cfg
-from parsing_stores.tasks import run_src
+from parsing_stores.tasks import run_src_lenta
 from parsing_stores.lenta.scr.add_to_db import add_store_products_in_db
 from parsing_stores.lenta.scr.core import open_json_file
 from parsing_stores.lenta.scr.scr_products import get_products_in_store
@@ -19,7 +19,7 @@ PARSING_OK = 'Все данные по городу {} добавлены в Б�
 
 
 def main() -> None:
-    run_src.delay()
+    run_src_lenta.delay()
     start_parsing = datetime.today()
     try:
         get_and_save_all_stores()
