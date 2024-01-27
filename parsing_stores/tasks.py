@@ -1,6 +1,7 @@
-from cherry.celery import app
+from __future__ import absolute_import, unicode_literals
+from celery import shared_task
 
 
-@app.task
+@shared_task
 def run_src_lenta():
-    print(f'ТАСКА ТАСКА ТАСКА ТАСКА ПАРСИМ ЛЕНТ ЛЕНТУ {str}')
+    print('ТАСКА ТАСКА ТАСКА ТАСКА')

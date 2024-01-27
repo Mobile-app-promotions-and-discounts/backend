@@ -17,3 +17,8 @@ app.conf.beat_schedule = {
         'schedule': crontab()
     },
 }
+
+
+@app.task(bind=True)
+def debug_task(self):
+    print('ЗАПУСК debug_task')
