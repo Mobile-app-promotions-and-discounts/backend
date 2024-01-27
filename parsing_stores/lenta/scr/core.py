@@ -1,6 +1,8 @@
+import aiohttp
 import json
 import logging
-from typing import Any
+from typing import Any, AsyncContextManager
+
 
 import backoff
 import requests
@@ -18,9 +20,10 @@ REQUEST_START = 'Запрос {}'
 
 @backoff.on_exception(backoff.expo,
                       requests.exceptions.RequestException,
-                      max_time=10,
+                      max_time=60,
                       logger=logger)
 def get_response(options: dict = None, method: str = 'get') -> Response:
+    """Функция выполняет request и возвращает response"""
     logger.debug(REQUEST_START.format(options.get('url')))
     response: Response = (requests.get(**options)
                           if method == 'get'
@@ -33,6 +36,18 @@ def get_response(options: dict = None, method: str = 'get') -> Response:
     else:
         logger.error(RESPONSE_STATUS.format(response.status_code))
     return response
+
+
+@backoff.on_exception(backoff.expo,
+                      aiohttp.ClientError,
+                      max_time=60,
+                      logger=logger)
+async def aget_response(options: dict = None, method: str = 'get') -> AsyncContextManager[aiohttp.ClientResponse]:
+    """Функция асинхронно выполняет request и возвращает response"""
+    async with aiohttp.ClientSession(cookies=cfg.COOKIES, headers=cfg.HEADERS) as session:
+        logger.debug(REQUEST_START.format(options.get('url')))
+        async with session.request(method=method, **options) as response:
+            return await response.json()
 
 
 def save_json_file(file_: Any, name_file: str, mode: str = 'w') -> None:

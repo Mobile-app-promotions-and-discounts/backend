@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import sys
 from datetime import datetime
@@ -5,10 +6,10 @@ from logging.config import fileConfig
 from typing import List
 
 import parsing_stores.lenta.scr.config as cfg
-from parsing_stores.tasks import run_src_lenta
-from parsing_stores.lenta.scr.add_to_db import add_store_products_in_db
+from parsing_stores.tasks import add_store_products_in_db_task
+# from parsing_stores.lenta.scr.add_to_db import add_store_products_in_db
 from parsing_stores.lenta.scr.core import open_json_file
-from parsing_stores.lenta.scr.scr_products import get_products_in_store
+from parsing_stores.lenta.scr.scr_products import aget_products_in_store
 from parsing_stores.lenta.scr.scr_stores import (get_and_save_all_stores,
                                                  get_and_save_stores_in_city)
 
@@ -18,8 +19,8 @@ logger = logging.getLogger()
 PARSING_OK = 'Все данные по городу {} добавлены в БД {}. Время парсинга составило {}'
 
 
-def main() -> None:
-    run_src_lenta.delay()
+async def main() -> None:
+    # run_src_lenta.delay()
     start_parsing = datetime.today()
     try:
         get_and_save_all_stores()
@@ -27,7 +28,8 @@ def main() -> None:
             get_and_save_stores_in_city(city)
             stores_in_city: List[dict] = open_json_file(cfg.FILE_NAME['STORES_IN_SITY'].format(city))
             for store in stores_in_city[:1]:
-                add_store_products_in_db(*get_products_in_store(store))
+                products_in_store = await aget_products_in_store(store)
+                add_store_products_in_db_task.delay(*products_in_store)
             logger.debug(
                 msg=PARSING_OK.format(
                     city,
@@ -41,4 +43,4 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
