@@ -3,10 +3,9 @@ name: Cherry-app workflow
 on:
   pull_request:
     branches: develop
-    types: [opened, edited, closed]
+    types: [closed]
 jobs:
   tests:
-    if: ${{ (github.event.action == 'opened') || (github.event.action == 'edited') }}
     runs-on: ubuntu-latest
     services:
       postgres:
