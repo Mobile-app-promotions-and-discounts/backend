@@ -1,16 +1,25 @@
-name: tests
+name: Cherry-app workflow
 
 on:
-  push:
-    branches:
-      - develop
-#      - main
-#  pull_request:
-#    branches:
-#      - main
+  pull_request:
+    branches: develop
+    types: [opened, closed]
 jobs:
   tests:
+    if: ${{ github.event.action == 'opened' }}
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
     - uses: actions/checkout@v4
     - name:  Set up Python
@@ -25,41 +34,53 @@ jobs:
     - name: Test with flake8
       run: |
         python -m flake8
-    # - name: Test with django tests
-    #   run: |
-    #     python3 manage.py test -v2
+    - name: Test with django tests
+      run: |
+        python3 manage.py test -v2
+      env:
+        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DB_ENGINE: django.db.backends.postgresql
+        POSTGRES_DB: postgres
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        DB_HOST: 127.0.0.1
+        DB_PORT: 5432
+
   deploy:
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-    - name: executing remote ssh commands to deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        passphrase: ${{ secrets. PASSPHRASE }}
-        script: |
-          cd ~/backend/
-          git checkout develop
-          git pull
-          touch .env
-          echo DB_ENGINE=${{ secrets.DB_ENGINE }} > .env
-          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-          echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
-          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-          cd ~/infra/
-          sudo docker compose stop
-          sudo docker container rm cherry_app
-          sudo docker image rm cherry_app
-          sudo docker build -t cherry_app ../backend/
-          sudo docker compose up -d
-          sleep 5
-          sudo docker exec cherry_app python manage.py makemigrations
-          sudo docker exec cherry_app python manage.py migrate
-          sudo docker exec cherry_app python manage.py collectstatic --no-input
-          sudo docker exec cherry_app python manage.py add_categories
+    if_merged:
+      if: github.event.pull_request.merged == true
+      needs: tests
+      runs-on: ubuntu-latest
+      steps:
+      - name: executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets. PASSPHRASE }}
+          script: |
+            cd ~/backend/
+            git checkout develop
+            git pull
+            touch .env
+            echo DB_ENGINE=${{ secrets.DB_ENGINE }} > .env
+            echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+            echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
+            echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+            cd ~/infra/
+            sudo docker compose stop
+            sudo docker container rm cherry_app
+            sudo docker image rm cherry_app
+            sudo docker build -t cherry_app ../backend/
+            sudo docker compose up -d
+            sleep 5
+            sudo docker exec cherry_app python manage.py makemigrations
+            sudo docker exec cherry_app python manage.py migrate
+            sudo docker exec cherry_app python manage.py collectstatic --no-input
+            sudo docker exec cherry_app python manage.py add_categories
