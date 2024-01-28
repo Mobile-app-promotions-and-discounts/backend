@@ -63,15 +63,15 @@ class PaginatorViewsTest(APITestCase):
         self.authorized_client = APIClient()
         self.user = UserFactory()
         self.authorized_client.force_authenticate(self.user)
-        for number in range(1, 14):
+        for number in range(1, 24):
             self.product = ProductFactory()
             self.store = StoreFactory()
 
-    def test_first_page_contains_ten_products(self):
+    def test_first_page_contains_twenty_products(self):
         response = self.authorized_client.get(PRODUCTS_URL)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(len(response.data.get('results')), 10)
+        self.assertEqual(len(response.data.get('results')), 20)
 
     def test_second_page_contains_three_products(self):
         response = self.authorized_client.get(PRODUCTS_URL + '?page=2')
@@ -79,11 +79,11 @@ class PaginatorViewsTest(APITestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(len(response.data.get('results')), 3)
 
-    def test_first_page_contains_ten_stores(self):
+    def test_first_page_contains_twenty_stores(self):
         response = self.authorized_client.get(STORES_URL)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(len(response.data.get('results')), 10)
+        self.assertEqual(len(response.data.get('results')), 20)
 
     def test_second_page_contains_three_stores(self):
         response = self.authorized_client.get(STORES_URL + '?page=2')
