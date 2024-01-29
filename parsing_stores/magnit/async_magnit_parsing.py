@@ -23,6 +23,12 @@ request_settings = {
 async def get_data_in_url(session, request_setting):
     async with session.get(**request_setting) as result:
         return await result.json()
+    
+
+async def _get_image(session, url):
+    async with session.get(url) as result:
+        print('Начало запроса')
+        return await result.read()
 
 
 def set_params(params, change_param, value_param):
@@ -74,7 +80,7 @@ async def get_product_in_stores(request_settings, ids_store):
 async def get_images(products: List[List[Dict[str, str | None]]]) -> List[bytes]:
     urls = [product[0].get('image_url') for product in products]
     async with ClientSession() as session:
-        reqs = [session.get(url) for url in urls]
+        reqs = [_get_image(session, url) for url in urls]
         results = await asyncio.gather(*reqs, return_exceptions=True)
     for product, image in zip(products, results):
         if isinstance(image, Exception):
@@ -98,11 +104,11 @@ def run_get_data_in_stores():
                 pr_data = parse_data_product(product, PARSING_MAGNIT.get('KEYS'))
                 pr_data.append(dict(id_in_chain_store=store))
                 r.append(pr_data)
-    products = asyncio.run(get_images())
+    products = asyncio.run(get_images(r))
     print(f'Опрошено {len(r)} магазинов')
     print(datetime.today() - start)
-    with open('products_in_magnit.json', 'w') as file:
-        file.write(json.dumps(r))
+    # with open('products_in_magnit.json', 'w') as file:
+    #     file.write(json.dumps(r))
     print(f'Время работы {datetime.today() - start}')
     return products
 # pprint(asyncio.run(main()))

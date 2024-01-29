@@ -3,33 +3,48 @@ import json
 from time import sleep
 from pprint import pprint
 
+from aiohttp import ClientSession
+
 # from async_magnit_parsing import main
 from decorators import calc_time_work
 
-@calc_time_work
-def read_data():
-    with open('/home/roman/Dev/cherry_mobile_app/backend/parsing_stores/magnit/products_in_magnit.json', 'r') as file:
-        data = json.loads(file.read())
-    # print(len(list(data.values())[0]))
-    # pprint(list(data.values())[0])
-    products_in_stores = []
-    products = []
-    discounts = []
-    prices = []
-    for store, data_store in data.items():
-        for product, discount, price in data_store:
-            products_in_stores.append((product, discount, price, dict(store=store)))
-            if product.get('name') not in [pr.get('name') for pr in products]:
-                products.append(product)
-            if discount not in discounts:
-                discounts.append(discount)
-            if price not in prices:
-                prices.append(price)
-    print(len(products))
-    pprint(len(discounts))
-    pprint(len(prices))
-    print(len(products_in_stores))
-    pprint(products_in_stores[-1])
+async def _get_image(session, url):
+    async with session.get(url) as result:
+        print(result.status)
+        return await result.read()
+    
+
+async def main():
+    async with ClientSession() as session:
+        return await _get_image(session=session, url='https://promo-images.prod.ya.magnit.ru/media/promo/images/2003100298.png?response-content-type=image%2Fpng&AWSAccessKeyId=YCAJEHBIaXWYCFuHFkQb6rnPh&Signature=yLdtDzNZ1JUAjRuY%2FtR2HK%2BTVXk%3D&Expires=1706639223')
+    
+
+print(asyncio.run(main()))
+
+# @calc_time_work
+# def read_data():
+#     with open('/home/roman/Dev/cherry_mobile_app/backend/parsing_stores/magnit/products_in_magnit.json', 'r') as file:
+#         data = json.loads(file.read())
+#     # print(len(list(data.values())[0]))
+#     # pprint(list(data.values())[0])
+#     products_in_stores = []
+#     products = []
+#     discounts = []
+#     prices = []
+#     for store, data_store in data.items():
+#         for product, discount, price in data_store:
+#             products_in_stores.append((product, discount, price, dict(store=store)))
+#             if product.get('name') not in [pr.get('name') for pr in products]:
+#                 products.append(product)
+#             if discount not in discounts:
+#                 discounts.append(discount)
+#             if price not in prices:
+#                 prices.append(price)
+#     print(len(products))
+#     pprint(len(discounts))
+#     pprint(len(prices))
+#     print(len(products_in_stores))
+#     pprint(products_in_stores[-1])
 
 read_data()
 
