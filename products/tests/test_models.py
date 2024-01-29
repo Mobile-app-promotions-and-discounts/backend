@@ -1,5 +1,4 @@
 from django.test import TestCase
-
 from factories.products import CategoryFactory, ProductsInStoreFactory
 
 

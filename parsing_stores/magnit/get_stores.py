@@ -4,7 +4,6 @@ from datetime import datetime
 from logging.config import dictConfig
 
 from django.conf import settings
-
 from parsing_stores.magnit.magnit_parsing import get_url
 from products.models import ChainStore, Store, StoreLocation
 

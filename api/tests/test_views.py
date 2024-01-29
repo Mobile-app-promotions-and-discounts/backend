@@ -1,12 +1,11 @@
 from http import HTTPStatus
 
 from django.urls import reverse
-from rest_framework.test import APIClient, APITestCase
-
 from factories.products import (CategoryFactory, ProductFactory, ReviewFactory,
                                 StoreFactory)
 from factories.users import UserFactory
 from products.models import Product
+from rest_framework.test import APIClient, APITestCase
 
 FIRST_CATEGORY = 'AUTO'
 # FIXME: временно не отдаем на фронт категорию 'Разное', поэтому в качестве количества категорий указано 8

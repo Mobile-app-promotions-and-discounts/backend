@@ -3,10 +3,9 @@ import logging
 from typing import Any
 
 import backoff
+import parsing_stores.lenta.scr.config as cfg
 import requests
 from requests import Response
-
-import parsing_stores.lenta.scr.config as cfg
 
 logger = logging.getLogger()
 
