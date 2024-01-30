@@ -1,6 +1,6 @@
 import random
 
-from django.db.models import Avg
+from django.db.models import Avg, Prefetch
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
@@ -110,13 +110,16 @@ class ChainStoreViewSet(viewsets.ReadOnlyModelViewSet):
     ordering = ('name',)
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class BaseReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    pagination_class = PageNumberPagination
     queryset = Review.objects.all()
+    pagination_class = PageNumberPagination
+    ordering_fields = ('-pub_date',)
+    ordering = ('-pub_date',)
+
+
+class ReviewViewSet(BaseReviewViewSet):
     filter_backends = (OrderingFilter,)
-    ordering_fields = ('pub_date',)
-    ordering = ('pub_date',)
 
     def get_product(self):
         return get_object_or_404(Product, id=self.kwargs.get('product_id'))
@@ -124,27 +127,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return self.get_product().reviews.all()
 
-    @action(detail=True, methods=['post', 'delete'])
-    def create_review(self, request, pk=None):
-        user = request.user
-        queryset = get_object_or_404(Review, pk=pk)
-        if request.method == 'POST':
-            if Review.objects.filter(user=user, review=queryset).exists():
-                return Response('Нельзя оставлять больше одного отзыва на товар.', status.HTTP_422_UNPROCESSABLE_ENTITY)
-            Review.objects.create(user=user, review=queryset)
-            return Response('Отзыв на товар успешно написан.', status.HTTP_201_CREATED)
-        user_review = Review.objects.filter(user=user, review=queryset)
-        if user_review.exists():
-            user_review.delete()
-            return Response('Отзыв успешно удален.', status.HTTP_204_NO_CONTENT)
-        return Response('Данного отзыва не существует.', status.HTTP_422_UNPROCESSABLE_ENTITY)
+    def perform_create(self, serializer):
+        serializer.save(product=self.get_product(), user=self.request.user)
 
 
-class UserReviewsViewSet(viewsets.ModelViewSet):
-    serializer_class = ReviewSerializer
-    pagination_class = PageNumberPagination
-    ordering_fields = ('pub_date',)
-    ordering = ('pub_date',)
+class UserReviewsViewSet(BaseReviewViewSet):
+    http_method_names = ['get', 'put', 'patch', 'delete']
 
     def get_queryset(self):
         queryset = Review.objects.filter(user=self.request.user)

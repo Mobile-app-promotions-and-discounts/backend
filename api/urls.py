@@ -14,7 +14,7 @@ router.register('categories', CategoryViewSet, basename='categories')
 router.register('stores', StoreViewSet, basename='stores')
 router.register(r'stores/(?P<store_id>\d+)/products', StoreProductsViewSet, basename='store-products')
 router.register('chains', ChainStoreViewSet, basename='chains')
-router.register('users/reviews', UserReviewsViewSet, basename='user-reviews')
+router.register('my-reviews', UserReviewsViewSet, basename='my-reviews')
 
 urlpatterns = [
     path('', include(router.urls)),

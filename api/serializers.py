@@ -1,4 +1,4 @@
-import base64
+import base64, json
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
@@ -82,6 +82,35 @@ class ProductsInStoreSerializer(serializers.ModelSerializer):
         fields = ('id', 'discount', 'store', 'initial_price', 'promo_price')
 
 
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(
+        read_only=True, slug_field='username'
+    )
+    product_name = serializers.ReadOnlyField(source='product.name')
+
+    class Meta:
+        model = Review
+        fields = ('id', 'product_id', 'product_name', 'user', 'text', 'score', 'pub_date')
+
+    def validate_score(self, value):
+        """Валидация для оценки товара."""
+        if not (0 < value <= 5):
+            raise serializers.ValidationError(
+                'Оценка должна быть целым числом от 1 до 5.'
+            )
+        return value
+
+    def validate(self, data):
+        """Валидация для создания отзыва."""
+        if self.context['request'].method != 'POST':
+            return data
+        user = self.context['request'].user
+        product_id = self.context['request'].parser_context['kwargs']['product_id']
+        if Review.objects.filter(user=user, product=product_id).exists():
+            raise serializers.ValidationError('Нельзя оставить больше одного отзыва.')
+        return data
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для получения товара."""
     category = CategorySerializer()
@@ -92,11 +121,24 @@ class ProductSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True,
     )
+    my_review = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ('id', 'name', 'rating', 'category', 'barcode', 'description',
-                  'main_image', 'stores', 'is_favorited', 'images')
+                  'main_image', 'stores', 'is_favorited', 'images', 'my_review')
+
+    def get_my_review(self, obj):
+        user = self.context['request'].user
+        review = Review.objects.filter(product=obj, user=user).first()
+        if review is not None:
+            context = {
+                'id': review.id,
+                'text': review.text,
+                'score': review.score
+            }
+            return context
+        return None
 
     def get_is_favorited(self, obj):
         user_requsting = self.context['request'].user
@@ -134,24 +176,6 @@ class CreateProductSerializer(serializers.ModelSerializer):
                 image=image.get('image'),
             )
         return product
-
-
-class ReviewSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(
-        read_only=True, slug_field='username'
-    )
-
-    class Meta:
-        model = Review
-        fields = ('user', 'text', 'score', 'pub_date')
-
-    def validate_review(self, value):
-        """Валидация для оценки товара."""
-        if not (0 < value <= 5):
-            raise serializers.ValidationError(
-                'Оценка должна быть целым числом от 1 до 5.'
-            )
-        return value
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
