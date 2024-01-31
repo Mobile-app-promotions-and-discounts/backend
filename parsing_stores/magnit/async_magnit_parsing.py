@@ -78,7 +78,7 @@ async def get_product_in_stores(request_settings, ids_store):
 
 
 async def get_images(products: List[List[Dict[str, str | None]]]) -> List[bytes]:
-    urls = [product[0].get('image_url') for product in products]
+    urls = [product[0].pop('image_url') for product in products]
     async with ClientSession() as session:
         reqs = [_get_image(session, url) for url in urls]
         results = await asyncio.gather(*reqs, return_exceptions=True)
@@ -104,8 +104,10 @@ def run_get_data_in_stores():
                 pr_data = parse_data_product(product, PARSING_MAGNIT.get('KEYS'))
                 pr_data.append(dict(id_in_chain_store=store))
                 r.append(pr_data)
+        # else:
+        #     вставить лог что магазин не был опрошен
     products = asyncio.run(get_images(r))
-    print(f'Опрошено {len(r)} магазинов')
+    print(f'Получено {len(r)} товаров')
     print(datetime.today() - start)
     # with open('products_in_magnit.json', 'w') as file:
     #     file.write(json.dumps(r))
