@@ -11,14 +11,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
 
+# Запуск каждый день в 00:00
 app.conf.beat_schedule = {
-    'send_notifications': {
+    'auto_run_src_lenta': {
         'task': 'parsing_stores.tasks.run_src_lenta',
-        'schedule': crontab()
+        'schedule': crontab(minute='*/15')
     },
 }
-
-
-@app.task(bind=True)
-def debug_task(self):
-    print('ЗАПУСК debug_task')

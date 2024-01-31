@@ -31,7 +31,7 @@ services:
     container_name: task_worker
     build: .
     entrypoint: celery
-    command: -A selery.app worker --loglevel=DEBUG
+    command: -A selery.app worker -B --loglevel=DEBUG
     volumes:
       - static_value:/cherry_app/static/
       - media_value:/cherry_app/media/
