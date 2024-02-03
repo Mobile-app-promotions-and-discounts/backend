@@ -43,7 +43,14 @@ async def aget_products_on_page(store_id: str, node_code: str, offset: int) -> R
     return response_json
 
 
-def scr_products_discount(products_discount: List[dict], category_in_bd: str) -> List[dict]:
+async def aget_image(url: str) -> bytes:
+    """Подготовка картинки для db"""
+    response: bytes = await aget_response(
+        options={'url': url}, return_='content')
+    return response
+
+
+async def ascr_products_discount(products_discount: List[dict], category_in_bd: str) -> List[dict]:
     """Получить необходимые данные продуктов."""
     products_data = []
 
@@ -67,7 +74,7 @@ def scr_products_discount(products_discount: List[dict], category_in_bd: str) ->
         }
         if value.get('image'):
             products_in_store['product']['main_image'] = [
-                value.get('image').get('thumbnail'),
+                await aget_image(value.get('image').get('thumbnail')),
                 *[i.get('thumbnail') for i in value.get('images')]
             ]
         products_data.append(products_in_store)
@@ -98,7 +105,7 @@ async def aget_products_in_store(store: dict) -> Tuple[list, dict]:
                 amount_products -= cfg.PRODUCTS_ON_PAGE
                 if product_page:
                     product_page = product_page.get('skus')
-                    prodacts_data: List[dict] = scr_products_discount(product_page, category_in_bd)
+                    prodacts_data: List[dict] = await ascr_products_discount(product_page, category_in_bd)
                     all_products_store.extend(prodacts_data)
                 else:
                     break

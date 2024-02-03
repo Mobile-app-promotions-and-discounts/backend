@@ -11,11 +11,11 @@ def run_src_lenta():
     asyncio.run(main_lenta())
 
 
-@shared_task
-def run_src_magnit():
-    pass
+# @shared_task
+# def run_src_magnit():
+#     pass
 
 
-# @shared_task(bind=True, autoretry_for=(DatabaseError,), retry_backoff=True)
+# @shared_task
 # def add_store_products_in_db_task(products_in_store, store_data):
 #     add_store_products_in_db(products_in_store, store_data)
