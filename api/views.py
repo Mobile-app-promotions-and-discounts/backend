@@ -7,12 +7,14 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              CreateProductSerializer, ProductSerializer,
                              ReviewSerializer, StoreProductsSerializer,
                              StoreSerializer)
+from api.permissions import AdminOrReadOnly, AuthorOrReadOnly
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 
@@ -114,12 +116,15 @@ class BaseReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
     pagination_class = PageNumberPagination
+    filter_backends = (OrderingFilter,)
     ordering_fields = ('-pub_date',)
     ordering = ('-pub_date',)
 
 
 class ReviewViewSet(BaseReviewViewSet):
-    filter_backends = (OrderingFilter,)
+    permission_classes = [
+        AdminOrReadOnly | (AuthorOrReadOnly & IsAuthenticated)
+    ]
 
     def get_product(self):
         return get_object_or_404(Product, id=self.kwargs.get('product_id'))

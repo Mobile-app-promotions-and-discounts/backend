@@ -102,8 +102,6 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Валидация для создания отзыва."""
-        if self.context['request'].method != 'POST':
-            return data
         user = self.context['request'].user
         product_id = self.context['request'].parser_context['kwargs']['product_id']
         if Review.objects.filter(user=user, product=product_id).exists():
