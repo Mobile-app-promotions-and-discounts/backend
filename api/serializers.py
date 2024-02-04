@@ -132,12 +132,7 @@ class ProductSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         review = Review.objects.filter(product=obj, user=user).first()
         if review is not None:
-            context = {
-                'id': review.id,
-                'text': review.text,
-                'score': review.score
-            }
-            return context
+            return {'id': review.id, 'text': review.text, 'score': review.score}
         return None
 
     def get_is_favorited(self, obj):
