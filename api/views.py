@@ -123,7 +123,7 @@ class BaseReviewViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(BaseReviewViewSet):
     permission_classes = [
-        AdminOrReadOnly | (AuthorOrReadOnly & IsAuthenticated)
+        (AdminOrReadOnly & IsAuthenticated) | (AuthorOrReadOnly & IsAuthenticated)
     ]
 
     def get_product(self):
