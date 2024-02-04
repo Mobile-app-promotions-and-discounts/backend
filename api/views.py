@@ -10,11 +10,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from api.permissions import AdminOrReadOnly, AuthorOrReadOnly
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              CreateProductSerializer, ProductSerializer,
                              ReviewSerializer, StoreProductsSerializer,
                              StoreSerializer)
-from api.permissions import AdminOrReadOnly, AuthorOrReadOnly
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 
@@ -140,5 +140,4 @@ class UserReviewsViewSet(BaseReviewViewSet):
     http_method_names = ['get', 'put', 'patch', 'delete']
 
     def get_queryset(self):
-        queryset = Review.objects.filter(user=self.request.user)
-        return queryset
+        return Review.objects.filter(user=self.request.user)
