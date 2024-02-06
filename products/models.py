@@ -16,7 +16,7 @@ class Product(models.Model):
     )
     barcode = models.CharField(
         'Штрихкод',
-        max_length=13,
+        max_length=15,
         blank=True,
         null=True,
     )
