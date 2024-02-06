@@ -31,7 +31,7 @@ def create_products_and_discounts_obj(data: List[Dict[str, str | bytes | None]])
             product = Product(
                 name=name,
                 category=category,
-                barcode=item.get('barcode'),
+                barcode=item.get('barcode')[:14],
                 main_image=ContentFile(item.get('image'), name=item.get('image_name')),
             )
             if product not in products:
@@ -89,7 +89,7 @@ def run_add_data_in_db():
     data_in_stores = run_get_data_in_stores()
     products, discounts = create_products_and_discounts_obj(data_in_stores)
     add_products, add_discounts = add_in_db(products, discounts)
-    products_in_stores = create_products_in_stores_obj(data_in_stores)
-    add_pr_in_stores = ProductsInStore.objects.bulk_create(products_in_stores)
-    print(f'Добавлено продуктов {len(add_products)}\nДобавлено акций {len(add_discounts)}\nДобавлено продуктов в магазине {len(add_pr_in_stores)}')
+    # products_in_stores = create_products_in_stores_obj(data_in_stores)
+    # add_pr_in_stores = ProductsInStore.objects.bulk_create(products_in_stores)
+    print(f'Добавлено продуктов {len(add_products)}\nДобавлено акций {len(add_discounts)}\nДобавлено продуктов в магазине') #{len(add_pr_in_stores)}')
     
