@@ -49,11 +49,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    def __eq__(self, obj):
-        if isinstance(obj, type(self)):
-            return self.name == obj.name or self.barcode == obj.barcode
-        return super().__eq__(obj)
-
 
 class Category(models.Model):
     """Модель категории, к которой относится товар."""

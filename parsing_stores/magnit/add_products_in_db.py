@@ -1,4 +1,5 @@
 from typing import List, Dict, Tuple
+from pprint import pprint
 
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
@@ -6,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from parsing_stores.magnit.async_magnit_parsing import run_get_data_in_stores
 from products.models import Product, Category, Discount, ProductsInStore, Store
 from parsing_stores.magnit.decorators import calc_time_work
+from parsing_stores.magnit.utils import get_product_data, get_discount_data, is_duplicate_product
 
 
 def create_products_obj(data: List[Dict[str, str | bytes | None]]) -> List[Product]:
@@ -22,47 +24,75 @@ def create_products_obj(data: List[Dict[str, str | bytes | None]]) -> List[Produ
 def create_products_and_discounts_obj(data: List[Dict[str, str | bytes | None]]) -> Tuple[List[Product], List[Discount]]:
     """Создание списков объектов продуктов и скидок."""
     products = []
+    products_obj = []
     discounts = []
+    discounts_obj = []
     for item in data:
-        # print(item.get('category'))
-        category = Category.objects.get(name=item.get('category'))
-        name = item.get('name')
+        pr = get_product_data(item)
+        if pr not in products:
+            # item['is_duplucate'] = False
+            products.append(pr)
+        # else:
+        #     item['is_duplucate'] = True
+        ds = get_discount_data(item)
+        if ds not in discounts:
+            discounts.append(ds)
+    for product_data in products:
+        category = Category.objects.get(name=product_data.get('category'))
+        name = product_data.get('name')
         if not Product.objects.filter(name=name).exists():
-            product = Product(
-                name=name,
-                category=category,
-                barcode=item.get('barcode')[:14],
-                main_image=ContentFile(item.get('image'), name=item.get('image_name')),
-            )
-            if product not in products:
-                products.append(product)
-        discount_rate = item.get('discount_rate') if item.get('discount_rate') else -1
-        discount_start = item.get('discount_start')
-        discount_end = item.get('discount_end')
+            try:
+                product = Product(
+                    name=name,
+                    category=category,
+                    barcode=product_data.get('barcode')[:14],
+                    main_image=ContentFile(product_data.get('image'), name=product_data.get('image_name')),
+                )
+                products_obj.append(product)
+            except Exception:
+                print(product_data)
+    for discount_data in discounts:
+        discount_rate = discount_data.get('discount_rate')
+        discount_start = discount_data.get('discount_start')
+        discount_end = discount_data.get('discount_end')
         if not Discount.objects.filter(discount_rate=discount_rate, discount_start=discount_start, discount_end=discount_end).exists():
             discount = Discount(
                 discount_rate=discount_rate,
                 discount_start=discount_start,
                 discount_end=discount_end,
             )
-            discounts.append(discount)
-    return products, discounts
+            discounts_obj.append(discount)
+    return products_obj, discounts_obj
 
 
 def create_products_in_stores_obj(data: List[Dict[str, str | bytes | None]]) -> List[ProductsInStore]:
     """Создание объектов продуктов в магазинах."""
     products_in_stores = []
     for item in data:
-        product = get_object_or_404(Product, name=item.get('name'))
+        if item.get('is_duplicate'):
+            continue
+        product = Product.objects.filter(
+            name=item.get('name'),
+            # category__name=item.get('category'),
+        ).first()
         store = Store.objects.get(id_in_chain_store=item.get('id_in_chain_store'))
         discount = Discount.objects.get(
-            discount_rate=item.get('discount_rate'),
+            discount_rate=item.get('discount_rate') if item.get('discount_rate') else -1,
             discount_start=item.get('discount_start'),
             discount_end=item.get('discount_end'),
         )
         initial_price = item.get('initial_price', False)
         promo_price = item.get('promo_price', False)
-        if initial_price and promo_price:
+        if (
+            initial_price and promo_price
+            and not ProductsInStore.objects.filter(
+                product=product,
+                store=store,
+                discount=discount,
+                initial_price=initial_price,
+                promo_price=promo_price,
+            ).exists()
+        ):
             products_in_stores.append(
                 ProductsInStore(
                     product=product,
@@ -80,7 +110,6 @@ def add_in_db(products: List[Product], discounts: List[Discount]):
     """Добавление данных в БД."""
     add_products = Product.objects.bulk_create(products)
     add_discounts = Discount.objects.bulk_create(discounts)
-    # add_products_in_store = ProductsInStore.objects.bulk_create(products_in_stores)
     return add_products, add_discounts
 
 
@@ -89,7 +118,15 @@ def run_add_data_in_db():
     data_in_stores = run_get_data_in_stores()
     products, discounts = create_products_and_discounts_obj(data_in_stores)
     add_products, add_discounts = add_in_db(products, discounts)
-    # products_in_stores = create_products_in_stores_obj(data_in_stores)
-    # add_pr_in_stores = ProductsInStore.objects.bulk_create(products_in_stores)
-    print(f'Добавлено продуктов {len(add_products)}\nДобавлено акций {len(add_discounts)}\nДобавлено продуктов в магазине') #{len(add_pr_in_stores)}')
-    
+    print([item.get('name') for item in data_in_stores if item.get('is_duplicate')])
+    products_in_stores = create_products_in_stores_obj(data_in_stores)
+    add_pr_in_stores = ProductsInStore.objects.bulk_create(
+        products_in_stores,
+        ignore_conflicts=True
+        # update_conflicts=True,
+        # update_fields=['initial_price', 'promo_price', 'discount'],
+        # unique_fields=['product', 'store'],
+    )
+    pprint(add_pr_in_stores)
+    print(f'Добавлено продуктов {len(add_products)}\nДобавлено акций {len(add_discounts)}\nДобавлено продуктов в магазине {len(add_pr_in_stores)}')
+
