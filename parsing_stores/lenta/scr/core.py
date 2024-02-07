@@ -1,3 +1,4 @@
+import asyncio
 import aiohttp
 import json
 import logging
@@ -39,14 +40,13 @@ def get_response(options: dict = None, method: str = 'get') -> Response:
 
 
 @backoff.on_exception(backoff.expo,
-                      aiohttp.ClientError,
-                      max_time=60,
+                      exception=[asyncio.CancelledError, aiohttp.ClientError, aiohttp.ClientResponseError],
                       logger=logger)
 async def aget_response(options: dict = None,
                         method: str = 'get',
                         return_: str = 'json') -> Any:
     """Функция асинхронно выполняет request и возвращает response"""
-    async with aiohttp.ClientSession(cookies=cfg.COOKIES, headers=cfg.HEADERS) as session:
+    async with aiohttp.ClientSession(cookies=cfg.COOKIES, headers=cfg.HEADERS, raise_for_status=True) as session:
         logger.debug(REQUEST_START.format(options.get('url')))
         async with session.request(method=method, **options) as resp:
             if return_ == 'content':

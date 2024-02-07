@@ -15,6 +15,10 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'auto_run_src_lenta': {
         'task': 'parsing_stores.tasks.run_src_lenta',
-        'schedule': crontab(minute='*/15')
+        'schedule': crontab(minute=0, hour=0)
+    },
+    'auto_run_src_magnit': {
+        'task': 'parsing_stores.tasks.run_src_magnit',
+        'schedule': crontab(minute=0, hour=0)
     },
 }
