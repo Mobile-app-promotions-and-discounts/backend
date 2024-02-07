@@ -10,7 +10,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.permissions import AdminOrReadOnly, AuthorOrReadOnly
+from api.permissions import AuthorOrReadOnly
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              CreateProductSerializer, ProductSerializer,
                              ReviewSerializer, StoreProductsSerializer,
@@ -123,7 +123,7 @@ class BaseReviewViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(BaseReviewViewSet):
     permission_classes = [
-        (AdminOrReadOnly & IsAuthenticated) | (AuthorOrReadOnly & IsAuthenticated)
+        AuthorOrReadOnly & IsAuthenticated
     ]
 
     def get_product(self):
