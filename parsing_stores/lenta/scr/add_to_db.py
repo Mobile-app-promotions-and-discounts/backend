@@ -14,12 +14,13 @@ LOG_START_ADD_TO_DB = 'Начало добавления данных в DB...'
 LOG_ADD_TO_DB = 'Из магазина c id {} добавлено в bd {} товаров'
 
 
-@backoff.on_exception(backoff.expo, exception=[DatabaseError,], logger=logger)
+@backoff.on_exception(backoff.expo, exception=[DatabaseError, Exception], logger=logger)
 def get_category_from_bd_or_create_new(category_data: str) -> Category:
     """Подготовка категории для db"""
     return Category.objects.get_or_create(name=category_data)[0]
 
-@backoff.on_exception(backoff.expo, exception=[DatabaseError,], logger=logger)
+
+@backoff.on_exception(backoff.expo, exception=[DatabaseError, Exception], logger=logger)
 def get_store_from_bd_or_create_new(store_data: dict) -> Store:
     """Подготовка магазина для db"""
     return Store.objects.get_or_create(
@@ -29,7 +30,7 @@ def get_store_from_bd_or_create_new(store_data: dict) -> Store:
     )[0]
 
 
-@backoff.on_exception(backoff.expo, exception=[DatabaseError,], logger=logger)
+@backoff.on_exception(backoff.expo, exception=[DatabaseError, Exception], logger=logger)
 def get_product_from_bd_or_create_new(product_data: dict) -> Product:
     """Подготовка продукта для db"""
     category_data: str = product_data.pop('category', None)
