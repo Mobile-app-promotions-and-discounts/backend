@@ -117,3 +117,10 @@ def run_get_data_in_stores():
     # print(products[0])
     return products
 # pprint(asyncio.run(main()))
+
+
+def save_data():
+    products = run_get_data_in_stores()
+    [pr.pop('image') for pr in products]
+    with open('products_in_magnit.json', 'w') as file:
+        file.write(json.dumps(products))

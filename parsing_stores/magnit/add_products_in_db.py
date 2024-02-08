@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from parsing_stores.magnit.async_magnit_parsing import run_get_data_in_stores
 from products.models import Product, Category, Discount, ProductsInStore, Store
 from parsing_stores.magnit.decorators import calc_time_work
-from parsing_stores.magnit.utils import get_product_data, get_discount_data, is_duplicate_product
+from parsing_stores.magnit.utils import get_product_data, get_discount_data, is_duplicate_product, is_duplicate_in_store
 
 
 def create_products_obj(data: List[Dict[str, str | bytes | None]]) -> List[Product]:
@@ -29,11 +29,11 @@ def create_products_and_discounts_obj(data: List[Dict[str, str | bytes | None]])
     discounts_obj = []
     for item in data:
         pr = get_product_data(item)
-        if pr not in products:
-            # item['is_duplucate'] = False
+        if not is_duplicate_product(pr, products):
+            item['is_duplucate'] = False
             products.append(pr)
-        # else:
-        #     item['is_duplucate'] = True
+        else:
+            item['is_duplucate'] = True
         ds = get_discount_data(item)
         if ds not in discounts:
             discounts.append(ds)
@@ -68,6 +68,7 @@ def create_products_and_discounts_obj(data: List[Dict[str, str | bytes | None]])
 def create_products_in_stores_obj(data: List[Dict[str, str | bytes | None]]) -> List[ProductsInStore]:
     """Создание объектов продуктов в магазинах."""
     products_in_stores = []
+    data = is_duplicate_in_store(data)
     for item in data:
         if item.get('is_duplicate'):
             continue
@@ -84,14 +85,14 @@ def create_products_in_stores_obj(data: List[Dict[str, str | bytes | None]]) -> 
         initial_price = item.get('initial_price', False)
         promo_price = item.get('promo_price', False)
         if (
-            initial_price and promo_price
-            and not ProductsInStore.objects.filter(
-                product=product,
-                store=store,
-                discount=discount,
-                initial_price=initial_price,
-                promo_price=promo_price,
-            ).exists()
+            (initial_price or promo_price)
+            # and not ProductsInStore.objects.filter(
+            #     product=product,
+            #     store=store,
+            #     discount=discount,
+            #     initial_price=initial_price,
+            #     promo_price=promo_price,
+            # ).exists()
         ):
             products_in_stores.append(
                 ProductsInStore(
@@ -118,15 +119,13 @@ def run_add_data_in_db():
     data_in_stores = run_get_data_in_stores()
     products, discounts = create_products_and_discounts_obj(data_in_stores)
     add_products, add_discounts = add_in_db(products, discounts)
-    print([item.get('name') for item in data_in_stores if item.get('is_duplicate')])
+    # print([item.get('name') for item in data_in_stores if item.get('is_duplicate')])
     products_in_stores = create_products_in_stores_obj(data_in_stores)
     add_pr_in_stores = ProductsInStore.objects.bulk_create(
         products_in_stores,
-        ignore_conflicts=True
-        # update_conflicts=True,
-        # update_fields=['initial_price', 'promo_price', 'discount'],
-        # unique_fields=['product', 'store'],
+        # ignore_conflicts=True
+        update_conflicts=True,
+        update_fields=['initial_price', 'promo_price', 'discount'],
+        unique_fields=['product', 'store'],
     )
-    pprint(add_pr_in_stores)
     print(f'Добавлено продуктов {len(add_products)}\nДобавлено акций {len(add_discounts)}\nДобавлено продуктов в магазине {len(add_pr_in_stores)}')
-
