@@ -9,6 +9,7 @@ from factories.users import UserFactory
 from products.models import Product
 
 FIRST_CATEGORY_BY_PRIORITY = 'Продукты'
+# FIXME: временно не отдаем на фронт категорию 'Разное', поэтому в качестве количества категорий указано 8
 CATEGORIES_COUNT = 8
 PRODUCTS_URL = reverse('api:products-list')
 PRODUCT_DETAIL_URL = 'api:products-detail'
