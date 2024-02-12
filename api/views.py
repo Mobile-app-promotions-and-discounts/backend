@@ -7,8 +7,10 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from api.permissions import AuthorOrReadOnly
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              CreateProductSerializer, ProductSerializer,
                              ReviewSerializer, StoreProductsSerializer,
@@ -74,8 +76,8 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySerializer
     pagination_class = None
     filter_backends = (OrderingFilter,)
-    ordering_fields = ('name',)
-    ordering = ('name',)
+    ordering_fields = ('priority',)
+    ordering = ('priority',)
 
 
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
@@ -110,13 +112,19 @@ class ChainStoreViewSet(viewsets.ReadOnlyModelViewSet):
     ordering = ('name',)
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class BaseReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    pagination_class = PageNumberPagination
     queryset = Review.objects.all()
+    pagination_class = PageNumberPagination
     filter_backends = (OrderingFilter,)
-    ordering_fields = ('pub_date',)
-    ordering = ('pub_date',)
+    ordering_fields = ('-pub_date',)
+    ordering = ('-pub_date',)
+
+
+class ReviewViewSet(BaseReviewViewSet):
+    permission_classes = [
+        AuthorOrReadOnly & IsAuthenticated
+    ]
 
     def get_product(self):
         return get_object_or_404(Product, id=self.kwargs.get('product_id'))
@@ -126,3 +134,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(product=self.get_product(), user=self.request.user)
+
+
+class UserReviewsViewSet(BaseReviewViewSet):
+    http_method_names = ['get', 'put', 'patch', 'delete']
+
+    def get_queryset(self):
+        return Review.objects.filter(user=self.request.user)

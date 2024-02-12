@@ -8,11 +8,14 @@ from factories.products import (CategoryFactory, ProductFactory, ReviewFactory,
 from factories.users import UserFactory
 from products.models import Product
 
-FIRST_CATEGORY = 'AUTO'
+FIRST_CATEGORY_BY_PRIORITY = 'Продукты'
 # FIXME: временно не отдаем на фронт категорию 'Разное', поэтому в качестве количества категорий указано 8
 CATEGORIES_COUNT = 8
 PRODUCTS_URL = reverse('api:products-list')
+PRODUCT_DETAIL_URL = 'api:products-detail'
 CATEGORIES_URL = reverse('api:categories-list')
+REVIEWS_URL = 'api:reviews-list'
+STORE_PRODUCTS_URL = 'api:store-products-list'
 STORES_URL = reverse('api:stores-list')
 STORE_CHAINS_URL = reverse('api:chains-list')
 
@@ -29,9 +32,9 @@ class APIViewsTest(APITestCase):
         self.store = StoreFactory()
         self.categories = CategoryFactory.create_batch(CATEGORIES_COUNT)
         self.review = ReviewFactory(product=self.product, user=self.user_2)
-        self.REVIEWS_URL = reverse('api:reviews-list', args=[self.product.id])
-        self.STORE_PRODUCTS_URL = reverse('api:store-products-list', args=[self.store.id])
-        self.PRODUCT_DETAIL_URL = reverse('api:products-detail', args=[self.product.id])
+        self.REVIEWS_URL = reverse(REVIEWS_URL, args=[self.product.id])
+        self.STORE_PRODUCTS_URL = reverse(STORE_PRODUCTS_URL, args=[self.store.id])
+        self.PRODUCT_DETAIL_URL = reverse(PRODUCT_DETAIL_URL, args=[self.product.id])
 
     def test_get_all_categories(self):
         response = self.authorized_client.get(CATEGORIES_URL)
@@ -52,7 +55,7 @@ class APIViewsTest(APITestCase):
         response = self.authorized_client.get(CATEGORIES_URL)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.data[0].get('name'), FIRST_CATEGORY)
+        self.assertEqual(response.data[0].get('get_name_display'), FIRST_CATEGORY_BY_PRIORITY)
 
 
 class PaginatorViewsTest(APITestCase):
@@ -60,15 +63,15 @@ class PaginatorViewsTest(APITestCase):
         self.authorized_client = APIClient()
         self.user = UserFactory()
         self.authorized_client.force_authenticate(self.user)
-        for number in range(1, 14):
+        for number in range(1, 24):
             self.product = ProductFactory()
             self.store = StoreFactory()
 
-    def test_first_page_contains_ten_products(self):
+    def test_first_page_contains_twenty_products(self):
         response = self.authorized_client.get(PRODUCTS_URL)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(len(response.data.get('results')), 10)
+        self.assertEqual(len(response.data.get('results')), 20)
 
     def test_second_page_contains_three_products(self):
         response = self.authorized_client.get(PRODUCTS_URL + '?page=2')
@@ -76,11 +79,11 @@ class PaginatorViewsTest(APITestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(len(response.data.get('results')), 3)
 
-    def test_first_page_contains_ten_stores(self):
+    def test_first_page_contains_twenty_stores(self):
         response = self.authorized_client.get(STORES_URL)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(len(response.data.get('results')), 10)
+        self.assertEqual(len(response.data.get('results')), 20)
 
     def test_second_page_contains_three_stores(self):
         response = self.authorized_client.get(STORES_URL + '?page=2')
