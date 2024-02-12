@@ -19,7 +19,7 @@ jobs:
         passphrase: ${{ secrets. PASSPHRASE }}
         script: |
           cd ~/backend/
-          git checkout develop
+          git checkout main
           git pull
           touch .env
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} > .env
