@@ -19,7 +19,7 @@ LOGGER_MAGNIT = {
         },
         'fileHandler': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'level': 'INFO',
+            'level': 'DEBUG',
             'formatter': 'fileFormatter',
             'filename': 'parser_magnit.log',
             'maxBytes': 52428800,

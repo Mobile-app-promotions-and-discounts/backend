@@ -32,6 +32,7 @@ def is_duplicate_product(product: Dict[str, str], products: List[Dict[str, str]]
 
 
 def is_duplicate_in_store(products: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    """Проверка дубликатов продукта в магазине передача всего списка продуктов."""
     products_in_store = []
     for item in products:
         product_name = item.get('name')
@@ -43,3 +44,16 @@ def is_duplicate_in_store(products: List[Dict[str, str]]) -> List[Dict[str, str]
             ):
                 products_in_store.append(i)
     return products_in_store
+
+
+def is_duplicate_in_store_ii(product, products):
+    """Проверка дубликатов продуктов в магазине передача продукта и сортированного списка."""
+    product_name = product.get('name')
+    store_id_in_chain = product.get('id_in_chain_store')
+    for item in products:
+        if (
+            item.get('name') == product_name
+            and item.get('id_in_chain_store') == store_id_in_chain
+        ):
+            return True
+    return False
