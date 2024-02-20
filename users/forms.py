@@ -17,4 +17,3 @@ class CustomPasswordForm(Form):
     )
     uid = CharField(label='UID')
     token = CharField(label='Token')
-    # re_password = UserPasswordField(label='Повторите пароль')

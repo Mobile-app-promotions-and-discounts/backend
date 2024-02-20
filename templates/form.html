@@ -20,10 +20,8 @@
               {% endfor %}
           {% endif %}
           <form method="post"
-            {% if action_url %} 
-              action="{% url action_url %}" 
-            {% endif %}
-            enctype="multipart/form-data"
+            action="/auth/users/reset_password_confirm/"
+            enctype="application/json"
           >
           {% csrf_token %}
           {% for field in form %}
@@ -41,7 +39,7 @@
                   {% endif %}
               </label>
               <div>
-                {{ field }} {{ field.name }}
+                {{ field }}
               </div>
               <div>
                 {% if field.help_text %}
