@@ -1,8 +1,6 @@
-from django.forms import Form, CharField
 from django.contrib.auth.password_validation import (
-    password_validators_help_text_html,
-    get_default_password_validators,
-)
+    get_default_password_validators, password_validators_help_text_html)
+from django.forms import CharField, Form
 
 
 class CustomPasswordForm(Form):
@@ -15,5 +13,3 @@ class CustomPasswordForm(Form):
         help_text=password_validators_help_text_html(),
         validators=[validator.validate for validator in get_default_password_validators()],
     )
-    uid = CharField(label='UID')
-    token = CharField(label='Token')
