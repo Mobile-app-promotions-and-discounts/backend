@@ -7,14 +7,16 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
-                             CreateProductSerializer, ProductSerializer,
-                             ReviewSerializer, StoreProductsSerializer,
-                             StoreSerializer)
+                             CreateProductSerializer, HelpSerializer,
+                             ProductSerializer, ReviewSerializer,
+                             StoreProductsSerializer, StoreSerializer)
+from api.service import send_email
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 
@@ -141,3 +143,15 @@ class UserReviewsViewSet(BaseReviewViewSet):
 
     def get_queryset(self):
         return Review.objects.filter(user=self.request.user)
+
+
+class APIHelp(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = HelpSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            print(request.data)
+            send_email(**request.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

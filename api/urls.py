@@ -1,9 +1,9 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (CategoryViewSet, ChainStoreViewSet, ProductViewSet,
-                    ReviewViewSet, StoreProductsViewSet, StoreViewSet,
-                    UserReviewsViewSet)
+from .views import (APIHelp, CategoryViewSet, ChainStoreViewSet,
+                    ProductViewSet, ReviewViewSet, StoreProductsViewSet,
+                    StoreViewSet, UserReviewsViewSet)
 
 app_name = 'api'
 
@@ -19,4 +19,5 @@ router.register('my-reviews', UserReviewsViewSet, basename='my-reviews')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('help/', APIHelp.as_view(), name='help'),
 ]

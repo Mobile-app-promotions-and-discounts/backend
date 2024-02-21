@@ -203,3 +203,14 @@ class StoreProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = ('id', 'chain_store', 'name', 'location', 'products')
+
+
+class HelpSerializer(serializers.Serializer):
+    """Сериализатор для получения обратной связи от пользователя."""
+    name = serializers.CharField(max_length=100, required=True)
+    email = serializers.EmailField(
+        max_length=100,
+        required=True,
+    )
+    message = serializers.CharField(max_length=3000, required=True)
+    # image_file = serializers.ImageField(required=False)
