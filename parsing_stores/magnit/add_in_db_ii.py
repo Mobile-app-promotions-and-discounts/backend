@@ -44,18 +44,17 @@ def sort_data(data):
 def create_product_obj(product_data):
     """Создание объекта продукта из данных продукта."""
     try:
-        category = Category.objects.get(name=product_data.pop('category'))
         image = ContentFile(
             product_data.pop('image'),
             name=product_data.pop('image_name'),
-        )
+        ) or None
+        category = Category.objects.get(name=product_data.pop('category'))
     except Exception as exc:
         logger.exception(exc)
     return Product(
         category=category,
         main_image=image,
         **product_data,
-
     )
 
 
@@ -99,8 +98,8 @@ def run_add_data_in_db():
         unique_fields=['product', 'store'],
     )
     logger.info(
-        f'Добавлено: продуктов- {len(add_products)}; '
-        f'акций- {len(add_discounts)}; '
-        f'продуктов в магазин- {len(add_products_in_stores)}'
+        f'Продуктов- {len(add_products)}; '
+        f'Акций- {len(add_discounts)}; '
+        f'Продуктов в магазин- {len(add_products_in_stores)}'
     )
     return add_products, add_discounts, add_products_in_stores

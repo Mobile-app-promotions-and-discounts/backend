@@ -1,16 +1,15 @@
 import asyncio
 from copy import deepcopy
-from datetime import datetime
 from logging import getLogger
 from logging.config import dictConfig
 from typing import Dict, List
 
 from aiohttp import ClientSession
 
-from parsing_stores.magnit.config import PARSING_MAGNIT
+from parsing_stores.magnit.config import LOGGER_MAGNIT, PARSING_MAGNIT
 from products.models import Store
 
-dictConfig(PARSING_MAGNIT.LOGGER_MAGNIT)
+dictConfig(LOGGER_MAGNIT)
 logger = getLogger(f'root.{__name__}')
 
 request_settings = {
@@ -56,18 +55,14 @@ def get_image_name(st: str) -> str:
 
 
 async def get_product_in_stores(request_settings, ids_store):
-    start = datetime.today()
-    logger.info(f'Начало опроса {len(ids_store)} магазинов {start}')
-    # store_param = PARSING_MAGNIT.get('PARAMS_PRODUCTS')
+    logger.info(f'Начало опроса {len(ids_store)} магазинов')
     async with ClientSession() as session:
         stores_params = []
         for id_store in ids_store:
             params = deepcopy(request_settings)
             params['params']['storeId'] = id_store
             stores_params.append(get_data_in_url(session, params))
-        result = await asyncio.gather(*stores_params, return_exceptions=True)
-    print(f'Время парсинга {datetime.today() - start}')
-    return result
+    return await asyncio.gather(*stores_params, return_exceptions=True)
 
 
 async def get_images(products: List[List[Dict[str, str | None]]]) -> List[bytes]:
@@ -85,7 +80,6 @@ async def get_images(products: List[List[Dict[str, str | None]]]) -> List[bytes]
 
 
 def run_get_data_in_stores():
-    start = datetime.today()
     ids_store = [
         store[0] for store in Store.objects.filter(chain_store__name='Магнит').values_list('id_in_chain_store')
     ]
@@ -99,7 +93,4 @@ def run_get_data_in_stores():
                 r.append(pr_data)
         else:
             logger.info(f'Опрос магазина <{store}> завершился ошибкой <{products_store}>')
-    products = asyncio.run(get_images(r))
-    logger.info(f'Получено {len(r)} товаров')
-    logger.info(f'Время работы {datetime.today() - start}')
-    return products
+    return asyncio.run(get_images(r))

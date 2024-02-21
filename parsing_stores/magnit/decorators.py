@@ -8,6 +8,7 @@ def calc_time_work(func):
         start = datetime.today()
         print(f'{func} начала работу в {start}')
         result = func(*args, **kwargs)
-        print(f'Функция {func} закончила работу за {datetime.today() - start}')
+        time_work = datetime.today() - start
+        print(f'Функция {func} закончила работу за {time_work}')
         return result
     return wraper
