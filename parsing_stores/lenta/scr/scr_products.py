@@ -1,9 +1,10 @@
 import logging
 from typing import List, Tuple
 
+from requests import Response
+
 import parsing_stores.lenta.scr.config as cfg
 from parsing_stores.lenta.scr.core import get_response
-from requests import Response
 
 logger = logging.getLogger()
 

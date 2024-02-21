@@ -1,12 +1,12 @@
 import asyncio
 import json
-from time import sleep
 from pprint import pprint
+from time import sleep
 
 from aiohttp import ClientSession
-
 # from async_magnit_parsing import main
 from decorators import calc_time_work
+
 
 async def _get_image(session, url):
     async with session.get(url) as result:

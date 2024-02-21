@@ -3,11 +3,12 @@ import base64
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 from products.models import (Category, ChainStore, Discount, Product,
                              ProductImage, ProductsInStore, Review, Store,
                              StoreLocation)
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 User = get_user_model()
 

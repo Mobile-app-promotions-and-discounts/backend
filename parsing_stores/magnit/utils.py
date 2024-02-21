@@ -5,7 +5,7 @@ def get_product_data(data: Dict[str, str]) -> Dict[str, str]:
     """Извлечение данных по продукту."""
     return dict(
         name=data.get('name'),
-        barcode=data.get('barcode'), # Здесь будет ломаться если нет штрихкода
+        barcode=data.get('barcode'),  # Здесь будет ломаться если нет штрихкода
         category=data.get('category'),
         image=data.get('image'),
         image_name=data.get('image_name'),
@@ -40,7 +40,7 @@ def is_duplicate_in_store(products: List[Dict[str, str]]) -> List[Dict[str, str]
                 product.get('name') == product_name
                 and product.get('id_in_chain_store') == store_id_in_chain
             ):
-                products_in_store.append(i)
+                products_in_store.append(product)
     return products_in_store
 
 

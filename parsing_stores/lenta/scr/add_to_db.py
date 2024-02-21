@@ -2,13 +2,14 @@ import logging
 from typing import List
 
 import backoff
-import parsing_stores.lenta.scr.config as cfg
 from django.core.files.base import ContentFile
 from django.db.utils import DatabaseError
+from requests import Response
+
+import parsing_stores.lenta.scr.config as cfg
 from parsing_stores.lenta.scr.core import get_response
 from products.models import (Category, ChainStore, Discount, Product,
                              ProductsInStore, Store, StoreLocation)
-from requests import Response
 
 logger = logging.getLogger()
 

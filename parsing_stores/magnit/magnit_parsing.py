@@ -5,9 +5,10 @@ import requests
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.files.base import ContentFile
+from requests.exceptions import RequestException
+
 from parsing_stores.magnit.validators import check_product_magnit
 from products.models import Category, Discount, Product, ProductsInStore, Store
-from requests.exceptions import RequestException
 
 dictConfig(settings.LOGGER_MAGNIT)
 logger = logging.getLogger(f'root.{__name__}')

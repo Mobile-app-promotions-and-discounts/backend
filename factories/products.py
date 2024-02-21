@@ -3,6 +3,7 @@ from datetime import timedelta
 import factory.fuzzy
 from factory.django import DjangoModelFactory
 from faker import Faker
+
 from products.models import (Category, ChainStore, Discount, Favorites,
                              Product, ProductImage, ProductsInStore, Review,
                              Store, StoreLocation)

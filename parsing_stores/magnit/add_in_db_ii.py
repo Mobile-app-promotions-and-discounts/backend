@@ -6,17 +6,13 @@ from logging.config import dictConfig
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 
-from parsing_stores.magnit.config import LOGGER_MAGNIT
-from products.models import Category, Product, Discount, ProductsInStore, Store
 from parsing_stores.magnit.async_magnit_parsing import run_get_data_in_stores
-from parsing_stores.magnit.utils import (
-                                         get_product_data,
-                                         get_discount_data,
-                                         is_duplicate_product,
-                                         is_duplicate_in_store_ii,
-                                         )
+from parsing_stores.magnit.config import LOGGER_MAGNIT
 from parsing_stores.magnit.decorators import calc_time_work
-
+from parsing_stores.magnit.utils import (get_discount_data, get_product_data,
+                                         is_duplicate_in_store_ii,
+                                         is_duplicate_product)
+from products.models import Category, Discount, Product, ProductsInStore, Store
 
 dictConfig(LOGGER_MAGNIT)
 logger = getLogger(f'root.{__name__}')
@@ -103,4 +99,4 @@ def run_add_data_in_db():
         unique_fields=['product', 'store'],
     )
     logger.info(f'Добавлено: продуктов- {len(add_products)}; акций- {len(add_discounts)}; продуктов в магазин- {len(add_products_in_stores)}')
-    # return add_products, add_discounts, add_products_in_stores
+    return add_products, add_discounts, add_products_in_stores

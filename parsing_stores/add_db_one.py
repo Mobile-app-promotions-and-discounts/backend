@@ -1,8 +1,8 @@
 from django.core.files.base import ContentFile
 
 from parsing_stores.magnit.async_magnit_parsing import run_get_data_in_stores
-from products.models import Product, Discount, ProductsInStore, Store, Category
 from parsing_stores.magnit.decorators import calc_time_work
+from products.models import Category, Discount, Product, ProductsInStore, Store
 
 
 @calc_time_work
@@ -47,16 +47,16 @@ def run_add_in_db(data):
                 disc_count += 1
             else:
                 discount = Discount.objects.filter(
-                                discount_rate=disc_rate,
-                                discount_start=disc_start,
-                                discount_end=disc_end,
-                            ).first()
+                    discount_rate=disc_rate,
+                    discount_start=disc_start,
+                    discount_end=disc_end,
+                ).first()
             store = Store.objects.filter(id_in_chain_store=id_store).first()
             if not ProductsInStore.objects.filter(
                 product=product,
                 store=store,
             ).exists():
-                prod_in_store = ProductsInStore.objects.create(
+                ProductsInStore.objects.create(
                     product=product,
                     store=store,
                     initial_price=init_price if init_price else '',

@@ -1,13 +1,14 @@
-from typing import List, Dict, Tuple
-from pprint import pprint
+from typing import Dict, List, Tuple
 
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 
 from parsing_stores.magnit.async_magnit_parsing import run_get_data_in_stores
-from products.models import Product, Category, Discount, ProductsInStore, Store
 from parsing_stores.magnit.decorators import calc_time_work
-from parsing_stores.magnit.utils import get_product_data, get_discount_data, is_duplicate_product, is_duplicate_in_store
+from parsing_stores.magnit.utils import (get_discount_data, get_product_data,
+                                         is_duplicate_in_store,
+                                         is_duplicate_product)
+from products.models import Category, Discount, Product, ProductsInStore, Store
 
 
 def create_products_obj(data: List[Dict[str, str | bytes | None]]) -> List[Product]:

@@ -3,13 +3,12 @@ from copy import deepcopy
 from datetime import datetime
 from logging import getLogger
 from logging.config import dictConfig
-from typing import List, Dict
+from typing import Dict, List
 
 from aiohttp import ClientSession
 
 from parsing_stores.magnit.config import PARSING_MAGNIT
 from products.models import Store
-
 
 dictConfig(PARSING_MAGNIT.LOGGER_MAGNIT)
 logger = getLogger(f'root.{__name__}')
