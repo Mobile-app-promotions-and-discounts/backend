@@ -1,7 +1,8 @@
-import json
 import asyncio
 from copy import deepcopy
 from datetime import datetime
+from logging import getLogger
+from logging.config import dictConfig
 from typing import List, Dict
 
 from aiohttp import ClientSession
@@ -10,9 +11,9 @@ from parsing_stores.magnit.config import PARSING_MAGNIT
 from products.models import Store
 
 
-ids_store = ['61485', '61783', '120485', '167002', '100372', '7818', '92465', '168924', '127462', '104572', '124104', '201258', '247011', '61726', '202930', '177815', '266606', '61785', '61010', '14809', '59202', '14845', '94738', '253131', '6', '53085', '188360', '123071', '193219', '1036']
-# ids_store = ['61485', '120485', '167002', '168924', '127462', '104572', '124104', '201258', '247011', '61726', '202930', '177815', '266606', '61785', '61010', '14809', '59202', '94738', '253131', '53085', '188360', '123071', '1036']
-# ids_store = ['127462', '6157', '63452']
+dictConfig(PARSING_MAGNIT.LOGGER_MAGNIT)
+logger = getLogger(f'root.{__name__}')
+
 request_settings = {
     'url': PARSING_MAGNIT.get('URL_PRODUCTS'),
     'headers': PARSING_MAGNIT.get('HEADERS'),
@@ -23,11 +24,10 @@ request_settings = {
 async def get_data_in_url(session, request_setting):
     async with session.get(**request_setting) as result:
         return await result.json()
-    
+
 
 async def _get_image(session, url):
     async with session.get(url) as result:
-        # print('Начало запроса')
         return await result.read()
 
 
@@ -37,14 +37,8 @@ def set_params(params, change_param, value_param):
 
 
 def parse_data_product(data, data_keys):
-    # discount = {}
     products = {}
-    # price = {}
     for out_key, in_key in data_keys:
-        # if 'discount' in out_key:
-        #     discount[out_key] = data.get(in_key)
-        # elif 'price' in out_key:
-        #     price[out_key] = data.get(in_key)
         if 'category' in out_key:
             name_category = data.get(in_key)
             for key, value in PARSING_MAGNIT.get('CATEGORIES').items():
@@ -54,7 +48,6 @@ def parse_data_product(data, data_keys):
                 products[out_key] = 'DIFFERENT'
         else:
             products[out_key] = data.get(in_key)
-    # return [product, discount, price]
     return products
 
 
@@ -65,7 +58,7 @@ def get_image_name(st: str) -> str:
 
 async def get_product_in_stores(request_settings, ids_store):
     start = datetime.today()
-    print(f'Начало опроса {len(ids_store)} магазинов {start}')
+    logger.info(f'Начало опроса {len(ids_store)} магазинов {start}')
     # store_param = PARSING_MAGNIT.get('PARAMS_PRODUCTS')
     async with ClientSession() as session:
         stores_params = []
@@ -101,26 +94,13 @@ def run_get_data_in_stores():
     r = []
     for products_store, store in zip(result, ids_store):
         if not isinstance(products_store, Exception):
-            # r[store] = [parse_data_product(d, PARSING_MAGNIT.get('KEYS')) for d in products_store.get('data')]
             for product in products_store.get('data'):
                 pr_data = parse_data_product(product, PARSING_MAGNIT.get('KEYS'))
                 pr_data['id_in_chain_store'] = store
                 r.append(pr_data)
-        # else:
-        #     вставить лог что магазин не был опрошен
+        else:
+            logger.info(f'Опрос магазина <{store}> завершился ошибкой <{products_store}>')
     products = asyncio.run(get_images(r))
-    print(f'Получено {len(r)} товаров')
-    print(datetime.today() - start)
-    # with open('products_in_magnit.json', 'w') as file:
-    #     file.write(json.dumps(r))
-    print(f'Время работы {datetime.today() - start}')
-    # print(products[0])
+    logger.info(f'Получено {len(r)} товаров')
+    logger.info(f'Время работы {datetime.today() - start}')
     return products
-# pprint(asyncio.run(main()))
-
-
-def save_data():
-    products = run_get_data_in_stores()
-    [pr.pop('image') for pr in products]
-    with open('products_in_magnit.json', 'w') as file:
-        file.write(json.dumps(products))

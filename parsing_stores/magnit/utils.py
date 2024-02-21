@@ -23,10 +23,8 @@ def get_discount_data(data: Dict[str, str]) -> Dict[str, str]:
 
 def is_duplicate_product(product: Dict[str, str], products: List[Dict[str, str]]) -> bool:
     product_name = product.get('name')
-    # product_barcode = product.get('barcode')
     for item in products:
         if item.get('name') == product_name:
-            # print(product_name)
             return True
     return False
 
@@ -37,10 +35,10 @@ def is_duplicate_in_store(products: List[Dict[str, str]]) -> List[Dict[str, str]
     for item in products:
         product_name = item.get('name')
         store_id_in_chain = item.get('id_in_chain_store')
-        for i in products_in_store:
+        for product in products_in_store:
             if not (
-                i.get('name') == product_name
-                and i.get('id_in_chain_store') == store_id_in_chain
+                product.get('name') == product_name
+                and product.get('id_in_chain_store') == store_id_in_chain
             ):
                 products_in_store.append(i)
     return products_in_store
