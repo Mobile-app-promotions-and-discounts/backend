@@ -98,5 +98,9 @@ def run_add_data_in_db():
         update_fields=['initial_price', 'promo_price'],
         unique_fields=['product', 'store'],
     )
-    logger.info(f'Добавлено: продуктов- {len(add_products)}; акций- {len(add_discounts)}; продуктов в магазин- {len(add_products_in_stores)}')
+    logger.info(
+        f'Добавлено: продуктов- {len(add_products)}; '
+        f'акций- {len(add_discounts)}; '
+        f'продуктов в магазин- {len(add_products_in_stores)}'
+    )
     return add_products, add_discounts, add_products_in_stores

@@ -1,7 +1,6 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from django.core.files.base import ContentFile
-from django.shortcuts import get_object_or_404
 
 from parsing_stores.magnit.async_magnit_parsing import run_get_data_in_stores
 from parsing_stores.magnit.decorators import calc_time_work
@@ -22,7 +21,7 @@ def create_products_obj(data: List[Dict[str, str | bytes | None]]) -> List[Produ
 
 
 @calc_time_work
-def create_products_and_discounts_obj(data: List[Dict[str, str | bytes | None]]) -> Tuple[List[Product], List[Discount]]:
+def create_products_and_discounts_obj(data):
     """Создание списков объектов продуктов и скидок."""
     products = []
     products_obj = []
@@ -56,7 +55,11 @@ def create_products_and_discounts_obj(data: List[Dict[str, str | bytes | None]])
         discount_rate = discount_data.get('discount_rate')
         discount_start = discount_data.get('discount_start')
         discount_end = discount_data.get('discount_end')
-        if not Discount.objects.filter(discount_rate=discount_rate, discount_start=discount_start, discount_end=discount_end).exists():
+        if not Discount.objects.filter(
+            discount_rate=discount_rate,
+            discount_start=discount_start,
+            discount_end=discount_end,
+        ).exists():
             discount = Discount(
                 discount_rate=discount_rate,
                 discount_start=discount_start,
@@ -129,4 +132,8 @@ def run_add_data_in_db():
         update_fields=['initial_price', 'promo_price', 'discount'],
         unique_fields=['product', 'store'],
     )
-    print(f'Добавлено продуктов {len(add_products)}\nДобавлено акций {len(add_discounts)}\nДобавлено продуктов в магазине {len(add_pr_in_stores)}')
+    print(
+        f'Добавлено продуктов {len(add_products)}\n'
+        f'Добавлено акций {len(add_discounts)}\n'
+        f'Добавлено продуктов в магазине {len(add_pr_in_stores)}'
+    )
