@@ -11,6 +11,7 @@ services:
     env_file:
       - .env
 
+
   web:
     build: .
     restart: always
