@@ -57,3 +57,32 @@ class User(AbstractUser):
         if self.first_name and self.last_name:
             return self.get_full_name()
         return self.username
+
+
+class ResetPin(models.Model):
+    """PIN для сброса пароля пользователя."""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reset_pins',
+        vebose_name='Пользователь',
+    )
+    pin = models.CharField(
+        max_length=4,
+        verbose_name='PIN для сброса пароля',
+    )
+    create_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата и время создания PIN'
+    )
+
+    class Meta:
+        verbose_name = 'PIN для сброса пароля'
+        verbose_name_plural = 'PIN для сброса пароля'
+        ordering = ['user']
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'pin'),
+                name='unique_user_reset_pin',
+            ),
+        ]
