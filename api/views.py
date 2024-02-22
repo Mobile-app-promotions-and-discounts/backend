@@ -16,7 +16,7 @@ from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              CreateProductSerializer, HelpSerializer,
                              ProductSerializer, ReviewSerializer,
                              StoreProductsSerializer, StoreSerializer)
-from api.service import send_email
+from api.tasks import send_email
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 
@@ -151,7 +151,6 @@ class APIHelp(APIView):
     def post(self, request):
         serializer = HelpSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            print(request.data)
-            send_email(**request.data)
+            send_email.delay(**request.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
