@@ -270,3 +270,15 @@ PARSING_MAGNIT = {
     },
     'NO_DATA': -1,
 }
+
+
+REDIS_HOST = os.environ.get('REDIS_SRC_HOST', 'redis_src')
+REDIS_PORT = os.environ.get('REDIS_SRC_PORT', '6379')
+CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_IMPORTS = ('parsing_stores.tasks',)
+CELERY_TIMEZONE = 'Europe/Moscow'

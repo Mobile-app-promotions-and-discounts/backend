@@ -4,7 +4,7 @@ from typing import List, Tuple
 from requests import Response
 
 import parsing_stores.lenta.scr.config as cfg
-from parsing_stores.lenta.scr.core import get_response
+from parsing_stores.lenta.scr.core import aget_response
 
 logger = logging.getLogger()
 
@@ -14,7 +14,7 @@ LOG_PRODUCTS_IN_STORE = 'Из магазина c id {} спарсено {} то�
 LOG_PRODUCTS_ON_PAGE = 'get_products_on_page - OK'
 
 
-def get_products_on_page(store_id: str, node_code: str, offset: int) -> Response:
+async def aget_products_on_page(store_id: str, node_code: str, offset: int) -> Response:
     """
     Получить список продуктов в определеной категории.
     'store_id' - id магазина на сайте
@@ -35,17 +35,22 @@ def get_products_on_page(store_id: str, node_code: str, offset: int) -> Response
     }
     requests_options: dict = {
         'url': cfg.URL_GET_PRODUCT.format(store_id),
-        'cookies': cfg.COOKIES,
-        'headers': cfg.HEADERS,
         'json': json_data
     }
-    response: Response = get_response(options=requests_options,
-                                      method='post')
+    response_json: Response = await aget_response(method='post',
+                                                  options=requests_options)
     logger.debug(LOG_PRODUCTS_ON_PAGE)
+    return response_json
+
+
+async def aget_image(url: str) -> bytes:
+    """Подготовка картинки для db"""
+    response: bytes = await aget_response(
+        options={'url': url}, return_='content')
     return response
 
 
-def scr_products_discount(products_discount: List[dict], category_in_bd: str) -> List[dict]:
+async def ascr_products_discount(products_discount: List[dict], category_in_bd: str) -> List[dict]:
     """Получить необходимые данные продуктов."""
     products_data = []
 
@@ -69,7 +74,7 @@ def scr_products_discount(products_discount: List[dict], category_in_bd: str) ->
         }
         if value.get('image'):
             products_in_store['product']['main_image'] = [
-                value.get('image').get('thumbnail'),
+                await aget_image(value.get('image').get('thumbnail')),
                 *[i.get('thumbnail') for i in value.get('images')]
             ]
         products_data.append(products_in_store)
@@ -77,7 +82,7 @@ def scr_products_discount(products_discount: List[dict], category_in_bd: str) ->
     return products_data
 
 
-def get_products_in_store(store: dict) -> Tuple[list, dict]:
+async def aget_products_in_store(store: dict) -> Tuple[list, dict]:
     """
     Получить список продуктов для магазина.
     """
@@ -90,17 +95,17 @@ def get_products_in_store(store: dict) -> Tuple[list, dict]:
             offset: int = 0
             amount_products: int = 0
             while amount_products > 0 or offset == 0:
-                product_page: List[dict] = get_products_on_page(
+                product_page: List[dict] = await aget_products_on_page(
                     store.get('id_store'),
                     node_code,
                     offset
-                ).json()
+                )
                 if offset == 0:
                     amount_products: int = product_page.get('total')
                 amount_products -= cfg.PRODUCTS_ON_PAGE
                 if product_page:
                     product_page = product_page.get('skus')
-                    prodacts_data: List[dict] = scr_products_discount(product_page, category_in_bd)
+                    prodacts_data: List[dict] = await ascr_products_discount(product_page, category_in_bd)
                     all_products_store.extend(prodacts_data)
                 else:
                     break

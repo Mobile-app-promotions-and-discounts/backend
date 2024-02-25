@@ -13,3 +13,8 @@ Faker==20.1.0
 requests==2.31.0
 colorlog==6.7.0
 backoff==2.2.1
+django-debug-toolbar==3.4.0
+celery==5.2.7
+redis==4.5.1
+flower==1.2.0
+aiohttp==3.9.1
