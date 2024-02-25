@@ -65,11 +65,10 @@ class ResetPasswordPin(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='reset_pins',
-        vebose_name='Пользователь',
+        verbose_name='Пользователь',
         unique=True,
     )
     pin = models.CharField(
-        max_length=4,
         verbose_name='PIN для сброса пароля',
     )
     create_date = models.DateTimeField(

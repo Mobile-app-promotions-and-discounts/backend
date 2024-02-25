@@ -193,7 +193,7 @@ class StoreProductsSerializer(serializers.ModelSerializer):
 
 class PasswordResetConfirmSerializer(serializers.ModelSerializer):
     """Сериалайзер подтверждения сброса пароля пользователя по PIN."""
-    user = serializers.StringRelatedField()
+    user = serializers.EmailField()
     new_password = serializers.CharField()
 
     class Meta:
@@ -210,23 +210,25 @@ class PasswordResetConfirmSerializer(serializers.ModelSerializer):
     def validate(self, data):
         username = data.get('user')
         pin = data.get('pin')
-        if not ResetPasswordPin.objects.filter(user=username).exists():
+        if not ResetPasswordPin.objects.filter(user__username=username).exists():
             raise ValidationError(f'Не найден PIN сброса пароля для {username}')
-        obj_in_db = ResetPasswordPin.objects.get(user__username='user')
-        life_time = datetime.today() - obj_in_db.create_date
-        if not life_time <= timedelta(minutes=settings.TIME_LIFE_PIN):
-            raise ValidationError('Время жизни PIN истекло')
-        elif not hashers.check_password(pin, obj_in_db.pin):
+        obj_in_db = ResetPasswordPin.objects.get(user__username=username)
+        # life_time = datetime.today() - obj_in_db.create_date
+        # if not life_time <= timedelta(minutes=settings.TIME_LIFE_PIN):
+        #     raise ValidationError('Время жизни PIN истекло')
+        # elif not hashers.check_password(pin, obj_in_db.pin):
+        if pin != obj_in_db.pin:
             raise ValidationError('PIN не валиден')
         return data
 
 
 class PinCreateSerializer(serializers.ModelSerializer):
     """Сериалайзер создания PIN для сброса пароля пользователя."""
+    username = serializers.EmailField()
 
     class Meta:
         model = User
         fields = ('username',)
 
-    def validate_email(self, value):
+    def validate_username(self, value):
         return username_validation(value)

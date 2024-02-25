@@ -14,14 +14,14 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
-                             CreateProductSerializer, ProductSerializer,
+                             CreateProductSerializer,
+                             PasswordResetConfirmSerializer,
+                             PinCreateSerializer, ProductSerializer,
                              ReviewSerializer, StoreProductsSerializer,
-                             StoreSerializer, PasswordResetConfirmSerializer,
-                             PinCreateSerializer)
+                             StoreSerializer)
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
 from users.models import ResetPasswordPin
-
 
 User = get_user_model()
 
@@ -143,9 +143,9 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
     def get_serializer(self, *args, **kwargs):
         if self.action == 'confirm':
-            return PasswordResetConfirmSerializer
+            return PasswordResetConfirmSerializer(*args, **kwargs)
         elif self.action == 'create':
-            return PinCreateSerializer
+            return PinCreateSerializer(*args, **kwargs)
         else:
             return super().get_serializer(*args, **kwargs)
 
@@ -160,22 +160,26 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data.get('username')
         user = self.get_object(username=email)
-        pin = ''.join([randbelow(10) for _ in range(4)])
+        pin = ''.join([str(randbelow(10)) for _ in range(4)])
         if ResetPasswordPin.objects.filter(user=user).exists():
             ResetPasswordPin.objects.filter(user=user).delete()
-        ResetPasswordPin.objects.create(user=user, pin=hashers.make_password(pin))
+        ResetPasswordPin.objects.create(user=user, pin=pin)
         message_mail = send_mail(
-            user.get_username(), settings.RESET_PASSWORD_MESSAGE.format(
-                username=user.username,
+            'Восстановление пароля',
+            # pin,
+            settings.RESET_PASSWORD_MESSAGE.format(
+                username=user.get_username(),
                 pin=pin,
                 hostmail=settings.DEFAULT_FROM_EMAIL,
-            )
+            ),
+            'cherryapps511@example.com',
+            [user.get_username()],
         )
         if message_mail:
             return Response('Сообщение отправлено', status.HTTP_200_OK)
         return ResetPasswordPin('Сообщение не отправлено', status.HTTP_400_BAD_REQUEST)
 
-    @action(method=['post'], detail=False)
+    @action(methods=['post'], detail=False)
     def confirm(self, request):
         """Подтверждение сохранения нового пароля пользователя."""
         serializer = self.get_serializer(data=request.data)
@@ -183,9 +187,11 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         user = User.objects.get(username=serializer.validated_data.get('user'))
         user.set_password(serializer.validated_data.get('new_password'))
         user.save()
-        send_mail(user.get_username(), settings.DONE_RESET_PASSWORD_MESSAGE)
+        # дописать проверку смены пароля и удаление PIN
+        send_mail(
+            'Пароль изменен',
+            settings.DONE_RESET_PASSWORD_MESSAGE,
+            'cherryapps511@example.com',
+            [user.get_username()],
+        )
         return Response('Пароль восстановлен', status.HTTP_200_OK)
-        
-
-
-    

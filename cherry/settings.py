@@ -16,6 +16,8 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(', ')
 
 AUTH_USER_MODEL = 'users.User'
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 DEFAULT_FROM_EMAIL = 'Cherryapps511@gmail.com'
 
 INSTALLED_APPS = [
