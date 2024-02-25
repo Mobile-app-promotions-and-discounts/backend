@@ -59,13 +59,14 @@ class User(AbstractUser):
         return self.username
 
 
-class ResetPin(models.Model):
+class ResetPasswordPin(models.Model):
     """PIN для сброса пароля пользователя."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='reset_pins',
         vebose_name='Пользователь',
+        unique=True,
     )
     pin = models.CharField(
         max_length=4,
@@ -80,9 +81,9 @@ class ResetPin(models.Model):
         verbose_name = 'PIN для сброса пароля'
         verbose_name_plural = 'PIN для сброса пароля'
         ordering = ['user']
-        constraints = [
-            models.UniqueConstraint(
-                fields=('user', 'pin'),
-                name='unique_user_reset_pin',
-            ),
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=('user', 'pin'),
+        #         name='unique_user_reset_pin',
+        #     ),
+        # ]

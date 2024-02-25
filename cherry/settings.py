@@ -16,6 +16,8 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(', ')
 
 AUTH_USER_MODEL = 'users.User'
 
+DEFAULT_FROM_EMAIL = 'Cherryapps511@gmail.com'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -270,3 +272,15 @@ PARSING_MAGNIT = {
     },
     'NO_DATA': -1,
 }
+
+# Время жизни PIN для сброса пароля в минутах
+TIME_LIFE_PIN = 5
+
+RESET_PASSWORD_MESSAGE = ('{username}, тебя приветствует команда приложения CHERRY!\n\n'
+                          'Спасибо за то что ты с нами.\n'
+                          'Данное сообщение было отправлено, потому что ты запросил восстановление пароля от приложения.\n'
+                          'PIN код для смены пароля <{pin}>, его необходимо ввести в приложении.\n\n'
+                          'Если возникли вопросы по работе приложения их можно задать по адресу {hostmail}.\n\n'
+                          'С уважением, команда приложения CHERRY!')
+
+DONE_RESET_PASSWORD_MESSAGE = 'Пароль от приложения CHERRY был успешно восстановлен.'
