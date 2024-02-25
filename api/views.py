@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
-                             CreateProductSerializer, HelpSerializer,
+                             CreateProductSerializer, FeedbackSerializer,
                              ProductSerializer, ReviewSerializer,
                              StoreProductsSerializer, StoreSerializer)
 from api.tasks import send_email
@@ -145,11 +145,11 @@ class UserReviewsViewSet(BaseReviewViewSet):
         return Review.objects.filter(user=self.request.user)
 
 
-class APIHelp(APIView):
+class FeedbackAPIView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = HelpSerializer(data=request.data)
+        serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             send_email.delay(**request.data)
             return Response(serializer.data, status=status.HTTP_200_OK)

@@ -205,7 +205,7 @@ class StoreProductsSerializer(serializers.ModelSerializer):
         fields = ('id', 'chain_store', 'name', 'location', 'products')
 
 
-class HelpSerializer(serializers.Serializer):
+class FeedbackSerializer(serializers.Serializer):
     """Сериализатор для получения обратной связи от пользователя."""
     name = serializers.CharField(max_length=100, required=True)
     email = serializers.EmailField(
@@ -213,4 +213,4 @@ class HelpSerializer(serializers.Serializer):
         required=True,
     )
     message = serializers.CharField(max_length=3000, required=True)
-    # image_file = serializers.ImageField(required=False)
+    image_file = Base64ImageField(required=False, allow_null=True)
