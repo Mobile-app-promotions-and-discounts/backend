@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (CategoryViewSet, ChainStoreViewSet, ProductViewSet,
                     ResetPasswordViewSet, ReviewViewSet, StoreProductsViewSet,
-                    StoreViewSet)
+                    StoreViewSet, UserReviewsViewSet)
 
 app_name = 'api'
 
@@ -16,6 +16,7 @@ router.register('stores', StoreViewSet, basename='stores')
 router.register(r'stores/(?P<store_id>\d+)/products', StoreProductsViewSet, basename='store-products')
 router.register('chains', ChainStoreViewSet, basename='chains')
 router.register('reset-pasword', ResetPasswordViewSet, basename='reset-password')
+router.register('my-reviews', UserReviewsViewSet, basename='my-reviews')
 
 urlpatterns = [
     path('', include(router.urls)),

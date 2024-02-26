@@ -8,8 +8,11 @@ from factories.users import UserFactory
 
 PRODUCTS_URL = reverse('api:products-list')
 CATEGORIES_URL = reverse('api:categories-list')
+REVIEWS_URL = 'api:reviews-list'
 STORES_URL = reverse('api:stores-list')
 STORE_CHAINS_URL = reverse('api:chains-list')
+STORE_PRODUCTS_URL = 'api:store-products-list'
+UNEXISTING_PAGE = '/unexisting_page/'
 
 
 class PagesURLTests(APITestCase):
@@ -21,8 +24,8 @@ class PagesURLTests(APITestCase):
         self.product = ProductFactory()
         self.store = StoreFactory()
         self.review = ReviewFactory(product=self.product, user=self.user)
-        self.REVIEWS_URL = reverse('api:reviews-list', args=[self.product.id])
-        self.STORE_PRODUCTS_URL = reverse('api:store-products-list', args=[self.store.id])
+        self.REVIEWS_URL = reverse(REVIEWS_URL, args=[self.product.id])
+        self.STORE_PRODUCTS_URL = reverse(STORE_PRODUCTS_URL, args=[self.store.id])
 
     def test_authorized_urls_exists_at_desired_location(self):
         """Страницы доступны авторизованному пользователю."""
@@ -60,6 +63,6 @@ class PagesURLTests(APITestCase):
 
     def test_unexisting(self):
         """Несуществующая страница выдаёт код 404."""
-        response = self.authorized_client.get('/unexisting_page/')
+        response = self.authorized_client.get(UNEXISTING_PAGE)
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

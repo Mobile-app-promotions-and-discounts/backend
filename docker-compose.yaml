@@ -6,6 +6,8 @@ services:
     image: postgres:16.1-alpine
     volumes:
       - /var/lib/postgres/data
+    ports:
+      - '5432:5432'
     env_file:
       - .env
 
