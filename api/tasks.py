@@ -1,7 +1,8 @@
 import base64
+from email.mime.image import MIMEImage
+
 from celery import shared_task
 from django.core.mail import EmailMessage
-from email.mime.image import MIMEImage
 
 from cherry.settings import EMAIL_HOST_USER
 
