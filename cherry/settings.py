@@ -276,7 +276,7 @@ PARSING_MAGNIT = {
 }
 
 # Время жизни PIN для сброса пароля в минутах
-TIME_LIFE_PIN = 5
+LIFE_TIME_PIN = 5
 
 RESET_PASSWORD_MESSAGE = ('{username}, тебя приветствует команда приложения CHERRY!\n\n'
                           'Спасибо за то что ты с нами.\n'

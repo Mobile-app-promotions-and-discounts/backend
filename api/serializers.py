@@ -1,5 +1,6 @@
 import base64
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from django.conf import settings
 from django.contrib.auth import get_user_model, hashers
@@ -213,11 +214,11 @@ class PasswordResetConfirmSerializer(serializers.ModelSerializer):
         if not ResetPasswordPin.objects.filter(user__username=username).exists():
             raise ValidationError(f'Не найден PIN сброса пароля для {username}')
         obj_in_db = ResetPasswordPin.objects.get(user__username=username)
-        # life_time = datetime.today() - obj_in_db.create_date
-        # if not life_time <= timedelta(minutes=settings.TIME_LIFE_PIN):
-        #     raise ValidationError('Время жизни PIN истекло')
-        # elif not hashers.check_password(pin, obj_in_db.pin):
-        if pin != obj_in_db.pin:
+        life_time = datetime.now(tz=ZoneInfo('UTC')) - obj_in_db.create_date
+        if life_time > timedelta(minutes=settings.LIFE_TIME_PIN):
+            raise ValidationError('Время жизни PIN истекло')
+        elif not hashers.check_password(pin, obj_in_db.pin):
+        # if pin != obj_in_db.pin:
             raise ValidationError('PIN не валиден')
         return data
 

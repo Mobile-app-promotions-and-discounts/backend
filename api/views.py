@@ -163,7 +163,7 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         pin = ''.join([str(randbelow(10)) for _ in range(4)])
         if ResetPasswordPin.objects.filter(user=user).exists():
             ResetPasswordPin.objects.filter(user=user).delete()
-        ResetPasswordPin.objects.create(user=user, pin=pin)
+        ResetPasswordPin.objects.create(user=user, pin=hashers.make_password(pin))
         message_mail = send_mail(
             'Восстановление пароля',
             # pin,
