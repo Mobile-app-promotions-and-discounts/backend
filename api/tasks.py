@@ -6,12 +6,15 @@ from django.core.mail import EmailMessage
 
 from cherry.settings import EMAIL_HOST_USER
 
+BODY_EMAIL = 'Email пользователя: {}, Cообщение: {}'
+SUBJECT_EMAIL = 'Обращение от пользователя {}'
+
 
 @shared_task
 def send_feedback_email(name, email, message, image_file=None):
     email = EmailMessage(
-        subject=f'Обратная связь от пользователя {name}',
-        body=f'Email пользователя: {email}, Cообщение: {message}',
+        subject=SUBJECT_EMAIL.format(name),
+        body=BODY_EMAIL.format(email, message),
         from_email=EMAIL_HOST_USER,
         to=[EMAIL_HOST_USER],
     )
