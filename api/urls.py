@@ -15,7 +15,7 @@ router.register('categories', CategoryViewSet, basename='categories')
 router.register('stores', StoreViewSet, basename='stores')
 router.register(r'stores/(?P<store_id>\d+)/products', StoreProductsViewSet, basename='store-products')
 router.register('chains', ChainStoreViewSet, basename='chains')
-router.register('reset-pasword', ResetPasswordViewSet, basename='reset-password')
+router.register('reset-password', ResetPasswordViewSet, basename='reset-password')
 router.register('my-reviews', UserReviewsViewSet, basename='my-reviews')
 
 urlpatterns = [
