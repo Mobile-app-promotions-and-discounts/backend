@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              CreateProductSerializer,
-                             PasswordResetConfirmSerializer,
+                             CustomPasswordResetConfirmSerializer,
                              PinCreateSerializer, ProductSerializer,
                              ReviewSerializer, StoreProductsSerializer,
                              StoreSerializer)
@@ -151,7 +151,7 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
     def get_serializer(self, *args, **kwargs):
         if self.action == 'confirm':
-            return PasswordResetConfirmSerializer(*args, **kwargs)
+            return CustomPasswordResetConfirmSerializer(*args, **kwargs)
         elif self.action == 'create':
             return PinCreateSerializer(*args, **kwargs)
         else:

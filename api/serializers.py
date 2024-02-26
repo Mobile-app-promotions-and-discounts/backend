@@ -211,7 +211,7 @@ class StoreProductsSerializer(serializers.ModelSerializer):
         fields = ('id', 'chain_store', 'name', 'location', 'products')
 
 
-class PasswordResetConfirmSerializer(serializers.ModelSerializer):
+class CustomPasswordResetConfirmSerializer(serializers.ModelSerializer):
     """Сериалайзер подтверждения сброса пароля пользователя по PIN."""
     user = serializers.EmailField()
     new_password = serializers.CharField()
