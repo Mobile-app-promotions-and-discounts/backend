@@ -165,15 +165,14 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
             ResetPasswordPin.objects.filter(user=user).delete()
         ResetPasswordPin.objects.create(user=user, pin=hashers.make_password(pin))
         message_mail = send_mail(
-            'Восстановление пароля',
-            # pin,
+            'Восстановление пароля приложения CHERRY',
             settings.RESET_PASSWORD_MESSAGE.format(
                 username=user.get_username(),
                 pin=pin,
                 hostmail=settings.DEFAULT_FROM_EMAIL,
             ),
-            'cherryapps511@example.com',
-            [user.get_username()],
+            settings.DEFAULT_FROM_EMAIL,
+            (user.get_username(),),
         )
         if message_mail:
             return Response('Сообщение отправлено', status.HTTP_200_OK)
@@ -187,11 +186,11 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         user = User.objects.get(username=serializer.validated_data.get('user'))
         user.set_password(serializer.validated_data.get('new_password'))
         user.save()
-        # дописать проверку смены пароля и удаление PIN
+        ResetPasswordPin.objects.filter(user=user).delete()
         send_mail(
-            'Пароль изменен',
+            'Пароль успешно изменен',
             settings.DONE_RESET_PASSWORD_MESSAGE,
-            'cherryapps511@example.com',
-            [user.get_username()],
+            settings.DEFAULT_FROM_EMAIL,
+            (user.get_username(),),
         )
         return Response('Пароль восстановлен', status.HTTP_200_OK)

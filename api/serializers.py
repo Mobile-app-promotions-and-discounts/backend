@@ -218,7 +218,6 @@ class PasswordResetConfirmSerializer(serializers.ModelSerializer):
         if life_time > timedelta(minutes=settings.LIFE_TIME_PIN):
             raise ValidationError('Время жизни PIN истекло')
         elif not hashers.check_password(pin, obj_in_db.pin):
-        # if pin != obj_in_db.pin:
             raise ValidationError('PIN не валиден')
         return data
 
