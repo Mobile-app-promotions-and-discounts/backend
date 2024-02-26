@@ -213,4 +213,11 @@ class FeedbackSerializer(serializers.Serializer):
         required=True,
     )
     message = serializers.CharField(max_length=3000, required=True)
-    image_file = Base64ImageField(required=False, allow_null=True)
+    image_file = serializers.CharField(required=False, allow_null=True)
+
+    def validate_image_file(self, value):
+        if not value.startswith('data:image'):
+            raise serializers.ValidationError(
+                'Картинка должна быть в формате base64'
+            )
+        return value
