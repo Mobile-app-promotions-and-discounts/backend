@@ -218,6 +218,6 @@ class FeedbackSerializer(serializers.Serializer):
     def validate_image_file(self, value):
         if not value.startswith('data:image'):
             raise serializers.ValidationError(
-                'Картинка должна быть в формате base64'
+                'Изображение должно быть в формате base64'
             )
         return value

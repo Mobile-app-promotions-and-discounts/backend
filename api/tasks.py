@@ -8,7 +8,7 @@ from cherry.settings import EMAIL_HOST_USER
 
 
 @shared_task
-def send_feedback_email(name: str, email: str, message: str, image_file=None) -> None:
+def send_feedback_email(name, email, message, image_file=None):
     email = EmailMessage(
         subject=f'Обратная связь от пользователя {name}',
         body=f'Email пользователя: {email}, Cообщение: {message}',
