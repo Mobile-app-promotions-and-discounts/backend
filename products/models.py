@@ -8,7 +8,7 @@ User = get_user_model()
 
 class Product(models.Model):
     """Модель продукта/товара."""
-    name = models.CharField('Название', max_length=255)
+    name = models.CharField('Название', max_length=255, unique=True)
     description = models.TextField(
         'Описание',
         blank=True,
@@ -16,7 +16,7 @@ class Product(models.Model):
     )
     barcode = models.CharField(
         'Штрихкод',
-        max_length=13,
+        max_length=15,
         blank=True,
         null=True,
     )
@@ -185,6 +185,11 @@ class Discount(models.Model):
         ordering = ('discount_rate',)
         verbose_name = 'Скидка'
         verbose_name_plural = 'Скидки'
+        constraints = [models.UniqueConstraint(
+            fields=('discount_rate', 'discount_unit', 'discount_start', 'discount_end'),
+            name='unique_discount',
+        )
+        ]
 
     def __str__(self):
         return f'Скидка в размере {self.discount_rate} {self.discount_unit}'

@@ -1,9 +1,13 @@
 import random
+from secrets import randbelow
 
+from django.conf import settings
+from django.contrib.auth import get_user_model, hashers
+from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
@@ -12,11 +16,16 @@ from rest_framework.response import Response
 
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (CategorySerializer, ChainStoreSerializer,
-                             CreateProductSerializer, ProductSerializer,
+                             CreateProductSerializer,
+                             CustomPasswordResetConfirmSerializer,
+                             PinCreateSerializer, ProductSerializer,
                              ReviewSerializer, StoreProductsSerializer,
                              StoreSerializer)
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store)
+from users.models import ResetPasswordPin
+
+User = get_user_model()
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -134,6 +143,64 @@ class ReviewViewSet(BaseReviewViewSet):
 
     def perform_create(self, serializer):
         serializer.save(product=self.get_product(), user=self.request.user)
+
+
+class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    queryset = User.objects.all()
+    permission_classes = []
+
+    def get_serializer(self, *args, **kwargs):
+        if self.action == 'confirm':
+            return CustomPasswordResetConfirmSerializer(*args, **kwargs)
+        if self.action == 'create':
+            return PinCreateSerializer(*args, **kwargs)
+        return super().get_serializer(*args, **kwargs)
+
+    def get_object(self, *args, **kwargs):
+        if self.action == 'create':
+            return get_object_or_404(User, **kwargs)
+        return super().get_object(*args, **kwargs)
+
+    def create(self, request):
+        """Создать и отправить PIN для восстановления пароля пользователя."""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data.get('username')
+        user = self.get_object(username=email)
+        pin = ''.join([str(randbelow(10)) for _ in range(4)])
+        if ResetPasswordPin.objects.filter(user=user).exists():
+            ResetPasswordPin.objects.filter(user=user).delete()
+        ResetPasswordPin.objects.create(user=user, pin=hashers.make_password(pin))
+        message_mail = send_mail(
+            'Восстановление пароля приложения CHERRY',
+            settings.RESET_PASSWORD_MESSAGE.format(
+                username=user.get_username(),
+                pin=pin,
+                hostmail=settings.DEFAULT_FROM_EMAIL,
+            ),
+            settings.DEFAULT_FROM_EMAIL,
+            (user.get_username(),),
+        )
+        if message_mail:
+            return Response('Сообщение отправлено', status.HTTP_200_OK)
+        return ResetPasswordPin('Сообщение не отправлено', status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['post'], detail=False)
+    def confirm(self, request):
+        """Подтверждение сохранения нового пароля пользователя."""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = User.objects.get(username=serializer.validated_data.get('user'))
+        user.set_password(serializer.validated_data.get('new_password'))
+        user.save()
+        ResetPasswordPin.objects.filter(user=user).delete()
+        send_mail(
+            'Пароль успешно изменен',
+            settings.DONE_RESET_PASSWORD_MESSAGE,
+            settings.DEFAULT_FROM_EMAIL,
+            (user.get_username(),),
+        )
+        return Response('Пароль восстановлен', status.HTTP_200_OK)
 
 
 class UserReviewsViewSet(BaseReviewViewSet):

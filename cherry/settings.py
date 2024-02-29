@@ -16,6 +16,16 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(', ')
 
 AUTH_USER_MODEL = 'users.User'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -270,3 +280,15 @@ PARSING_MAGNIT = {
     },
     'NO_DATA': -1,
 }
+
+# Время жизни PIN для сброса пароля в минутах
+LIFE_TIME_PIN = 5
+
+RESET_PASSWORD_MESSAGE = ('{username}, тебя приветствует команда приложения CHERRY!\n\n'
+                          'Спасибо за то что ты с нами.\n'
+                          'Данное сообщение было отправлено, потому что ты запросил восстановление пароля от приложения.\n'
+                          'PIN код для смены пароля <{pin}>, его необходимо ввести в приложении.\n\n'
+                          'Если возникли вопросы по работе приложения их можно задать по адресу {hostmail}.\n\n'
+                          'С уважением, команда приложения CHERRY!')
+
+DONE_RESET_PASSWORD_MESSAGE = 'Пароль от приложения CHERRY был успешно восстановлен.'

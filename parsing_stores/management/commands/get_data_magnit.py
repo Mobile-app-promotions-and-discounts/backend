@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.core.management.base import BaseCommand
 
-from parsing_stores.magnit.magnit_parsing import main
+from parsing_stores.magnit.add_in_db_ii import run_add_data_in_db
 
 
 class Command(BaseCommand):
@@ -11,5 +11,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print('Начало работы парсинга Магнит.')
         start = datetime.today()
-        main()
+        run_add_data_in_db()
         print(f'Парсинг окончен за {datetime.today() - start}.')
