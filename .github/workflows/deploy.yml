@@ -30,6 +30,10 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          echo EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} >> .env
+          echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} >> .env
+          echo REDIS_SRC_HOST=${{ secrets.REDIS_SRC_HOST }} >> .env
+          echo REDIS_SRC_PORT=${{ secrets.REDIS_SRC_PORT }} >> .env
           cd ~/infra/
           sudo docker compose stop
           sudo docker container rm cherry_app

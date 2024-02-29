@@ -251,3 +251,21 @@ class PinCreateSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value):
         return username_validation(value)
+
+
+class FeedbackSerializer(serializers.Serializer):
+    """Сериализатор для получения обратной связи от пользователя."""
+    name = serializers.CharField(max_length=100, required=True)
+    email = serializers.EmailField(
+        max_length=100,
+        required=True,
+    )
+    message = serializers.CharField(max_length=3000, required=True)
+    image_file = serializers.CharField(required=False, allow_null=True)
+
+    def validate_image_file(self, value):
+        if not value.startswith('data:image'):
+            raise serializers.ValidationError(
+                'Изображение должно быть в формате base64'
+            )
+        return value
