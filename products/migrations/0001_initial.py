@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
             name='Product',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Название')),
+                ('name', models.CharField(max_length=255, verbose_name='Название', unique=True)),
                 ('description', models.TextField(blank=True, null=True, verbose_name='Описание')),
                 ('barcode', models.CharField(blank=True, max_length=13, null=True, verbose_name='Штрихкод')),
                 ('main_image', models.ImageField(blank=True, null=True, upload_to='product_images/', verbose_name='Главное изображение продукта')),
