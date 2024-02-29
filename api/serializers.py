@@ -236,7 +236,7 @@ class CustomPasswordResetConfirmSerializer(serializers.ModelSerializer):
         life_time = datetime.now(tz=ZoneInfo('UTC')) - obj_in_db.create_date
         if life_time > timedelta(minutes=settings.LIFE_TIME_PIN):
             raise ValidationError('Время жизни PIN истекло')
-        elif not hashers.check_password(pin, obj_in_db.pin):
+        if not hashers.check_password(pin, obj_in_db.pin):
             raise ValidationError('PIN не валиден')
         return data
 

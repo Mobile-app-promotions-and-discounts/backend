@@ -152,10 +152,9 @@ class ResetPasswordViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     def get_serializer(self, *args, **kwargs):
         if self.action == 'confirm':
             return CustomPasswordResetConfirmSerializer(*args, **kwargs)
-        elif self.action == 'create':
+        if self.action == 'create':
             return PinCreateSerializer(*args, **kwargs)
-        else:
-            return super().get_serializer(*args, **kwargs)
+        return super().get_serializer(*args, **kwargs)
 
     def get_object(self, *args, **kwargs):
         if self.action == 'create':
