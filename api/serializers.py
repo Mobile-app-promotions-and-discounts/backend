@@ -251,7 +251,7 @@ class PinCreateSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value):
         return username_validation(value)
- 
+
 
 class FeedbackSerializer(serializers.Serializer):
     """Сериализатор для получения обратной связи от пользователя."""
