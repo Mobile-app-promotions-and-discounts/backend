@@ -8,7 +8,7 @@ User = get_user_model()
 
 class Product(models.Model):
     """Модель продукта/товара."""
-    name = models.CharField('Название', max_length=255, unique=True)
+    name = models.CharField('Название', max_length=255)
     description = models.TextField(
         'Описание',
         blank=True,
