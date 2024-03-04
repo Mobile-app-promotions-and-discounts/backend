@@ -5,7 +5,7 @@ services:
   db:
     image: postgres:16.1-alpine
     volumes:
-      - /var/lib/postgres/data
+      - pg_data:/var/lib/postgres/data
     ports:
       - '5432:5432'
     env_file:
@@ -36,3 +36,4 @@ services:
 volumes:
   static_value:
   media_value:
+  pg_data:
