@@ -22,6 +22,49 @@ services:
     env_file:
       - .env
 
+  redis:
+    image: redis:7.0.5-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+
+  task_worker:
+    container_name: task_worker
+    build: .
+    entrypoint: celery
+    command: -A cherry.celery.app worker -B --loglevel=DEBUG
+    volumes:
+      - static_value:/cherry_app/static/
+      - media_value:/cherry_app/media/
+    restart: always
+    links:
+      - redis
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - web
+
+  flower:
+    container_name: flower
+    build: .
+    entrypoint: celery
+    command: -A cherry.celery.app flower
+    volumes:
+      - static_value:/cherry_app/static/
+      - media_value:/cherry_app/media/
+    restart: always
+    links:
+      - redis
+    env_file:
+      - .env
+    depends_on:
+      - task_worker
+      - redis
+    ports:
+      - '5555:5555'
+
   nginx:
     image: nginx:1.25.3-alpine
     ports:
@@ -32,6 +75,7 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - web
+      - task_worker
 
 volumes:
   static_value:
