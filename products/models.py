@@ -185,11 +185,6 @@ class Discount(models.Model):
         ordering = ('discount_rate',)
         verbose_name = 'Скидка'
         verbose_name_plural = 'Скидки'
-        constraints = [models.UniqueConstraint(
-            fields=('discount_rate', 'discount_unit', 'discount_start', 'discount_end'),
-            name='unique_discount',
-        )
-        ]
 
     def __str__(self):
         return f'Скидка в размере {self.discount_rate} {self.discount_unit}'
