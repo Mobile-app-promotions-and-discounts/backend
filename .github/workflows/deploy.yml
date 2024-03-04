@@ -34,6 +34,10 @@ jobs:
           echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} >> .env
           echo REDIS_SRC_HOST=${{ secrets.REDIS_SRC_HOST }} >> .env
           echo REDIS_SRC_PORT=${{ secrets.REDIS_SRC_PORT }} >> .env
+          echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
+          echo EMAIL_PORT=${{ secrets.EMAIL_PORT }} >> .env
+          echo EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }} >> .env
+          echo DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }} >> .env
           cd ~/infra/
           sudo docker compose stop
           sudo docker container rm cherry_app
