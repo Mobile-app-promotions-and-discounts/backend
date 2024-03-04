@@ -5,7 +5,7 @@ services:
   db:
     image: postgres:16.1-alpine
     volumes:
-      - /var/lib/postgres/data
+      - pg_data:/var/lib/postgres/data
     ports:
       - '5432:5432'
     env_file:
@@ -21,14 +21,14 @@ services:
       - db
     env_file:
       - .env
-  
+
   redis:
     image: redis:7.0.5-alpine
     container_name: redis
     restart: always
     ports:
       - '6379:6379'
-  
+
   task_worker:
     container_name: task_worker
     build: .
@@ -45,7 +45,7 @@ services:
     depends_on:
       - redis
       - web
-  
+
   flower:
     container_name: flower
     build: .
@@ -80,3 +80,4 @@ services:
 volumes:
   static_value:
   media_value:
+  pg_data:
