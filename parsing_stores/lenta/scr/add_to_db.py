@@ -46,13 +46,11 @@ def get_product_from_bd_or_create_new(product_data: dict) -> Product:
     else:
         _image = None
     category: Category = get_category_from_bd_or_create_new(category_data)
-
-    if not Product.objects.filter(**product_data).exists():
-        return Product.objects.create(
-            category=category,
-            main_image=_image,
-            **product_data
-        )
+    return Product.objects.create(
+        category=category,
+        main_image=_image,
+        **product_data
+    )
 
 
 @backoff.on_exception(backoff.expo,
