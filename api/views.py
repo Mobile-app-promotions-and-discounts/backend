@@ -24,10 +24,10 @@ from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              StoreProductsSerializer, StoreSerializer,
                              UserLocationSerializer)
 from api.tasks import send_feedback_email
+from api.utils import euclidean_distance, get_location_by_coordinates
 from products.models import (Category, ChainStore, Favorites, Product, Review,
                              Store, StoreLocation)
 from users.models import ResetPasswordPin
-from .utils import euclidean_distance, get_location_by_coordinates
 
 User = get_user_model()
 
