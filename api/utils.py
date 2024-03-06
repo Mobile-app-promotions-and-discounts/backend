@@ -21,11 +21,11 @@ def get_location_by_coordinates(latitude, longitude):
 
 
 def euclidean_distance(lat1, lon1, lat2, lon2):
-    R = 6371.0
+    radius = 6371.0
     dlat = lat2 - lat1
     dlon = lon2 - lon1
     dlat_rad = dlat * (math.pi / 180)
     dlon_rad = dlon * (math.pi / 180)
     a = (dlon_rad * math.cos(lat1 * (math.pi / 180))) ** 2 + dlat_rad**2
     c = math.sqrt(a)
-    return round(R * c * 1000)
+    return round(radius * c * 1000)
