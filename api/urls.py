@@ -2,8 +2,8 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (CategoryViewSet, ChainStoreViewSet, FeedbackAPIView,
-                    ProductViewSet, ResetPasswordViewSet, ReviewViewSet,
-                    StoreProductsViewSet, StoreViewSet, UserReviewsViewSet)
+                    NearestShopsView, ProductViewSet, ResetPasswordViewSet, ReviewViewSet,
+                    StoreProductsViewSet, StoreViewSet, UserLocationView, UserReviewsViewSet)
 
 app_name = 'api'
 
@@ -21,4 +21,6 @@ router.register('my-reviews', UserReviewsViewSet, basename='my-reviews')
 urlpatterns = [
     path('', include(router.urls)),
     path('feedback/', FeedbackAPIView.as_view(), name='feedback'),
+    path('nearest-shops/', NearestShopsView.as_view(), name='nearest-shops'),
+    path('user-location/', UserLocationView.as_view(), name='user-location'),
 ]
