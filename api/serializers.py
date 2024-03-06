@@ -269,3 +269,28 @@ class FeedbackSerializer(serializers.Serializer):
                 'Изображение должно быть в формате base64'
             )
         return value
+
+
+class UserLocationSerializer(serializers.Serializer):
+    latitude = serializers.CharField(max_length=100, required=True)
+    longitude = serializers.CharField(max_length=100, required=True)
+
+    def validate_latitude(self, value):
+        """Validate latitude value."""
+        try:
+            lat = float(value)
+        except ValueError:
+            raise serializers.ValidationError("Значение latitude не может быть преобразовано к типу float.")
+        if not -90 <= lat <= 90:
+            raise serializers.ValidationError("Значение latitude должно быть между -90 и 90.")
+        return value
+
+    def validate_longitude(self, value):
+        """Validate longitude value."""
+        try:
+            lon = float(value)
+        except ValueError:
+            raise serializers.ValidationError("Значение longitude не может быть преобразовано к типу float.")
+        if not -180 <= lon <= 180:
+            raise serializers.ValidationError("Значение longitude должно быть между -180 и 180.")
+        return value

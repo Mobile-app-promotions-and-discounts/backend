@@ -21,10 +21,12 @@ from api.serializers import (CategorySerializer, ChainStoreSerializer,
                              CustomPasswordResetConfirmSerializer,
                              FeedbackSerializer, PinCreateSerializer,
                              ProductSerializer, ReviewSerializer,
-                             StoreProductsSerializer, StoreSerializer)
+                             StoreProductsSerializer, StoreSerializer,
+                             UserLocationSerializer)
 from api.tasks import send_feedback_email
+from api.utils import euclidean_distance, get_location_by_coordinates
 from products.models import (Category, ChainStore, Favorites, Product, Review,
-                             Store)
+                             Store, StoreLocation)
 from users.models import ResetPasswordPin
 
 User = get_user_model()
@@ -220,4 +222,48 @@ class FeedbackAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             send_feedback_email.delay(**serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NearestShopsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        serializer = UserLocationSerializer(data=request.query_params)
+        if serializer.is_valid(raise_exception=True):
+            user_latitude = serializer.validated_data.get('latitude')
+            user_longitude = serializer.validated_data.get('longitude')
+            user_city = get_location_by_coordinates(user_latitude, user_longitude)
+            max_distance = 30000
+            if user_city and user_city != 'City not found':
+                shops = StoreLocation.objects.filter(city=user_city).values('id', 'latitude', 'longitude', 'city')
+            else:
+                shops = StoreLocation.objects.all().values('id', 'latitude', 'longitude', 'city')
+            if not shops:
+                shops = StoreLocation.objects.all().values('id', 'latitude', 'longitude', 'city')
+            shops_with_distance = [
+                {'store_id': shop['id'], 'distance': euclidean_distance(
+                    float(user_latitude), float(user_longitude), float(shop['latitude']), float(shop['longitude']))}
+                for shop in shops
+            ]
+            nearby_shops = filter(
+                lambda shop: shop['distance'] <= max_distance, shops_with_distance
+            )
+            sorted_shops = sorted(nearby_shops, key=lambda x: x['distance'])
+            return Response(sorted_shops, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserLocationView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        serializer = UserLocationSerializer(data=request.query_params)
+        if serializer.is_valid(raise_exception=True):
+            user_latitude = serializer.validated_data.get('latitude')
+            user_longitude = serializer.validated_data.get('longitude')
+            user_location = get_location_by_coordinates(user_latitude, user_longitude)
+            if user_location:
+                return Response({'user_city': user_location}, status=status.HTTP_200_OK)
+            return Response({'user_city': 'Город не найден'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
